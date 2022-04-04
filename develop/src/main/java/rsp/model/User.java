@@ -30,6 +30,9 @@ public class User extends AbstractEntity {
     @OneToMany
     private List<Deck> decks;
 
+    @OneToOne
+    private Statistics statistics;
+
 
 
 
