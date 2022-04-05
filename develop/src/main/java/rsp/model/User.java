@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.name = :name")
+})
 public class User extends AbstractEntity {
 
     //TODO other things

@@ -22,4 +22,7 @@ public class Deck extends AbstractEntity{
     @ManyToMany
     private List<Card> cards;
 
+    @ManyToMany
+    private List<Tag> tags;
+
 }

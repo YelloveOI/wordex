@@ -1,9 +1,6 @@
 package rsp.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -13,6 +10,6 @@ public class Tag extends AbstractEntity {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany
+    @ManyToMany
     private List<Deck> decks;
 }
