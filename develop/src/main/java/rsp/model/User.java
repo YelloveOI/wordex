@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.name = :name")
+        @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username")
 })
 public class User extends AbstractEntity {
 
@@ -20,7 +20,7 @@ public class User extends AbstractEntity {
 
     @Basic(optional = false)
     @Column(nullable = false)
-    private String name;
+    private String username;
 
     @Basic(optional = false)
     @Column(nullable = false)

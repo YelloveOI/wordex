@@ -5,7 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
-public class Goal extends AbstractEntity{
+public class Goal extends AbstractEntity {
 
     @Basic(optional = false)
     @Column(nullable = false)

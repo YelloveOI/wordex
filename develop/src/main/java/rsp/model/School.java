@@ -26,5 +26,4 @@ public class School extends AbstractEntity {
     @ManyToMany
     private List<User> moderators;
 
-
 }

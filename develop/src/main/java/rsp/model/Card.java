@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Card extends AbstractEntity{
+public class Card extends AbstractEntity {
 
     @Basic(optional = false)
     @Column(nullable = false)
@@ -19,8 +19,41 @@ public class Card extends AbstractEntity{
     @Enumerated(EnumType.STRING)
     private Language language;
 
-    @ManyToMany
-    private List<Deck> decks;
+    @ManyToOne
+    @JoinColumn(name="deck_id")
+    private Deck deck;
+
+    public String getDefinition() {
+        return definition;
+    }
+
+    public void setDefinition(String definition) {
+        this.definition = definition;
+    }
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
+    }
 
     //TODO AbstractContent
 

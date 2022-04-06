@@ -1,16 +1,15 @@
 package rsp.dao;
 
-
 import org.springframework.stereotype.Repository;
-import rsp.model.User;
+import rsp.model.Deck;
 
 import javax.persistence.NoResultException;
 
 @Repository
-public class UserDao extends BaseDao<User> {
+public class DeckDao extends BaseDao<Deck> {
 
-    public UserDao() {
-        super(User.class);
+    public DeckDao() {
+        super(Deck.class);
     }
 
     public User findByUserUsername(String username) {
