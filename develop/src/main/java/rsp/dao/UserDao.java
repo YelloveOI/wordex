@@ -1,6 +1,5 @@
 package rsp.dao;
 
-
 import org.springframework.stereotype.Repository;
 import rsp.model.User;
 
