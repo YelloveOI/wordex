@@ -23,24 +23,27 @@ public class CardController {
         this.cs = cs;
     }
 
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAnyRole('')")
     @GetMapping("/{id}")
     public Card getCard(@PathVariable int id) {
+        // TODO check if owned
+        return cs.read(id);
     }
 
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAnyRole('')")
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> createCard(@RequestBody Card c) {
+    public ResponseEntity<Void> createCard(@RequestBody Card card) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAnyRole('')")
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateCard(@RequestBody Card c) {
+    public void updateCard(@RequestBody Card card) {
     }
 
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAnyRole('')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCard(@PathVariable int id) {

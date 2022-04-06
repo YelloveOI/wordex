@@ -1,6 +1,5 @@
 package rsp.rest;
 
-import org.graalvm.compiler.nodes.java.ExceptionObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,8 @@ import rsp.model.Deck;
 import rsp.rest.util.RestUtils;
 import rsp.service.DeckService;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/deck")
@@ -30,12 +29,15 @@ public class DeckController {
         this.ds = ds;
     }
 
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAnyRole('')")
     @GetMapping("/{id}")
     public Deck getDeck(@PathVariable int id) {
+        // TODO check if owned
+        return ds.read(id);
     }
 
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_STUDENT', 'ROLE_ADMINISTRATOR', 'ROLE_SCHOOL_REPRESENTATIVE', " +
+            "'ROLE_PREMIUM_USER')")
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> createDeck(@RequestBody Deck deck) {
@@ -50,17 +52,17 @@ public class DeckController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    /**
+    /*
      *
      * @param id Deck id
      * @return
-     */
-    @PreAuthorize("hasAuthority('')")
+
+    /*@PreAuthorize("hasAnyRole('')")
     @GetMapping("/cards/{id}")
     public List<Card> getCards(@PathVariable int id) {
-    }
+    }*/
 
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAnyRole('')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteDeck(@PathVariable int id) {

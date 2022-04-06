@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rsp.dao.DeckDao;
+import rsp.model.Card;
 import rsp.model.Deck;
 
 import java.util.Objects;
@@ -34,5 +35,11 @@ public class DeckService {
     public void remove(Deck deck) {
         Objects.requireNonNull(deck);
         dao.remove(deck);
+    }
+
+    @Transactional
+    public Deck read(Integer id) {
+        Objects.requireNonNull(id);
+        return dao.find(id);
     }
 }

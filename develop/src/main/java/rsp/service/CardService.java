@@ -35,4 +35,10 @@ public class CardService {
         Objects.requireNonNull(card);
         dao.remove(card);
     }
+
+    @Transactional
+    public Card read(Integer id) {
+        Objects.requireNonNull(id);
+        return dao.find(id);
+    }
 }

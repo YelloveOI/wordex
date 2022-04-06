@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.School;
+import rsp.model.User;
 import rsp.service.SchoolService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,29 +27,42 @@ public class SchoolController {
         this.ss = ss;
     }
 
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAnyRole('')")
     @GetMapping("/{id}")
     public School getSchool(@PathVariable int id){
+        // TODO check if public or their school
+        return ss.read(id);
     }
 
-    @PreAuthorize("hasAuthority('')")
+    /*@PreAuthorize("hasAnyRole('')")
     @GetMapping("/all")
     public List<School> getAllSchools() {
-    }
+    }*/
 
-    @PreAuthorize("hasAuthority('')")
+    /*
+     *
+     * @param id School id
+     * @return
+
+    @PreAuthorize("hasAnyRole('')")
+    @GetMapping("/school/{id}")
+    public List<User> getAllSchoolUsers(@PathVariable int id) {
+    }*/
+
+    @PreAuthorize("hasAnyRole('')")
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> createSchool(@RequestBody School s) {
+    public ResponseEntity<Void> createSchool(@RequestBody School school) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAnyRole('')")
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateSchool(@RequestBody School s) {
+    public void updateSchool(@RequestBody School school) {
     }
 
-    @PreAuthorize("hasAuthority('')")
+    @PreAuthorize("hasAnyRole('')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSchool(@PathVariable int id) {

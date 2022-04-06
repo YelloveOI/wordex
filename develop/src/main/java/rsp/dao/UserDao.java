@@ -12,9 +12,18 @@ public class UserDao extends BaseDao<User> {
         super(User.class);
     }
 
-    public User findByUserUsername(String username) {
+    public User findByUsername(String username) {
         try {
             return em.createNamedQuery("User.findByUsername", User.class).setParameter("username", username)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public User findByEmail(String email) {
+        try {
+            return em.createNamedQuery("User.findByEmail", User.class).setParameter("email", email)
                     .getSingleResult();
         } catch (NoResultException e) {
             return null;
