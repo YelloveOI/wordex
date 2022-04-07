@@ -36,6 +36,11 @@ public class DeckController {
         return ds.read(id);
     }
 
+    /**
+     *
+     * @param deck Deck to store
+     * @return No content/Bad request
+     */
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_STUDENT', 'ROLE_ADMINISTRATOR', 'ROLE_SCHOOL_REPRESENTATIVE', " +
             "'ROLE_PREMIUM_USER')")
     @PostMapping("/new")
@@ -49,7 +54,7 @@ public class DeckController {
         }
         LOG.debug("Deck named \"{}\" has been created.", deck.getName());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", deck.getId());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
     /*

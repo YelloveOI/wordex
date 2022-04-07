@@ -49,6 +49,11 @@ public class UserService {
             throw new Exception("Selected username is too long. (3-20 characters allowed)");
         }
 
+        // Username requirements
+        if (Pattern.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,}$", user.getEmail())) {
+            throw new Exception("Please enter a valid email address.");
+        }
+
         // Password requirements
         if (user.getPassword().length() < 8) {
             throw new Exception("Selected password is too short. (8-20 characters allowed)");
@@ -56,12 +61,12 @@ public class UserService {
         if (user.getPassword().length() > 20) {
             throw new Exception("Selected password is too long. (8-20 characters allowed)");
         }
-        if (Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$",
+        if (Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–{}:;',?/*~$^+=<>]).{8,20}$",
                 user.getPassword())) {
             throw new Exception("Password has to contain at least one digit [0-9], " +
-                    " at least one lowercase character [a-z], " +
-                    " at least one uppercase character [A-Z], " +
-                    " at least one special character like ! @ # & ( ).");
+                    "at least one lowercase character [a-z], " +
+                    "at least one uppercase character [A-Z] and " +
+                    "at least one special character like ! @ # & ( ).");
         }
 
         // Username uniqueness
@@ -70,7 +75,7 @@ public class UserService {
         }
         // Email uniqueness
         if (dao.findByEmail(user.getEmail()) != null) {
-            throw new Exception("Email is already in use.");
+            throw new Exception("This email address is already in use.");
         }
 
         dao.persist(user);
