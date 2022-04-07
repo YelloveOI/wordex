@@ -7,7 +7,7 @@ import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
-public class Achievement extends AbstractEntity  {
+public class Achievement extends AbstractEntity {
 
     @Basic(optional = false)
     @Column(nullable = false)
