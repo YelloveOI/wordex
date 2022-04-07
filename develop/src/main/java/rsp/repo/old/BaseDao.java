@@ -1,4 +1,4 @@
-package rsp.dao;
+package rsp.dao.old;
 
 
 import javax.persistence.EntityManager;
