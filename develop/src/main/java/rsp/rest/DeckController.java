@@ -44,7 +44,7 @@ public class DeckController {
         try {
             ds.persist(deck);
         } catch (Exception e) {
-            LOG.warn("Deck could not been created!");
+            LOG.warn("Deck could not been created! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         LOG.debug("Deck named \"{}\" has been created.", deck.getName());

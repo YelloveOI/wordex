@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rsp.dao.DeckDao;
-import rsp.model.Card;
 import rsp.model.Deck;
 
 import java.util.Objects;

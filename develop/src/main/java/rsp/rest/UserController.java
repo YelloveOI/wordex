@@ -58,13 +58,13 @@ public class UserController {
         return new ArrayList<>();
     }
 
-    @PostMapping("/new")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> createUser(@RequestBody User user) {
         try {
             us.register(user);
         } catch (Exception e) {
-            LOG.warn("User could not been registered!");
+            LOG.warn("User could not be registered! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         LOG.debug("User \"{}\" has been registered.", user.getUsername());
