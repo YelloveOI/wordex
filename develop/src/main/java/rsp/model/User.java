@@ -3,8 +3,10 @@ package rsp.model;
 import lombok.Getter;
 import lombok.Setter;
 import rsp.enums.Role;
+import rsp.util.Constants;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,13 +23,13 @@ public class User extends AbstractEntity {
     @Column(nullable = false)
     @Getter
     @Setter
-    private String email;
+    private String username;
 
     @Basic(optional = false)
     @Column(nullable = false)
     @Getter
     @Setter
-    private String username;
+    private String email;
 
     @Basic(optional = false)
     @Column(nullable = false)
@@ -39,7 +41,7 @@ public class User extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Getter
     @Setter
-    private List<Role> role;
+    private List<Role> roles;
 
     @OneToMany
     @Getter
@@ -50,4 +52,17 @@ public class User extends AbstractEntity {
     @Getter
     @Setter
     private Statistics statistics;
+
+    public User() {}
+
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.roles = new ArrayList<Role>() {
+            {
+                add(Constants.DEFAULT_ROLE);
+            }
+        };
+    }
 }
