@@ -59,17 +59,6 @@ public class UserController {
     }
 
     /**
-     * Selected username has to be 3-20 characters long and cannot be already in use.
-     * Selected password has to be 8-20 characters long.
-     * Selected Email has to have a valid form and cannot be already in use.
-     * Password has to contain at least one digit [0-9], at least one lowercase character [a-z],
-     * at least one uppercase character [A-Z] and at least one special character like ! @ # & ( ).
-     *
-     * @param user User to register
-     * @return No content/Bad request
-     */
-
-    /**
      *
      * @param username Selected username has to be 3-20 characters long and cannot be already in use.
      * @param email Selected Email has to have a valid form and cannot be already in use.
