@@ -13,4 +13,6 @@ public interface UserRepo extends CrudRepository<Integer, UserRepo> {
 
     void deleteById(Integer id);
 
+    Optional<User> find
+
 }
