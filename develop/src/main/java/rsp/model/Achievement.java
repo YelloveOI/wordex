@@ -19,6 +19,4 @@ public class Achievement extends AbstractEntity {
 
     @OneToMany
     List<Goal> goals;
-
-
 }

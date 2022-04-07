@@ -1,5 +1,7 @@
 package rsp.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import rsp.enums.Language;
 
 import javax.persistence.*;
@@ -10,51 +12,29 @@ public class Card extends AbstractEntity {
 
     @Basic(optional = false)
     @Column(nullable = false)
+    @Getter
+    @Setter
     private String definition;
 
     @Basic(optional = false)
     @Column(nullable = false)
+    @Getter
+    @Setter
     private String term;
 
     @Enumerated(EnumType.STRING)
-    private Language language;
+    @Getter
+    @Setter
+    private Language languageTo;
 
-    @ManyToOne
-    @JoinColumn(name="deck_id")
-    private Deck deck;
+    @Enumerated(EnumType.STRING)
+    @Getter
+    @Setter
+    private Language languageFrom;
 
-    public String getDefinition() {
-        return definition;
-    }
-
-    public void setDefinition(String definition) {
-        this.definition = definition;
-    }
-
-    public String getTerm() {
-        return term;
-    }
-
-    public void setTerm(String term) {
-        this.term = term;
-    }
-
-    public Language getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
-
-    public Deck getDeck() {
-        return deck;
-    }
-
-    public void setDeck(Deck deck) {
-        this.deck = deck;
-    }
-
+    /*@OneToMany
+    @Getter
+    @Setter
+    private List<AbstractContent> contentList;*/
     //TODO AbstractContent
-
 }
