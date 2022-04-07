@@ -1,2 +1,14 @@
-package rsp.repo;public interface TagRepo {
+package rsp.repo;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+import rsp.model.Tag;
+
+import java.util.Optional;
+
+@Repository
+public interface TagRepo extends CrudRepository<Integer, Tag> {
+
+    Optional<Tag> findByName(String name);
+
 }

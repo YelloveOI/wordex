@@ -1,4 +1,4 @@
-package rsp.dao.old;
+package rsp.repo.old;
 
 
 import java.util.Collection;

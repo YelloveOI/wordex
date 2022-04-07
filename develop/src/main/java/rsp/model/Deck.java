@@ -14,7 +14,7 @@ public class Deck extends AbstractEntity{
 
     @Basic(optional = false)
     @Column(nullable = false)
-    private String nme;
+    private String name;
 
     @Enumerated(EnumType.STRING)
     private Language language;

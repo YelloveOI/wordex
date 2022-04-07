@@ -17,8 +17,4 @@ public class Achievement extends AbstractEntity  {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany
-    List<Goal> goals;
-
-
 }

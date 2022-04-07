@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import java.util.Date;
 
 @Entity
-public class Task extends Goal {
+public class Task extends AbstractEntity {
 
     @Basic(optional = false)
     @Column(nullable = false)
