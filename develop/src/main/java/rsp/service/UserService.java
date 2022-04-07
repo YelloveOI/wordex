@@ -50,7 +50,7 @@ public class UserService {
         }
 
         // Username requirements
-        if (Pattern.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,}$", user.getEmail())) {
+        if (!Pattern.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,}$", user.getEmail())) {
             throw new Exception("Please enter a valid email address.");
         }
 
@@ -61,7 +61,7 @@ public class UserService {
         if (user.getPassword().length() > 20) {
             throw new Exception("Selected password is too long. (8-20 characters allowed)");
         }
-        if (Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–{}:;',?/*~$^+=<>]).{8,20}$",
+        if (!Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–{}:;',?/*~$^+=<>]).{8,20}$",
                 user.getPassword())) {
             throw new Exception("Password has to contain at least one digit [0-9], " +
                     "at least one lowercase character [a-z], " +
