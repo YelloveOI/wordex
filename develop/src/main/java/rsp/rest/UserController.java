@@ -59,26 +59,28 @@ public class UserController {
     }
 
     /**
-     * Selected username has to be 3-20 characters long and cannot be already in use.
-     * Selected password has to be 8-20 characters long.
-     * Selected Email has to have a valid form and cannot be already in use.
-     * Password has to contain at least one digit [0-9], at least one lowercase character [a-z],
-     * at least one uppercase character [A-Z] and at least one special character like ! @ # & ( ).
      *
-     * @param user User to register
+     * @param username Selected username has to be 3-20 characters long and cannot be already in use.
+     * @param email Selected Email has to have a valid form and cannot be already in use.
+     * @param password Selected password has to be 8-20 characters long.
+     *                 Has to contain at least one digit [0-9], at least one lowercase character [a-z],
+     *                 at least one uppercase character [A-Z] and at least one special character like ! @ # & ( ).
+     * @param matchingPassword Must match password.
      * @return No content/Bad request
      */
-    @PostMapping("/register")
+    @PostMapping("/registration")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> createUser(@RequestBody User user) {
+    public ResponseEntity<Void> createUser(@RequestBody String username, @RequestBody String email,
+                                           @RequestBody String password, @RequestBody String matchingPassword) {
         try {
-            us.register(user);
+            us.register(username, email, password, matchingPassword);
         } catch (Exception e) {
             LOG.warn("User could not be registered! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        LOG.debug("User \"{}\" has been registered.", user.getUsername());
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", user.getId());
+        LOG.debug("User \"{}\" has been registered.", username);
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
+                us.findByUsername(username).getId());   // TODO edit to log in
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 

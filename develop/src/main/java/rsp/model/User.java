@@ -1,8 +1,12 @@
 package rsp.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import rsp.enums.Role;
+import rsp.util.Constants;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,71 +21,48 @@ public class User extends AbstractEntity {
 
     @Basic(optional = false)
     @Column(nullable = false)
-    private String email;
-
-    @Basic(optional = false)
-    @Column(nullable = false)
+    @Getter
+    @Setter
     private String username;
 
     @Basic(optional = false)
     @Column(nullable = false)
+    @Getter
+    @Setter
+    private String email;
+
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @Getter
+    @Setter
     private String password;
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    private List<Role> role;
+    @Getter
+    @Setter
+    private List<Role> roles;
 
     @OneToMany
+    @Getter
+    @Setter
     private List<Deck> decks;
 
     @OneToOne
+    @Getter
+    @Setter
     private Statistics statistics;
 
-    public String getEmail() {
-        return email;
-    }
+    public User() {}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
+    public User(String username, String email, String password) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
+        this.email = email;
         this.password = password;
-    }
-
-    public List<Role> getRole() {
-        return role;
-    }
-
-    public void setRole(List<Role> role) {
-        this.role = role;
-    }
-
-    public List<Deck> getDecks() {
-        return decks;
-    }
-
-    public void setDecks(List<Deck> decks) {
-        this.decks = decks;
-    }
-
-    public Statistics getStatistics() {
-        return statistics;
-    }
-
-    public void setStatistics(Statistics statistics) {
-        this.statistics = statistics;
+        this.roles = new ArrayList<Role>() {
+            {
+                add(Constants.DEFAULT_ROLE);
+            }
+        };
     }
 }
