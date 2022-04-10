@@ -3,6 +3,7 @@ package rsp.service;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rsp.enums.Language;
 import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.repo.CardRepo;
@@ -40,5 +41,16 @@ public class CardServiceImpl implements CardService {
         } else {
             throw NotFoundException.create(Card.class.getName(), id);
         }
+    }
+
+    @Override
+    public Card create(String term, String definition, Language from, Language to) {
+        Card result = new Card();
+        result.setTerm(term);
+        result.setDefinition(definition);
+        result.setLanguageFrom(from);
+        result.setLanguageTo(to);
+
+        return result;
     }
 }
