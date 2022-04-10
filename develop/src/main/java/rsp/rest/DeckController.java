@@ -29,7 +29,7 @@ public class DeckController {
     @GetMapping("/{id}")
     public Deck getDeck(@PathVariable int id) {
         // TODO check if owned
-        return ds.read(id);
+        return ds.findById(id);
     }
 
     /**
@@ -43,7 +43,7 @@ public class DeckController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createDeck(@RequestBody Deck deck) {
         try {
-            ds.persist(deck);
+            ds.save(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be created! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -27,7 +27,7 @@ public class CardController {
     @GetMapping("/{id}")
     public Card getCard(@PathVariable int id) {
         // TODO check if owned
-        return cs.read(id);
+        return cs.findById(id);
     }
 
     @PreAuthorize("hasAnyRole('')")

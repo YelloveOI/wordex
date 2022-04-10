@@ -38,7 +38,7 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUser(@PathVariable int id){
         // TODO create similar method for users and check if they can view this user
-        return us.read(id);
+        return us.findById(id);
     }
 
     /*@PreAuthorize("hasAnyRole('')")

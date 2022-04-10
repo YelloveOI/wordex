@@ -27,7 +27,7 @@ public class SchoolController {
     @GetMapping("/{id}")
     public School getSchool(@PathVariable int id){
         // TODO check if public or their school
-        return ss.read(id);
+        return ss.findById(id);
     }
 
     /*@PreAuthorize("hasAnyRole('')")

@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rsp.exception.NotFoundException;
-import rsp.model.Card;
 import rsp.model.Deck;
 import rsp.repo.DeckRepo;
 import rsp.service.interfaces.DeckService;
