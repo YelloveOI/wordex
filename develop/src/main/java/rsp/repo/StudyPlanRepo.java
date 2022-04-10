@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import rsp.model.StudyPlan;
 
 @Repository
-public interface StudyPlanRepo extends CrudRepository<Integer, StudyPlan> {
+public interface StudyPlanRepo extends CrudRepository<StudyPlan, Integer> {
 }

@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import rsp.model.Card;
 
 @Repository
-public interface CardRepo extends CrudRepository<Integer, Card> {
+public interface CardRepo extends CrudRepository<Card, Integer> {
 }

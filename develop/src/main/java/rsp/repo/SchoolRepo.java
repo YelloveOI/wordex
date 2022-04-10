@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import rsp.model.School;
 
 @Repository
-public interface SchoolRepo extends CrudRepository<Integer, School> {
+public interface SchoolRepo extends CrudRepository<School, Integer> {
 }

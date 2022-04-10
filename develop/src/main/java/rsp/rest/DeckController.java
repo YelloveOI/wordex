@@ -8,13 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import rsp.model.Card;
 import rsp.model.Deck;
 import rsp.rest.util.RestUtils;
-import rsp.service.DeckService;
-
-import java.util.ArrayList;
-import java.util.List;
+import rsp.service.DeckServiceImpl;
 
 @RestController
 @RequestMapping("/deck")
@@ -22,10 +18,10 @@ public class DeckController {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeckController.class);
 
-    private final DeckService ds;
+    private final DeckServiceImpl ds;
 
     @Autowired
-    public DeckController(DeckService ds) {
+    public DeckController(DeckServiceImpl ds) {
         this.ds = ds;
     }
 

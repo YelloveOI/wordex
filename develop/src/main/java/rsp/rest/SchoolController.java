@@ -8,11 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.School;
-import rsp.model.User;
-import rsp.service.SchoolService;
-
-import java.util.ArrayList;
-import java.util.List;
+import rsp.service.SchoolServiceImpl;
 
 @RestController
 @RequestMapping("/school")
@@ -20,10 +16,10 @@ public class SchoolController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SchoolController.class);
 
-    private final SchoolService ss;
+    private final SchoolServiceImpl ss;
 
     @Autowired
-    public SchoolController(SchoolService ss) {
+    public SchoolController(SchoolServiceImpl ss) {
         this.ss = ss;
     }
 

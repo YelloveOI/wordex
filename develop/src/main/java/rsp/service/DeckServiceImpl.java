@@ -9,12 +9,12 @@ import rsp.model.Deck;
 import java.util.Objects;
 
 @Service
-public class DeckService {
+public class DeckServiceImpl {
 
     private final DeckDao dao;
 
     @Autowired
-    public DeckService(DeckDao dao) {
+    public DeckServiceImpl(DeckDao dao) {
         this.dao = dao;
     }
 

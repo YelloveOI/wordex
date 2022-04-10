@@ -7,12 +7,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Deck;
 import rsp.model.User;
 import rsp.rest.util.RestUtils;
-import rsp.service.UserService;
+import rsp.service.UserServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +22,10 @@ public class UserController {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
-    private final UserService us;
+    private final UserServiceImpl us;
 
     @Autowired
-    public UserController(UserService us) {
+    public UserController(UserServiceImpl us) {
         this.us = us;
     }
 

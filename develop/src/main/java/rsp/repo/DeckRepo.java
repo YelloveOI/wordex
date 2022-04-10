@@ -7,7 +7,7 @@ import rsp.model.Deck;
 import java.util.List;
 
 @Repository
-public interface DeckRepo extends CrudRepository<Integer, Deck> {
+public interface DeckRepo extends CrudRepository<Deck, Integer> {
 
     List<Deck> findAllByTagNames(List<String> tagNames);
 

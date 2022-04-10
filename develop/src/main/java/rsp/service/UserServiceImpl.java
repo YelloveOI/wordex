@@ -11,12 +11,12 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Service
-public class UserService {
+public class UserServiceImpl {
 
     private final UserDao dao;
 
     @Autowired
-    public UserService(UserDao dao) {
+    public UserServiceImpl(UserDao dao) {
         this.dao = dao;
     }
 

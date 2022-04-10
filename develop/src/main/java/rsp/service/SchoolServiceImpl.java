@@ -10,12 +10,12 @@ import rsp.model.School;
 import java.util.Objects;
 
 @Service
-public class SchoolService {
+public class SchoolServiceImpl {
 
     private final SchoolDao dao;
 
     @Autowired
-    public SchoolService(SchoolDao dao) {
+    public SchoolServiceImpl(SchoolDao dao) {
         this.dao = dao;
     }
 

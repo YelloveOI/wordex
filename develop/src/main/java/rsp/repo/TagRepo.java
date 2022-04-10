@@ -7,7 +7,7 @@ import rsp.model.Tag;
 import java.util.Optional;
 
 @Repository
-public interface TagRepo extends CrudRepository<Integer, Tag> {
+public interface TagRepo extends CrudRepository<Tag, Integer> {
 
     Optional<Tag> findByName(String name);
 

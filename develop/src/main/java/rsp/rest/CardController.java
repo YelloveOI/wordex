@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Card;
-import rsp.service.CardService;
+import rsp.service.CardServiceImpl;
 
 @RestController
 @RequestMapping("/card")
@@ -16,10 +16,10 @@ public class CardController {
 
     private static final Logger LOG = LoggerFactory.getLogger(CardController.class);
 
-    private final CardService cs;
+    private final CardServiceImpl cs;
 
     @Autowired
-    public CardController(CardService cs) {
+    public CardController(CardServiceImpl cs) {
         this.cs = cs;
     }
 
