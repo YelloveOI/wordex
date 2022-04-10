@@ -1,49 +1,69 @@
 package rsp.service;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rsp.dao.UserDao;
 
+import rsp.exception.NotFoundException;
+import rsp.model.School;
 import rsp.model.User;
+import rsp.repo.UserRepo;
+import rsp.service.interfaces.UserService;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
-public class UserServiceImpl {
+@Transactional
+public class UserServiceImpl implements UserService {
 
-    private final UserDao dao;
+    private final UserRepo repo;
 
     @Autowired
-    public UserServiceImpl(UserDao dao) {
-        this.dao = dao;
+    public UserServiceImpl(UserRepo repo) {
+        this.repo = repo;
+    }
+
+    @Override
+    public User save(@NotNull User user) {
+        repo.save(user);
+        return user;
+    }
+
+    @Override
+    public void deleteById(@NotNull Integer id) {
+        repo.deleteById(id);
+    }
+
+    @Override
+    public User findById(@NotNull Integer id) {
+        Optional<User> result = repo.findById(id);
+        if(result.isPresent()) {
+            return result.get();
+        } else {
+            throw NotFoundException.create(User.class.getName(), id);
+        }
+    }
+
+    @Override
+    public User findByUsername(@NotNull String username) {
+        Optional<User> result = repo.findByEmail(username);
+        if(result.isPresent()) {
+            return result.get();
+        } else {
+            throw NotFoundException.create(User.class.getName(), username);
+        }
     }
 
     @Transactional
-    public void persist(User user) {
-        Objects.requireNonNull(user);
-        dao.persist(user);
-    }
-
-    @Transactional
-    public void update(User user) {
-        Objects.requireNonNull(user);
-        dao.update(user);
-    }
-
-    @Transactional
-    public void remove(User user) {
-        Objects.requireNonNull(user);
-        dao.remove(user);
-    }
-
-    @Transactional
-    public void register(String username, String email, String password, String matchingPassword) throws Exception {
-        Objects.requireNonNull(username);
-        Objects.requireNonNull(email);
-        Objects.requireNonNull(password);
-        Objects.requireNonNull(matchingPassword);
+    public void register(
+            @NotNull String username,
+            @NotNull String email,
+            @NotNull String password,
+            @NotNull String matchingPassword
+    ) throws Exception {
         // Username requirements
         if (username.length() < 3) {
             throw new Exception("Selected username is too short. (3-20 characters allowed)");
@@ -76,26 +96,15 @@ public class UserServiceImpl {
         }
 
         // Username uniqueness
-        if (dao.findByUsername(username) != null) {
+        if (repo.findByUsername(username).isPresent()) {
             throw new Exception("Username is already in use.");
         }
         // Email uniqueness
-        if (dao.findByEmail(email) != null) {
+        if (repo.findByEmail(email).isPresent()) {
             throw new Exception("This email address is already in use.");
         }
 
-        dao.persist(new User(username, email, password));
+        repo.save(new User(username, email, password));
     }
 
-    @Transactional
-    public User findByUsername(String username) {
-        Objects.requireNonNull(username);
-        return dao.findByUsername(username);
-    }
-
-    @Transactional
-    public User read(Integer id) {
-        Objects.requireNonNull(id);
-        return dao.find(id);
-    }
 }

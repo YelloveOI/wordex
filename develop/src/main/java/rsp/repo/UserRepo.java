@@ -7,9 +7,11 @@ import rsp.model.User;
 import java.util.Optional;
 
 @Repository
-public interface UserRepo extends CrudRepository<UserRepo, Integer> {
+public interface UserRepo extends CrudRepository<User, Integer> {
 
-    Optional<User> findByName(String name);
+    Optional<User> findByUsername(String username);
+
+    Optional<User> findByEmail(String email);
 
     void deleteById(Integer id);
 

@@ -1,45 +1,46 @@
 package rsp.service;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rsp.dao.SchoolDao;
-import rsp.model.Deck;
+import rsp.exception.NotFoundException;
 import rsp.model.School;
+import rsp.repo.SchoolRepo;
+import rsp.service.interfaces.SchoolService;
 
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
-public class SchoolServiceImpl {
+@Transactional
+public class SchoolServiceImpl implements SchoolService {
 
-    private final SchoolDao dao;
+    private final SchoolRepo repo;
 
     @Autowired
-    public SchoolServiceImpl(SchoolDao dao) {
-        this.dao = dao;
+    public SchoolServiceImpl(SchoolRepo repo) {
+        this.repo = repo;
     }
 
-    @Transactional
-    public void persist(School school) {
-        Objects.requireNonNull(school);
-        dao.persist(school);
+
+    @Override
+    public School save(@NotNull School school) {
+        repo.save(school);
+        return school;
     }
 
-    @Transactional
-    public void update(School school) {
-        Objects.requireNonNull(school);
-        dao.update(school);
+    @Override
+    public void deleteById(@NotNull Integer id) {
+        repo.deleteById(id);
     }
 
-    @Transactional
-    public void remove(School school) {
-        Objects.requireNonNull(school);
-        dao.remove(school);
-    }
-
-    @Transactional
-    public School read(Integer id) {
-        Objects.requireNonNull(id);
-        return dao.find(id);
+    @Override
+    public School findById(@NotNull Integer id) {
+        Optional<School> result = repo.findById(id);
+        if(result.isPresent()) {
+            return result.get();
+        } else {
+            throw NotFoundException.create(School.class.getName(), id);
+        }
     }
 }

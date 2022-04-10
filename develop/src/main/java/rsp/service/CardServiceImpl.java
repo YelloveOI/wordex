@@ -44,7 +44,12 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card create(String term, String definition, Language from, Language to) {
+    public Card create(
+            @NotNull String term,
+            @NotNull String definition,
+            @NotNull Language from,
+            @NotNull Language to
+    ) {
         Card result = new Card();
         result.setTerm(term);
         result.setDefinition(definition);
