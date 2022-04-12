@@ -55,7 +55,7 @@ public class SchoolController {
 
     @PreAuthorize("hasAnyRole('')")
     @PostMapping("/new")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createSchool(@RequestBody School school) {
         try {
             ss.createSchool(school);
@@ -66,7 +66,7 @@ public class SchoolController {
         LOG.debug("School \"{}\" has been created.", school.getName());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
                 ss.findByName(school.getName()).getId());
-        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyRole('')")

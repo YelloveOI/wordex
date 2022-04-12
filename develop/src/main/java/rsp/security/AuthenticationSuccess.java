@@ -1,6 +1,7 @@
 package rsp.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import rsp.security.model.LoginStatus;
 import rsp.security.model.UserDetails;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler, Logo
     private final ObjectMapper mapper;
 
     @Autowired
-    public AuthenticationSuccess(ObjectMapper mapper) {
+    public AuthenticationSuccess(@Qualifier("objectMapper") ObjectMapper mapper) {
         this.mapper = mapper;
     }
 

@@ -53,6 +53,22 @@ public class DeckController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_STUDENT', 'ROLE_ADMINISTRATOR', 'ROLE_SCHOOL_REPRESENTATIVE', " +
+            "'ROLE_PREMIUM_USER')")
+    @PostMapping("/edit")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> updateDeck(@RequestBody Deck deck) {
+        try {
+            ds.save(deck);
+        } catch (Exception e) {
+            LOG.warn("Deck could not be updated! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("Deck named \"{}\" has been updated.", deck.getName());
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", deck.getId());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
+
     /*
      *
      * @param id Deck id

@@ -72,7 +72,7 @@ public class UserController {
      * @return No content/Bad request
      */
     @PostMapping("/registration")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createUser(@RequestBody String username, @RequestBody String email,
                                            @RequestBody String password, @RequestBody String matchingPassword) {
         try {
@@ -84,12 +84,12 @@ public class UserController {
         LOG.debug("User \"{}\" has been registered.", username);
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
                 us.findByUsername(username).getId());   // TODO edit to log in
-        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyRole('')")
     @PostMapping("/edit")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> updateUser(@RequestBody User user) {
         try {
             us.update(user);
@@ -100,7 +100,7 @@ public class UserController {
         LOG.debug("User \"{}\" has been updated.", user.getUsername());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
                 us.findByUsername(user.getUsername()).getId());
-        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyRole('')")
