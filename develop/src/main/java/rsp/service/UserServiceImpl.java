@@ -6,12 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import rsp.exception.NotFoundException;
-import rsp.model.School;
 import rsp.model.User;
 import rsp.repo.UserRepo;
+import rsp.security.DefaultAuthenticationProvider;
 import rsp.service.interfaces.UserService;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -21,9 +20,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo repo;
 
+    private final DefaultAuthenticationProvider provider;
+
     @Autowired
-    public UserServiceImpl(UserRepo repo) {
+    public UserServiceImpl(UserRepo repo, DefaultAuthenticationProvider provider) {
         this.repo = repo;
+        this.provider = provider;
     }
 
     @Override
@@ -49,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(@NotNull String username) {
-        Optional<User> result = repo.findByEmail(username);
+        Optional<User> result = repo.findByUsername(username);
         if(result.isPresent()) {
             return result.get();
         } else {
@@ -104,7 +106,7 @@ public class UserServiceImpl implements UserService {
             throw new Exception("This email address is already in use.");
         }
 
-        repo.save(new User(username, email, password));
+        repo.save(new User(username, email, provider.encode(password)));
     }
 
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import rsp.model.Deck;
 import rsp.model.User;
 import rsp.rest.util.RestUtils;
+import rsp.security.DefaultAuthenticationProvider;
 import rsp.service.UserServiceImpl;
 
 import java.util.ArrayList;

@@ -65,4 +65,8 @@ public class User extends AbstractEntity {
             }
         };
     }
+
+    public void erasePassword() {
+        this.password = null;
+    }
 }
