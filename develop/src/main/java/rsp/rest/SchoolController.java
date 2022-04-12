@@ -3,11 +3,13 @@ package rsp.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.School;
+import rsp.rest.util.RestUtils;
 import rsp.service.SchoolServiceImpl;
 
 @RestController
@@ -30,6 +32,12 @@ public class SchoolController {
         return ss.findById(id);
     }
 
+    @PreAuthorize("hasAnyRole('')")
+    @GetMapping("/{name}")
+    public School getSchool(@PathVariable String name){
+        return ss.findByName(name);
+    }
+
     /*@PreAuthorize("hasAnyRole('')")
     @GetMapping("/all")
     public List<School> getAllSchools() {
@@ -49,7 +57,16 @@ public class SchoolController {
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> createSchool(@RequestBody School school) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            ss.createSchool(school);
+        } catch (Exception e) {
+            LOG.warn("School could not be created! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("School \"{}\" has been created.", school.getName());
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
+                ss.findByName(school.getName()).getId());
+        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
     @PreAuthorize("hasAnyRole('')")

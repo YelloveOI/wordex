@@ -43,4 +43,22 @@ public class SchoolServiceImpl implements SchoolService {
             throw NotFoundException.create(School.class.getName(), id);
         }
     }
+
+    @Override
+    public School findByName(@NotNull String name) {
+        Optional<School> result = repo.findSchoolByName(name);
+        if (result.isPresent()) {
+            return result.get();
+        } else {
+            throw NotFoundException.create(School.class.getName(), name);
+        }
+    }
+
+    @Override
+    public void createSchool(@NotNull School school) throws Exception {
+        if (repo.findSchoolByName(school.getName()).isPresent()) {
+            throw new Exception("School that goes by this name is already in use.");
+        }
+        repo.save(school);
+    }
 }

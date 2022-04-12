@@ -9,8 +9,10 @@ import rsp.exception.NotFoundException;
 import rsp.model.User;
 import rsp.repo.UserRepo;
 import rsp.security.DefaultAuthenticationProvider;
+import rsp.security.model.AuthenticationToken;
 import rsp.service.interfaces.UserService;
 
+import java.security.Principal;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -42,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(@NotNull Integer id) {
         Optional<User> result = repo.findById(id);
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             return result.get();
         } else {
             throw NotFoundException.create(User.class.getName(), id);
@@ -52,7 +54,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(@NotNull String username) {
         Optional<User> result = repo.findByUsername(username);
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             return result.get();
         } else {
             throw NotFoundException.create(User.class.getName(), username);
@@ -107,6 +109,48 @@ public class UserServiceImpl implements UserService {
         }
 
         repo.save(new User(username, email, provider.encode(password)));
+    }
+
+    @Transactional
+    public void update(User user) throws Exception {
+        // Username requirements
+        if (user.getUsername().length() < 3) {
+            throw new Exception("Selected username is too short. (3-20 characters allowed)");
+        }
+        if (user.getUsername().length() > 20) {
+            throw new Exception("Selected username is too long. (3-20 characters allowed)");
+        }
+
+        // Username requirements
+        if (!Pattern.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,}$", user.getEmail())) {
+            throw new Exception("Please enter a valid email address.");
+        }
+
+        // Password requirements
+        if (user.getPassword().length() < 8) {
+            throw new Exception("Selected password is too short. (8-20 characters allowed)");
+        }
+        if (user.getPassword().length() > 20) {
+            throw new Exception("Selected password is too long. (8-20 characters allowed)");
+        }
+        if (!Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–{}:;',?/*~$^+=<>]).{8,20}$",
+                user.getPassword())) {
+            throw new Exception("Password has to contain at least one digit [0-9], " +
+                    "at least one lowercase character [a-z], " +
+                    "at least one uppercase character [A-Z] and " +
+                    "at least one special character like ! @ # & ( ).");
+        }
+
+        // Username uniqueness
+        if (repo.findByUsername(user.getUsername()).isPresent()) {
+            throw new Exception("Username is already in use.");
+        }
+        // Email uniqueness
+        if (repo.findByEmail(user.getEmail()).isPresent()) {
+            throw new Exception("This email address is already in use.");
+        }
+
+        repo.save(user);
     }
 
 }

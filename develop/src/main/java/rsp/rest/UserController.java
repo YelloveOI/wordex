@@ -5,15 +5,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Deck;
 import rsp.model.User;
 import rsp.rest.util.RestUtils;
-import rsp.security.DefaultAuthenticationProvider;
+import rsp.security.model.AuthenticationToken;
 import rsp.service.UserServiceImpl;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +32,11 @@ public class UserController {
         this.us = us;
     }
 
-    /*@PreAuthorize("hasAnyRole('')")
-    @GetMapping("/me")
-    public User getCurrentUser(Authentication authentication) {
-    }*/
+    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public User getCurrentUser(Principal principal) {
+        final AuthenticationToken auth = (AuthenticationToken) principal;
+        return auth.getPrincipal().getUser();
+    }
 
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping("/{id}")
@@ -85,9 +88,19 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('')")
-    @PutMapping
+    @PostMapping("/edit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateUser(@RequestBody User user) {
+    public ResponseEntity<Void> updateUser(@RequestBody User user) {
+        try {
+            us.update(user);
+        } catch (Exception e) {
+            LOG.warn("User could not be updated! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("User \"{}\" has been updated.", user.getUsername());
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
+                us.findByUsername(user.getUsername()).getId());
+        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
     @PreAuthorize("hasAnyRole('')")

@@ -10,4 +10,7 @@ public interface SchoolService {
 
     School findById(Integer id);
 
+    public School findByName(String name);
+
+    void createSchool(School school) throws Exception;
 }

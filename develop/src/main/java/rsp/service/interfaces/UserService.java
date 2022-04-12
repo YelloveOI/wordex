@@ -14,4 +14,5 @@ public interface UserService {
 
     User findByUsername(String username);
 
+    void update(User user) throws Exception;
 }
