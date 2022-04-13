@@ -2,6 +2,7 @@ package rsp.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import rsp.enums.Role;
 
 import javax.persistence.*;
 import java.util.List;
@@ -38,4 +39,13 @@ public class School extends AbstractEntity {
     @Getter
     @Setter
     private List<User> moderators;
+
+    public boolean hasStudent(User user) {
+        for (User s : students) {
+            if (s.getId() == user.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

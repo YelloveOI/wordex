@@ -1,5 +1,6 @@
 package rsp.model;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import rsp.enums.Role;
@@ -67,5 +68,14 @@ public class User extends AbstractEntity {
 
     public void erasePassword() {
         this.password = null;
+    }
+
+    public boolean hasRole(Role role) {
+        for (Role r : roles) {
+            if (r.toString() == role.toString()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

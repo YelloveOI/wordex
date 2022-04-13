@@ -1,5 +1,6 @@
 package rsp.service.interfaces;
 
+import rsp.enums.Role;
 import rsp.model.User;
 
 public interface UserService {
@@ -15,4 +16,8 @@ public interface UserService {
     User findByUsername(String username);
 
     void update(User user) throws Exception;
+
+    void addRole(User user, Role role);
+
+    void removeRole(User user, Role role);
 }

@@ -9,11 +9,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import rsp.enums.Role;
 import rsp.model.Deck;
+import rsp.model.School;
 import rsp.model.User;
 import rsp.rest.util.RestUtils;
 import rsp.security.model.AuthenticationToken;
 import rsp.service.UserServiceImpl;
+import rsp.service.interfaces.SchoolService;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -26,10 +29,12 @@ public class UserController {
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     private final UserServiceImpl us;
+    private final SchoolService ss;
 
     @Autowired
-    public UserController(UserServiceImpl us) {
+    public UserController(UserServiceImpl us, SchoolService ss) {
         this.us = us;
+        this.ss = ss;
     }
 
     @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -89,7 +94,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('')")
     @PostMapping("/edit")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> updateUser(@RequestBody User user) {
         try {
             us.update(user);
@@ -100,7 +105,41 @@ public class UserController {
         LOG.debug("User \"{}\" has been updated.", user.getUsername());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
                 us.findByUsername(user.getUsername()).getId());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasRole('ROLE_SCHOOL_REPRESENTATIVE')")
+    @PostMapping("/student")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> createStudent(@RequestBody User user, @RequestBody School school) {
+        try {
+            us.addRole(user, Role.STUDENT);
+            ss.addStudent(school, user);
+        } catch (Exception e) {
+            LOG.warn("User could not had role student! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("Role student has been added to user \"{}\".", user.getUsername());
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
+                us.findByUsername(user.getUsername()).getId());
+        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasRole('ROLE_SCHOOL_REPRESENTATIVE')")
+    @DeleteMapping("/student")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> removeStudent(@RequestBody User user, @RequestBody School school) {
+        try {
+            us.removeRole(user, Role.STUDENT);
+            ss.removeStudent(school, user);
+        } catch (Exception e) {
+            LOG.warn("Role student cannot be removed from user! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("Role student has been removed from user \"{}\".", user.getUsername());
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
+                us.findByUsername(user.getUsername()).getId());
+        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
     @PreAuthorize("hasAnyRole('')")

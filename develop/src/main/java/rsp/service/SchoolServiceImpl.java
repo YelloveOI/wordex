@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rsp.exception.NotFoundException;
 import rsp.model.School;
+import rsp.model.User;
 import rsp.repo.SchoolRepo;
 import rsp.service.interfaces.SchoolService;
 
@@ -60,5 +61,31 @@ public class SchoolServiceImpl implements SchoolService {
             throw new Exception("School that goes by this name is already in use.");
         }
         repo.save(school);
+    }
+
+    @Override
+    public void addStudent(@NotNull School school,@NotNull User user) {
+        if (repo.findById(school.getId()).isPresent() && user != null) {
+            throw NotFoundException.create(School.class.getName(), school.getId());
+        } else {
+            if (repo.findById(school.getId()).orElse(school).hasStudent(user)) {
+                return;
+            }
+            repo.addStudentToSchool(user, school);
+            save(school);
+        }
+    }
+
+    @Override
+    public void removeStudent(School school, User user) {
+        if (repo.findById(school.getId()).isPresent() && user != null) {
+            throw NotFoundException.create(School.class.getName(), school.getId());
+        } else {
+            if (!repo.findById(school.getId()).orElse(school).hasStudent(user)) {
+                return;
+            }
+            repo.removeStudentFromSchool(user, school);
+            save(school);
+        }
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import rsp.enums.Role;
 import rsp.exception.NotFoundException;
 import rsp.model.User;
 import rsp.repo.UserRepo;
@@ -13,6 +14,7 @@ import rsp.security.model.AuthenticationToken;
 import rsp.service.interfaces.UserService;
 
 import java.security.Principal;
+import java.util.EmptyStackException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -151,6 +153,32 @@ public class UserServiceImpl implements UserService {
         }
 
         repo.save(user);
+    }
+
+    @Override
+    public void addRole(@NotNull User user, @NotNull Role role) {
+        if (repo.findById(user.getId()).isPresent()) {
+            throw NotFoundException.create(User.class.getName(), user.getId());
+        } else {
+            if (repo.findById(user.getId()).orElse(user).hasRole(role)) {
+                return;
+            }
+            repo.addRoleToUser(role, user);
+            save(user);
+        }
+    }
+
+    @Override
+    public void removeRole(@NotNull User user, @NotNull Role role) {
+        if (repo.findById(user.getId()).isPresent()) {
+            throw NotFoundException.create(User.class.getName(), user.getId());
+        } else {
+            if (!repo.findById(user.getId()).orElse(user).hasRole(role)) {
+                return;
+            }
+            repo.removeRoleFromUser(role, user);
+            save(user);
+        }
     }
 
 }
