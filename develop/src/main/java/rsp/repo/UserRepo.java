@@ -15,8 +15,4 @@ public interface UserRepo extends CrudRepository<User, Integer> {
     Optional<User> findByEmail(String email);
 
     void deleteById(Integer id);
-
-    void addRoleToUser(Role role, User user);
-
-    void removeRoleFromUser(Role role, User user);
 }

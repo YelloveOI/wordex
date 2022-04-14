@@ -12,8 +12,4 @@ import java.util.Optional;
 public interface SchoolRepo extends CrudRepository<School, Integer> {
 
     Optional<School> findSchoolByName(String username);
-
-    void addStudentToSchool(User user, School school);
-
-    void removeStudentFromSchool(User user, School school);
 }

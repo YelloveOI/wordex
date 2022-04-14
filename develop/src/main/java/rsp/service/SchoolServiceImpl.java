@@ -71,7 +71,7 @@ public class SchoolServiceImpl implements SchoolService {
             if (repo.findById(school.getId()).orElse(school).hasStudent(user)) {
                 return;
             }
-            repo.addStudentToSchool(user, school);
+            repo.findById(school.getId()).orElse(school).addStudent(user);
             save(school);
         }
     }
@@ -84,7 +84,7 @@ public class SchoolServiceImpl implements SchoolService {
             if (!repo.findById(school.getId()).orElse(school).hasStudent(user)) {
                 return;
             }
-            repo.removeStudentFromSchool(user, school);
+            repo.findById(school.getId()).orElse(school).removeStudent(user);
             save(school);
         }
     }

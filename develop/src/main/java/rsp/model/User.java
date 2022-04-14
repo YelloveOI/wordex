@@ -9,6 +9,7 @@ import rsp.util.Constants;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NamedQueries({
@@ -77,5 +78,21 @@ public class User extends AbstractEntity {
             }
         }
         return false;
+    }
+
+    public void addRole(Role role) {
+        Objects.requireNonNull(role);
+        if (roles == null) {
+            this.roles = new ArrayList<>();
+        }
+        roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        Objects.requireNonNull(role);
+        if (roles == null) {
+            return;
+        }
+        roles.removeIf(r -> Objects.equals(r.toString(), role.toString()));
     }
 }

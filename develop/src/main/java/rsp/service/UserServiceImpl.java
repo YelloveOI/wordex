@@ -163,7 +163,7 @@ public class UserServiceImpl implements UserService {
             if (repo.findById(user.getId()).orElse(user).hasRole(role)) {
                 return;
             }
-            repo.addRoleToUser(role, user);
+            repo.findById(user.getId()).orElse(user).addRole(role);
             save(user);
         }
     }
@@ -176,7 +176,7 @@ public class UserServiceImpl implements UserService {
             if (!repo.findById(user.getId()).orElse(user).hasRole(role)) {
                 return;
             }
-            repo.removeRoleFromUser(role, user);
+            repo.findById(user.getId()).orElse(user).removeRole(role);
             save(user);
         }
     }

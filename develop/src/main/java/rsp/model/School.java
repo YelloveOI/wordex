@@ -5,7 +5,9 @@ import lombok.Setter;
 import rsp.enums.Role;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NamedQueries({
@@ -47,5 +49,21 @@ public class School extends AbstractEntity {
             }
         }
         return false;
+    }
+
+    public void addStudent(User student) {
+        Objects.requireNonNull(student);
+        if (students == null) {
+            this.students = new ArrayList<>();
+        }
+        students.add(student);
+    }
+
+    public void removeStudent(User student) {
+        Objects.requireNonNull(student);
+        if (students == null) {
+            return;
+        }
+        students.removeIf(s -> Objects.equals(s.getId(), student.getId()));
     }
 }
