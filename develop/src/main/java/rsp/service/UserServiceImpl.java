@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+
     private final UserRepo repo;
 
     private final DefaultAuthenticationProvider provider;
@@ -179,6 +180,11 @@ public class UserServiceImpl implements UserService {
             repo.findById(user.getId()).orElse(user).removeRole(role);
             save(user);
         }
+    }
+
+    @Override
+    public void createAdmin(@NotNull User user) {
+        repo.save(user);
     }
 
 }

@@ -24,7 +24,7 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler, Logo
     private final ObjectMapper mapper;
 
     @Autowired
-    public AuthenticationSuccess(@Qualifier("objectMapper") ObjectMapper mapper) {
+    public AuthenticationSuccess(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 

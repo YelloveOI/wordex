@@ -1,5 +1,7 @@
 package rsp.service.interfaces;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rsp.enums.Role;
 import rsp.model.User;
 
@@ -20,4 +22,6 @@ public interface UserService {
     void addRole(User user, Role role);
 
     void removeRole(User user, Role role);
+
+    void createAdmin(User user);
 }
