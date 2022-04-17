@@ -17,4 +17,5 @@ public class Statistics extends AbstractEntity {
 
     @ManyToMany
     Map<Date, Achievement> achievementMap;
+
 }

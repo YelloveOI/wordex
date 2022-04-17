@@ -64,4 +64,5 @@ public class Deck extends AbstractEntity {
     public boolean isPrivate() {
         return isPrivate;
     }
+
 }

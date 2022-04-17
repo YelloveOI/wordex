@@ -1,7 +1,5 @@
 package rsp.service.interfaces;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import rsp.enums.Role;
 import rsp.model.User;
 

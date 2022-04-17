@@ -12,4 +12,5 @@ public class Tag extends AbstractEntity {
 
     @ManyToMany
     private List<Deck> decks;
+
 }

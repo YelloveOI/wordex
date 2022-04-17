@@ -12,5 +12,4 @@ public class Task extends AbstractEntity {
     @Column(nullable = false)
     private Date toDo;
 
-
 }

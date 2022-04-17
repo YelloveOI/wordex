@@ -5,7 +5,6 @@ import lombok.Setter;
 import rsp.enums.Language;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class Card extends AbstractEntity {
