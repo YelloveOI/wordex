@@ -21,6 +21,12 @@ public class Card extends AbstractEntity {
     @Setter
     private String term;
 
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @Getter
+    @Setter
+    private boolean isPublic;
+
     @Enumerated(EnumType.STRING)
     @Getter
     @Setter

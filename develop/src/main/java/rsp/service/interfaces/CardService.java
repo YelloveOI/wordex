@@ -11,6 +11,6 @@ public interface CardService {
 
     Card findById(Integer id);
 
-    Card create(String term, String definition, Language from, Language to);
+    Card create(String term, String definition, Language from, Language to, boolean isPublic);
 
 }

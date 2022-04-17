@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rsp.enums.Language;
+import rsp.exception.IllegalActionException;
 import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.repo.CardRepo;
@@ -30,7 +31,14 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public void deleteById(@NotNull Integer id) {
-        repo.deleteById(id);
+        Optional<Card> toDelete = repo.findById(id);
+        if(toDelete.isPresent()) {
+            if(toDelete.get().isPublic()) {
+                throw IllegalActionException.create("DELETE PUBLIC CARDS", toDelete);
+            }
+        } else {
+            throw NotFoundException.create(Card.class.getName(), id);
+        }
     }
 
     @Override
@@ -48,14 +56,38 @@ public class CardServiceImpl implements CardService {
             @NotNull String term,
             @NotNull String definition,
             @NotNull Language from,
-            @NotNull Language to
+            @NotNull Language to,
+            @NotNull boolean isPublic
     ) {
         Card result = new Card();
         result.setTerm(term);
         result.setDefinition(definition);
         result.setLanguageFrom(from);
         result.setLanguageTo(to);
+        result.setPublic(isPublic);
 
         return result;
+    }
+
+    public Card createPublicCopy(@NotNull Card card) {
+        Card result = new Card();
+        result.setPublic(true);
+        result.setDefinition(card.getDefinition());
+        result.setTerm(card.getTerm());
+        result.setLanguageTo(card.getLanguageTo());
+        result.setLanguageFrom(card.getLanguageFrom());
+
+        return  result;
+    }
+
+    public Card createPrivateCopy(@NotNull Card card) {
+        Card result = new Card();
+        result.setPublic(false);
+        result.setDefinition(card.getDefinition());
+        result.setTerm(card.getTerm());
+        result.setLanguageTo(card.getLanguageTo());
+        result.setLanguageFrom(card.getLanguageFrom());
+
+        return  result;
     }
 }
