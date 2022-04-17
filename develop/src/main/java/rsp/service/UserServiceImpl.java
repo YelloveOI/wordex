@@ -184,6 +184,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createAdmin(@NotNull User user) {
+        user.setPassword(provider.encode("1234"));
         repo.save(user);
     }
 

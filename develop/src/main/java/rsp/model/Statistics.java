@@ -1,5 +1,7 @@
 package rsp.model;
 
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,6 +12,7 @@ public class Statistics extends AbstractEntity {
 
     @Basic(optional = false)
     @Column(nullable = false)
+    @Setter
     private Integer learnedCards;
 
     @ManyToMany

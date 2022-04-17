@@ -3,6 +3,7 @@ package rsp.model;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import rsp.enums.Role;
 import rsp.util.Constants;
 
@@ -38,7 +39,7 @@ public class User extends AbstractEntity {
     @Setter
     private String password;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @Getter
     @Setter
@@ -49,7 +50,7 @@ public class User extends AbstractEntity {
     @Setter
     private List<Deck> decks;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @Getter
     @Setter
     private Statistics statistics;
@@ -94,5 +95,9 @@ public class User extends AbstractEntity {
             return;
         }
         roles.removeIf(r -> Objects.equals(r.toString(), role.toString()));
+    }
+
+    public void  encodePassword(PasswordEncoder encoder){
+        this.password = encoder.encode(password);
     }
 }

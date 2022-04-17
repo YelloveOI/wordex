@@ -1,5 +1,6 @@
 package rsp.security;
 
+
 import rsp.security.model.AuthenticationToken;
 import rsp.security.model.UserDetails;
 import org.slf4j.Logger;
@@ -53,4 +54,5 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(aClass) ||
                 AuthenticationToken.class.isAssignableFrom(aClass);
     }
+
 }
