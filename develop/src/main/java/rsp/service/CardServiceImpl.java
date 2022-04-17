@@ -60,6 +60,7 @@ public class CardServiceImpl implements CardService {
             @NotNull boolean isPublic
     ) {
         Card result = new Card();
+
         result.setTerm(term);
         result.setDefinition(definition);
         result.setLanguageFrom(from);
@@ -70,14 +71,19 @@ public class CardServiceImpl implements CardService {
     }
 
     public Card createPublicCopy(@NotNull Card card) {
-        Card result = new Card();
-        result.setPublic(true);
-        result.setDefinition(card.getDefinition());
-        result.setTerm(card.getTerm());
-        result.setLanguageTo(card.getLanguageTo());
-        result.setLanguageFrom(card.getLanguageFrom());
+        if(!card.isPublic()) {
+            Card result = new Card();
 
-        return  result;
+            result.setPublic(true);
+            result.setDefinition(card.getDefinition());
+            result.setTerm(card.getTerm());
+            result.setLanguageTo(card.getLanguageTo());
+            result.setLanguageFrom(card.getLanguageFrom());
+
+            return  result;
+        } else {
+            throw IllegalActionException.create("create public card copy of public card", card);
+        }
     }
 
     public Card createPrivateCopy(@NotNull Card card) {
