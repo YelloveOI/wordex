@@ -65,4 +65,20 @@ public class Deck extends AbstractEntity {
         return isPrivate;
     }
 
+    public void addCard(Card card) {
+        cards.add(card);
+    }
+
+    public void removeCard(Card card) {
+        cards.remove(card);
+    }
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
+    }
+
+    public void removeTag(Tag tag) {
+        tags.remove(tag);
+    }
+
 }
