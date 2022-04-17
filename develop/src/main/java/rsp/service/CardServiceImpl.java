@@ -88,6 +88,7 @@ public class CardServiceImpl implements CardService {
 
     public Card createPrivateCopy(@NotNull Card card) {
         Card result = new Card();
+
         result.setPublic(false);
         result.setDefinition(card.getDefinition());
         result.setTerm(card.getTerm());
