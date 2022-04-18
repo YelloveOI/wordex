@@ -1,4 +1,4 @@
-package rsp.repo;
+package rsp.service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -6,16 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import rsp.environment.Generator;
 import rsp.model.User;
+import rsp.repo.UserRepo;
+import rsp.service.interfaces.UserService;
 
 
 @SpringBootTest
-public class UserRepoTest {
+public class UserServiceTest {
 
     private final UserRepo repo;
 
+    @Autowired
+    private UserService sut;
+
 
     @Autowired
-    public UserRepoTest(UserRepo repo) {
+    public UserServiceTest(UserRepo repo) {
         this.repo = repo;
     }
 
@@ -24,7 +29,7 @@ public class UserRepoTest {
         final User user = Generator.generateRandomUser();
         repo.save(user);
 
-        Integer result = repo.getAllUsers().size();
+        Integer result = sut.findAll().size();
 
         Assertions.assertEquals(1, result);
     }

@@ -56,8 +56,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        return repo.getAllUsers();
+    public List<User> findAll() {
+        List<User> result = new ArrayList<>();
+
+        Iterable<User> iterable = repo.findAll();
+        iterable.forEach(result::add);
+
+        return result;
     }
 
     @Override

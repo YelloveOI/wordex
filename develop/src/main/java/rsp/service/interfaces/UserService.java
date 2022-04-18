@@ -25,5 +25,5 @@ public interface UserService {
 
     void createAdmin(User user);
 
-    List<User> getAll();
+    List<User> findAll();
 }

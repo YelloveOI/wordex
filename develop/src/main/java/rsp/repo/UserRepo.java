@@ -16,5 +16,6 @@ public interface UserRepo extends CrudRepository<User, Integer> {
 
     void deleteById(Integer id);
 
-    List<User> getAllUsers();
+    @Override
+    Iterable<User> findAll();
 }
