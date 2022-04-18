@@ -5,6 +5,7 @@ import lombok.Setter;
 import rsp.enums.Language;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -66,18 +67,30 @@ public class Deck extends AbstractEntity {
     }
 
     public void addCard(Card card) {
+        if (cards == null) {
+            cards = new ArrayList<>();
+        }
         cards.add(card);
     }
 
     public void removeCard(Card card) {
+        if (cards == null) {
+            return;
+        }
         cards.remove(card);
     }
 
     public void addTag(Tag tag) {
+        if (tags == null) {
+            tags = new ArrayList<>();
+        }
         tags.add(tag);
     }
 
     public void removeTag(Tag tag) {
+        if (tags == null) {
+            return;
+        }
         tags.remove(tag);
     }
 

@@ -63,8 +63,6 @@ public class CardServiceImpl implements CardService {
 
         result.setTerm(term);
         result.setDefinition(definition);
-        result.setLanguageFrom(from);
-        result.setLanguageTo(to);
         result.setPublic(isPublic);
 
         return result;
@@ -77,8 +75,6 @@ public class CardServiceImpl implements CardService {
             result.setPublic(true);
             result.setDefinition(card.getDefinition());
             result.setTerm(card.getTerm());
-            result.setLanguageTo(card.getLanguageTo());
-            result.setLanguageFrom(card.getLanguageFrom());
 
             return  result;
         } else {
@@ -92,8 +88,6 @@ public class CardServiceImpl implements CardService {
         result.setPublic(false);
         result.setDefinition(card.getDefinition());
         result.setTerm(card.getTerm());
-        result.setLanguageTo(card.getLanguageTo());
-        result.setLanguageFrom(card.getLanguageFrom());
 
         return  result;
     }

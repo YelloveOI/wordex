@@ -55,6 +55,20 @@ public class User extends AbstractEntity {
     @Setter
     private Statistics statistics;
 
+    public void addDeck(Deck deck) {
+        if (decks == null) {
+            decks = new ArrayList<>();
+        }
+        decks.add(deck);
+    }
+
+    public void removeDeck(Deck deck) {
+        if (decks == null) {
+            return;
+        }
+        decks.remove(deck);
+    }
+
     public User() {}
 
     public User(String username, String email, String password) {
@@ -74,7 +88,7 @@ public class User extends AbstractEntity {
 
     public boolean hasRole(Role role) {
         for (Role r : roles) {
-            if (r.toString() == role.toString()) {
+            if (r.toString().equals(role.toString())) {
                 return true;
             }
         }

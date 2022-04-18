@@ -46,6 +46,7 @@ public class Generator {
     public static Deck generateFullDeck(boolean isConfigurable, boolean isPrivate,
                                         Language languageFrom, Language languageTo) {
         final Deck deck = generateEmptyDeck(isConfigurable, isPrivate);
+
         deck.setLanguageFrom(languageFrom);
         deck.setLanguageTo(languageTo);
 
@@ -54,8 +55,18 @@ public class Generator {
         return deck;
     }
 
+    public static Deck generateRandomEmptyDeck() {
+        final Deck deck = generateEmptyDeck(randomBoolean(), randomBoolean());
+
+        deck.setLanguageFrom(EnumGenerator.generateLanguage());
+        deck.setLanguageTo(EnumGenerator.generateLanguage());
+
+        return deck;
+    }
+
     public static Deck generateRandomFullDeck() {
         final Deck deck = generateEmptyDeck(randomBoolean(), randomBoolean());
+
         deck.setLanguageFrom(EnumGenerator.generateLanguage());
         deck.setLanguageTo(EnumGenerator.generateLanguage());
 
