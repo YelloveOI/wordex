@@ -97,7 +97,7 @@ public class User extends AbstractEntity {
         roles.removeIf(r -> Objects.equals(r.toString(), role.toString()));
     }
 
-    public void  encodePassword(PasswordEncoder encoder){
+    public void encodePassword(PasswordEncoder encoder){
         this.password = encoder.encode(password);
     }
 }

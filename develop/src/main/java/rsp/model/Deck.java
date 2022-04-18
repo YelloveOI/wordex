@@ -35,12 +35,12 @@ public class Deck extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Getter
     @Setter
-    private Language languageTo;
+    private Language languageFrom;
 
     @Enumerated(EnumType.STRING)
     @Getter
     @Setter
-    private Language languageFrom;
+    private Language languageTo;
 
     @OneToMany
     @Getter
@@ -81,4 +81,15 @@ public class Deck extends AbstractEntity {
         tags.remove(tag);
     }
 
+    public Deck(String description, boolean isConfigurable, boolean isPrivate, String name, Language languageFrom, Language languageTo) {
+        this.description = description;
+        this.isConfigurable = isConfigurable;
+        this.isPrivate = isPrivate;
+        this.name = name;
+        this.languageFrom = languageFrom;
+        this.languageTo = languageTo;
+    }
+
+    public Deck() {
+    }
 }

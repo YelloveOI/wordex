@@ -25,17 +25,13 @@ public class Card extends AbstractEntity {
     @Column(nullable = false)
     @Getter
     @Setter
+    private String translation;
+
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @Getter
+    @Setter
     private boolean isPublic;
-
-    @Enumerated(EnumType.STRING)
-    @Getter
-    @Setter
-    private Language languageFrom;
-
-    @Enumerated(EnumType.STRING)
-    @Getter
-    @Setter
-    private Language languageTo;
 
     /*@OneToMany
     @Getter
@@ -44,12 +40,10 @@ public class Card extends AbstractEntity {
     //TODO AbstractContent
 
 
-    public Card(String definition, String term, boolean isPublic, Language languageFrom, Language languageTo) {
+    public Card(String definition, String term, String translation) {
         this.definition = definition;
         this.term = term;
-        this.isPublic = isPublic;
-        this.languageFrom = languageFrom;
-        this.languageTo = languageTo;
+        this.translation = translation;
     }
 
     public Card() {

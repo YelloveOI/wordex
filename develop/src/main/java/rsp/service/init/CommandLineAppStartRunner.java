@@ -7,7 +7,6 @@ import rsp.enums.Role;
 import rsp.model.Deck;
 import rsp.model.Statistics;
 import rsp.model.User;
-import rsp.repo.UserRepo;
 import rsp.service.interfaces.UserService;
 
 import java.util.LinkedList;
@@ -25,7 +24,7 @@ class CommandLineAppStartupRunner implements CommandLineRunner {
         try {
             userService.findByUsername("admin");
 
-        }catch (Exception e){
+        } catch (Exception e) {
             final User admin = new User();
 
             admin.setUsername("admin");

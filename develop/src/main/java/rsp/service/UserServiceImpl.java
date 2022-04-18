@@ -13,7 +13,6 @@ import rsp.security.DefaultAuthenticationProvider;
 import rsp.security.model.AuthenticationToken;
 import rsp.service.interfaces.UserService;
 
-import java.security.Principal;
 import java.util.EmptyStackException;
 import java.util.Optional;
 import java.util.regex.Pattern;
