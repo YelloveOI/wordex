@@ -116,7 +116,7 @@ public class UserController {
             us.addRole(user, Role.STUDENT);
             ss.addStudent(school, user);
         } catch (Exception e) {
-            LOG.warn("User could not had role student! {}", e.getMessage());
+            LOG.warn("User could not receive the student role! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         LOG.debug("Role student has been added to user \"{}\".", user.getUsername());

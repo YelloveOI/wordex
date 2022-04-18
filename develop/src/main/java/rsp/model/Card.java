@@ -30,16 +30,28 @@ public class Card extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Getter
     @Setter
-    private Language languageTo;
+    private Language languageFrom;
 
     @Enumerated(EnumType.STRING)
     @Getter
     @Setter
-    private Language languageFrom;
+    private Language languageTo;
 
     /*@OneToMany
     @Getter
     @Setter
     private List<AbstractContent> contentList;*/
     //TODO AbstractContent
+
+
+    public Card(String definition, String term, boolean isPublic, Language languageFrom, Language languageTo) {
+        this.definition = definition;
+        this.term = term;
+        this.isPublic = isPublic;
+        this.languageFrom = languageFrom;
+        this.languageTo = languageTo;
+    }
+
+    public Card() {
+    }
 }
