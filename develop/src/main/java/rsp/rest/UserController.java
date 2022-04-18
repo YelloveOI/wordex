@@ -37,16 +37,16 @@ public class UserController {
         this.ss = ss;
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public User getCurrentUser(Principal principal) {
         final AuthenticationToken auth = (AuthenticationToken) principal;
         return auth.getPrincipal().getUser();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{id}")
-    public User getUser(@PathVariable int id){
-        // TODO create similar method for users and check if they can view this user
+    public User getUser(@PathVariable int id) {
         return us.findById(id);
     }
 
@@ -60,7 +60,7 @@ public class UserController {
      * @param id User id
      * @return
      */
-    @PreAuthorize("hasAnyRole('')")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/{id}/decks")
     public List<Deck> getUserDecks(@PathVariable int id) {
         return new ArrayList<>();
@@ -76,6 +76,7 @@ public class UserController {
      * @param matchingPassword Must match password.
      * @return No content/Bad request
      */
+    @PreAuthorize("isAnonymous()")
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createUser(@RequestBody String username, @RequestBody String email,
@@ -92,7 +93,7 @@ public class UserController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyRole('')")
+    @PreAuthorize("permitAll()")
     @PostMapping("/edit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> updateUser(@RequestBody User user) {

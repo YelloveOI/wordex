@@ -9,6 +9,7 @@ import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.model.Deck;
 import rsp.repo.DeckRepo;
+import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
 
 import java.util.Optional;
@@ -28,9 +29,17 @@ public class DeckServiceImpl implements DeckService {
 
 
     @Override
-    public Deck save(@NotNull Deck deck) {
+    public void save(@NotNull Deck deck) {
+        deck.setOwner(SecurityUtils.getCurrentUser());
         repo.save(deck);
-        return deck;
+    }
+
+    @Override
+    public void update(@NotNull Deck deck) throws Exception {
+        if (!deck.getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
+            throw new Exception("You can't edit someone else's deck.");
+        }
+        repo.save(deck);
     }
 
     public Deck createPublicCopy(@NotNull Deck deck) {
@@ -76,14 +85,15 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public void deleteById(@NotNull Integer id) {
+    public void deleteById(@NotNull Integer id) throws Exception {
         Optional<Deck> toDelete = repo.findById(id);
         if(toDelete.isPresent()) {
-            if(!toDelete.get().isPrivate()) {
-                throw IllegalActionException.create("DELETE PUBLIC CARDS", toDelete);
+            if (!toDelete.get().getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
+                throw new Exception("You can't delete someone else's deck.");
             }
+            repo.deleteById(id);
         } else {
-            throw NotFoundException.create(Card.class.getName(), id);
+            throw NotFoundException.create(Deck.class.getName(), id);
         }
     }
 

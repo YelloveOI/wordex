@@ -7,7 +7,7 @@ public interface CardService {
 
     Card save(Card card);
 
-    void deleteById(Integer id);
+    void deleteById(Integer id) throws Exception;
 
     Card findById(Integer id);
 

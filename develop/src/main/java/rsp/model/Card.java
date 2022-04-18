@@ -2,6 +2,7 @@ package rsp.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.eclipse.persistence.annotations.CascadeOnDelete;
 import rsp.enums.Language;
 
 import javax.persistence.*;
@@ -32,6 +33,12 @@ public class Card extends AbstractEntity {
     @Getter
     @Setter
     private boolean isPublic;
+
+    @ManyToOne
+    @Column(nullable = false)
+    @Getter
+    @Setter
+    private Deck deck;
 
     /*@OneToMany
     @Getter

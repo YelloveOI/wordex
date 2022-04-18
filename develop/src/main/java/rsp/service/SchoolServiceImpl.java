@@ -8,6 +8,7 @@ import rsp.exception.NotFoundException;
 import rsp.model.School;
 import rsp.model.User;
 import rsp.repo.SchoolRepo;
+import rsp.security.SecurityUtils;
 import rsp.service.interfaces.SchoolService;
 
 import java.util.Optional;
@@ -60,11 +61,12 @@ public class SchoolServiceImpl implements SchoolService {
         if (repo.findSchoolByName(school.getName()).isPresent()) {
             throw new Exception("School that goes by this name is already in use.");
         }
+        school.addTeacher(SecurityUtils.getCurrentUser());
         repo.save(school);
     }
 
     @Override
-    public void addStudent(@NotNull School school,@NotNull User user) {
+    public void addStudent(@NotNull School school, @NotNull User user) {
         if (repo.findById(school.getId()).isPresent()) {
             throw NotFoundException.create(School.class.getName(), school.getId());
         } else {

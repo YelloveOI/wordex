@@ -25,7 +25,7 @@ public class DeckController {
         this.ds = ds;
     }
 
-    //@PreAuthorize("hasAnyRole('')")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/{id}")
     public Deck getDeck(@PathVariable int id) {
         // TODO check if owned
@@ -37,8 +37,7 @@ public class DeckController {
      * @param deck Deck to store
      * @return Created/Bad request
      */
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_STUDENT', 'ROLE_ADMINISTRATOR', 'ROLE_SCHOOL_REPRESENTATIVE', " +
-            "'ROLE_PREMIUM_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createDeck(@RequestBody Deck deck) {
@@ -53,13 +52,12 @@ public class DeckController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_STUDENT', 'ROLE_ADMINISTRATOR', 'ROLE_SCHOOL_REPRESENTATIVE', " +
-            "'ROLE_PREMIUM_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/edit")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> updateDeck(@RequestBody Deck deck) {
         try {
-            ds.save(deck);
+            ds.update(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be updated! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -79,9 +77,17 @@ public class DeckController {
     public List<Card> getCards(@PathVariable int id) {
     }*/
 
-    @PreAuthorize("hasAnyRole('')")
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteDeck(@PathVariable int id) {
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @DeleteMapping("/deletion/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<Void> deleteDeck(@PathVariable int id) {
+        try {
+            ds.deleteById(id);
+        } catch (Exception e) {
+            LOG.warn("Deck could not be deleted! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("Deck ID \"{}\" has been deleted.", id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

@@ -10,6 +10,7 @@ import rsp.exception.NotFoundException;
 import rsp.model.User;
 import rsp.repo.UserRepo;
 import rsp.security.DefaultAuthenticationProvider;
+import rsp.security.SecurityUtils;
 import rsp.security.model.AuthenticationToken;
 import rsp.service.interfaces.UserService;
 
@@ -90,7 +91,7 @@ public class UserServiceImpl implements UserService {
             throw new Exception("Selected username is too long. (3-20 characters allowed)");
         }
 
-        // Username requirements
+        // Email requirements
         if (!Pattern.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,}$", email)) {
             throw new Exception("Please enter a valid email address.");
         }
@@ -127,41 +128,60 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void update(User user) throws Exception {
-        // Username requirements
-        if (user.getUsername().length() < 3) {
-            throw new Exception("Selected username is too short. (3-20 characters allowed)");
-        }
-        if (user.getUsername().length() > 20) {
-            throw new Exception("Selected username is too long. (3-20 characters allowed)");
+        User currentUser = SecurityUtils.getCurrentUser();
+
+        if (!currentUser.getId().equals(user.getId())) {
+            throw new Exception("You can't edit someone else.");
         }
 
-        // Username requirements
-        if (!Pattern.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,}$", user.getEmail())) {
-            throw new Exception("Please enter a valid email address.");
+        // Username
+        if (!currentUser.getUsername().equals(user.getUsername())) {
+            // Username uniqueness
+            if (repo.findByUsername(user.getUsername()).isPresent()) {
+                throw new Exception("Username is already in use.");
+            }
+
+            // Username requirements
+            if (user.getUsername().length() < 3) {
+                throw new Exception("Selected username is too short. (3-20 characters allowed)");
+            }
+            if (user.getUsername().length() > 20) {
+                throw new Exception("Selected username is too long. (3-20 characters allowed)");
+            }
         }
 
-        // Password requirements
-        if (user.getPassword().length() < 8) {
-            throw new Exception("Selected password is too short. (8-20 characters allowed)");
-        }
-        if (user.getPassword().length() > 20) {
-            throw new Exception("Selected password is too long. (8-20 characters allowed)");
-        }
-        if (!Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–{}:;',?/*~$^+=<>]).{8,20}$",
-                user.getPassword())) {
-            throw new Exception("Password has to contain at least one digit [0-9], " +
-                    "at least one lowercase character [a-z], " +
-                    "at least one uppercase character [A-Z] and " +
-                    "at least one special character like ! @ # & ( ).");
+        // Email
+        if (!currentUser.getEmail().equals(user.getEmail())) {
+            // Email uniqueness
+            if (repo.findByEmail(user.getEmail()).isPresent()) {
+                throw new Exception("This email address is already in use.");
+            }
+
+            // Email requirements
+            if (!Pattern.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,}$", user.getEmail())) {
+                throw new Exception("Please enter a valid email address.");
+            }
         }
 
-        // Username uniqueness
-        if (repo.findByUsername(user.getUsername()).isPresent()) {
-            throw new Exception("Username is already in use.");
-        }
-        // Email uniqueness
-        if (repo.findByEmail(user.getEmail()).isPresent()) {
-            throw new Exception("This email address is already in use.");
+        // Password
+        if (!currentUser.getPassword().equals(user.getPassword())) {  // Dostanu uz zakodovane heslo, pokud se nezmeni??
+            // Password requirements
+            if (user.getPassword().length() < 8) {
+                throw new Exception("Selected password is too short. (8-20 characters allowed)");
+            }
+            if (user.getPassword().length() > 20) {
+                throw new Exception("Selected password is too long. (8-20 characters allowed)");
+            }
+            if (!Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–{}:;',?/*~$^+=<>]).{8,20}$",
+                    user.getPassword())) {
+                throw new Exception("Password has to contain at least one digit [0-9], " +
+                        "at least one lowercase character [a-z], " +
+                        "at least one uppercase character [A-Z] and " +
+                        "at least one special character like ! @ # & ( ).");
+            }
+
+            // Encode
+            user.setPassword(provider.encode(user.getPassword()));
         }
 
         repo.save(user);

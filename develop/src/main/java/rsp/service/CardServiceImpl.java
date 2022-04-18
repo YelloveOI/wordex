@@ -8,6 +8,7 @@ import rsp.exception.IllegalActionException;
 import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.repo.CardRepo;
+import rsp.security.SecurityUtils;
 import rsp.service.interfaces.CardService;
 
 import java.util.Optional;
@@ -30,12 +31,13 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public void deleteById(@NotNull Integer id) {
+    public void deleteById(@NotNull Integer id) throws Exception {
         Optional<Card> toDelete = repo.findById(id);
         if(toDelete.isPresent()) {
-            if(toDelete.get().isPublic()) {
-                throw IllegalActionException.create("DELETE PUBLIC CARDS", toDelete);
+            if (!toDelete.get().getDeck().getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
+                throw new Exception("You can't delete someone else's card.");
             }
+            repo.deleteById(id);
         } else {
             throw NotFoundException.create(Card.class.getName(), id);
         }
@@ -93,9 +95,9 @@ public class CardServiceImpl implements CardService {
     }
 
     public boolean checkAnswer(int id,@NotNull String answer){
-        if(findById(id).getTranslation().equals(answer)){
+        if(findById(id).getTranslation().equals(answer)) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }

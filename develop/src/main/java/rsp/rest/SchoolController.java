@@ -53,7 +53,7 @@ public class SchoolController {
     public List<User> getAllSchoolUsers(@PathVariable int id) {
     }*/
 
-    @PreAuthorize("hasAnyRole('')")
+    @PreAuthorize("hasAnyRole('ROLE_SCHOOL_REPRESENTATIVE', 'ROLE_ADMINISTRATOR')")
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createSchool(@RequestBody School school) {

@@ -66,4 +66,12 @@ public class School extends AbstractEntity {
         }
         students.removeIf(s -> Objects.equals(s.getId(), student.getId()));
     }
+
+    public void addTeacher(User teacher) {
+        Objects.requireNonNull(teacher);
+        if (teachers == null) {
+            this.teachers = new ArrayList<>();
+        }
+        teachers.add(teacher);
+    }
 }
