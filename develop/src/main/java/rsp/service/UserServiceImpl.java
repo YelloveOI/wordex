@@ -13,7 +13,9 @@ import rsp.security.DefaultAuthenticationProvider;
 import rsp.security.model.AuthenticationToken;
 import rsp.service.interfaces.UserService;
 
+import java.util.ArrayList;
 import java.util.EmptyStackException;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -51,6 +53,11 @@ public class UserServiceImpl implements UserService {
         } else {
             throw NotFoundException.create(User.class.getName(), id);
         }
+    }
+
+    @Override
+    public List<User> getAll() {
+        return repo.getAllUsers();
     }
 
     @Override

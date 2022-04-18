@@ -3,6 +3,8 @@ package rsp.service.interfaces;
 import rsp.enums.Role;
 import rsp.model.User;
 
+import java.util.List;
+
 public interface UserService {
 
     User save(User user);
@@ -22,4 +24,6 @@ public interface UserService {
     void removeRole(User user, Role role);
 
     void createAdmin(User user);
+
+    List<User> getAll();
 }

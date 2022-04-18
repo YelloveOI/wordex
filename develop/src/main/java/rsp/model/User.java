@@ -15,9 +15,12 @@ import java.util.Objects;
 @Entity
 @NamedQueries({
         @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username"),
-        @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email")
+        @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
+        @NamedQuery(name = "User.GET_ALL_USERS", query = "SELECT u FROM User u")
 })
 public class User extends AbstractEntity {
+
+    public static final String GET_ALL_USERS = "User.getAllUsers";
 
     //TODO other things
 
