@@ -91,4 +91,12 @@ public class CardServiceImpl implements CardService {
 
         return  result;
     }
+
+    public boolean checkAnswer(int id,@NotNull String answer){
+        if(findById(id).getTranslation().equals(answer)){
+            return true;
+        }else {
+            return false;
+        }
+    }
 }
