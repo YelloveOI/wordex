@@ -39,7 +39,6 @@ public class Card extends AbstractEntity {
     private boolean isLearned;
 
     @ManyToOne
-    @Column(nullable = false)
     @Getter
     @Setter
     private Deck deck;
