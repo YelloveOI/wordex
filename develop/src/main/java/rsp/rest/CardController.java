@@ -1,5 +1,6 @@
 package rsp.rest;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,71 +10,40 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Card;
+import rsp.model.Deck;
 import rsp.rest.util.RestUtils;
+import rsp.security.model.AuthenticationToken;
 import rsp.service.interfaces.CardService;
+import rsp.service.interfaces.ContentService;
+
+import java.security.Principal;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/card")
+@RequestMapping("/cards")
 public class CardController {
 
     private static final Logger LOG = LoggerFactory.getLogger(CardController.class);
 
-    private final CardService cs;
+    private final CardService cas;
+    private final ContentService cos;
 
     @Autowired
-    public CardController(CardService cs) {
-        this.cs = cs;
+    public CardController(CardService cas, ContentService cos) {
+        this.cas = cas;
+        this.cos = cos;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @GetMapping("/{id}")
-    public Card getCard(@PathVariable int id) {
-        // TODO check if owned
-        return cs.findById(id);
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping("/newUsingValues")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createCardUsingValues(@RequestBody String term,
-                                                      @RequestBody String definition,
-                                                      @RequestBody String translation) {
-        Integer id;
-        try {
-            id = cs.createUsingValues(term, definition, translation);
-        } catch (Exception e) {
-            LOG.warn("Card could not be created! {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        LOG.debug("Card ID \"{}\" has been created.", id);
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", id);
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping("/new")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createCard(@RequestBody Card card) {
-        try {
-//            cs.create(card);
-        } catch (Exception e) {
-            LOG.warn("Card could not be created! {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        LOG.debug("Card ID \"{}\" has been created.", card.getId());
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", card.getId());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
-    }
-
-    /**
+    /** TODO
      * Used for updating definition, term and translation of the card if the deck is configurable.
-     * @param card
+     * @param
      * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping("/edit")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> updateCard(@RequestBody Card card) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateCard(@PathVariable int id) {
         try {
             cs.update(card);
         } catch (Exception e) {
@@ -85,29 +55,8 @@ public class CardController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    /**
-     * Used for storing answers (isKnown, isLearned).
-     * @param card
-     * @return Created/Bad request
-     */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping("/answersStoring")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> storeAnswers(@RequestBody Card card) {
-        try {
-            cs.updateAnswers(card);
-        } catch (Exception e) {
-            LOG.warn("Card answers could not be stored! {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        LOG.debug("Card answers have been stored.");
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", card.getId());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @DeleteMapping("/deletion/{id}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCard(@PathVariable int id) {
         try {
             cs.deleteById(id);
@@ -119,16 +68,4 @@ public class CardController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping("/answer/{id}/{value}")
-    public ResponseEntity<Void> answerCard(@PathVariable int id, @PathVariable String value) {
-        //TODO private or public card, if is card owned and so on
-        if (cs.checkAnswer(id,value)) {
-            final HttpHeaders headers = RestUtils.createCardAnswerRightHeaders("/{id}", cs.findById(id));
-            return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);
-        } else {
-            final HttpHeaders headers = RestUtils.createCardAnswerWrongHeaders("/{id}", cs.findById(id));
-            return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);
-        }
-    }
 }

@@ -19,4 +19,6 @@ public interface CardService {
 
     Card deepCopy(Card card);
 
+    boolean exists(Card card);
+
 }

@@ -17,11 +17,9 @@ import java.util.Optional;
 public class CardServiceImpl implements CardService {
 
     private final CardRepo repo;
-    private final ContentService cs;
 
-    public CardServiceImpl(CardRepo repo, ContentService cs) {
+    public CardServiceImpl(CardRepo repo) {
         this.repo = repo;
-        this.cs = cs;
     }
 
     /**
@@ -71,12 +69,16 @@ public class CardServiceImpl implements CardService {
             @NotNull String term,
             @NotNull String definition
     ) {
-        card.setTerm(term);
-        card.setDefinition(definition);
+        if(exists(card)) {
+            card.setTerm(term);
+            card.setDefinition(definition);
 
-        repo.save(card);
+            repo.save(card);
 
-        return card;
+            return card;
+        } else {
+            throw NotFoundException.create(Card.class.getName(), card.getId());
+        }
     }
 
     @Override
@@ -84,11 +86,15 @@ public class CardServiceImpl implements CardService {
             @NotNull Card card,
             @NotNull Content content
     ) {
-        card.addContent(content);
+        if(exists(card)) {
+            card.addContent(content);
 
-        repo.save(card);
+            repo.save(card);
 
-        return card;
+            return card;
+        } else {
+            throw NotFoundException.create(Card.class.getName(), card.getId());
+        }
     }
 
     @Override
@@ -96,15 +102,19 @@ public class CardServiceImpl implements CardService {
             @NotNull Card card,
             @NotNull Content content
     ) throws NotFoundException {
-        if(card.getContentList().contains(content)) {
-            card.removeContent(content);
+        if(exists(card)) {
+            if(card.getContentList().contains(content)) {
+                card.removeContent(content);
+
+                repo.save(card);
+
+                return card;
+            } else {
+                throw NotFoundException.create(Content.class.getName(), content.getId());
+            }
         } else {
-            throw NotFoundException.create(Card.class.getName(), content);
+            throw NotFoundException.create(Card.class.getName(), card.getId());
         }
-
-        repo.save(card);
-
-        return card;
     }
 
     /**
@@ -124,5 +134,20 @@ public class CardServiceImpl implements CardService {
         repo.save(result);
 
         return result;
+    }
+
+    /**
+     * @param card
+     * @return true if exists (in repo) 100% same card, false otherwise
+     */
+    @Override
+    public boolean exists(Card card) {
+        Optional<Card> result = repo.findById(card.getId());
+
+        if(result.isPresent()) {
+            return result.get().equals(card);
+        } else {
+            return false;
+        }
     }
 }

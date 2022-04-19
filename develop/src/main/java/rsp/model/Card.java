@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -43,4 +44,23 @@ public class Card extends AbstractEntity {
         contentList.remove(content);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Card card = (Card) o;
+
+        if (!Objects.equals(definition, card.definition)) return false;
+        if (!Objects.equals(term, card.term)) return false;
+        return Objects.equals(contentList, card.contentList);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = definition != null ? definition.hashCode() : 0;
+        result = 31 * result + (term != null ? term.hashCode() : 0);
+        result = 31 * result + (contentList != null ? contentList.hashCode() : 0);
+        return result;
+    }
 }
