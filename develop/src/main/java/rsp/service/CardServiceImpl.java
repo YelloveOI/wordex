@@ -87,6 +87,22 @@ public class CardServiceImpl implements CardService {
         repo.save(card);
     }
 
+    @Override
+    public void updateAnswers(@NotNull Card card) throws Exception {
+        if (!card.getDeck().getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
+            throw new Exception("You can't edit someone else's card.");
+        }
+        if (!card.getDeck().isConfigurable()) { // check if card values weren't changed if not configurable
+            Card result = findById(card.getId());
+            if (!result.getDefinition().equals(card.getDefinition())
+                    || !result.getTerm().equals(card.getTerm())
+                    || !result.getTranslation().equals(card.getTranslation())) {
+                throw new Exception("The deck, this card belongs to, is not configurable.");
+            }
+        }
+        repo.save(card);
+    }
+
     public Card createPublicCopy(@NotNull Card card) {
         if(!card.isPublic()) {
             Card result = new Card();
@@ -104,11 +120,11 @@ public class CardServiceImpl implements CardService {
     public Card createPrivateCopy(@NotNull Card card) {
         Card result = new Card();
 
-        result.setPublic(false);
         result.setDefinition(card.getDefinition());
         result.setTerm(card.getTerm());
+        result.setTranslation(card.getTranslation());
 
-        return  result;
+        return result;
     }
 
     public boolean checkAnswer(int id,@NotNull String answer){

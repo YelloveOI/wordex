@@ -47,6 +47,25 @@ public class DeckServiceImpl implements DeckService {
         repo.save(deck);
     }
 
+    @Override
+    public void updateAnswers(@NotNull Deck deck) throws Exception {
+        if (!deck.getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
+            throw new Exception("You can't edit someone else's deck.");
+        }
+        if (!deck.isConfigurable()) { // check if deck values weren't changed if not configurable
+            Deck result = findById(deck.getId());
+            if (!result.getDescription().equals(deck.getDescription())
+                    || result.isConfigurable() != deck.isConfigurable()
+                    || result.isPrivate() != deck.isPrivate()
+                    || !result.getName().equals(deck.getName())
+                    || result.getLanguageFrom() != deck.getLanguageFrom()
+                    || result.getLanguageTo() != deck.getLanguageTo()) {
+                throw new Exception("This deck is not configurable.");
+            }
+        }
+        repo.save(deck);
+    }
+
     public Deck createPublicCopy(@NotNull Deck deck) {
         if(deck.isPrivate()) {
             Deck result = new Deck();
@@ -70,8 +89,11 @@ public class DeckServiceImpl implements DeckService {
         }
     }
 
-    public Deck createPrivateCopy(@NotNull Deck deck) {
+    @Override
+    public void createPrivateCopy(@NotNull Deck deck) {
         Deck result = new Deck();
+
+        result.setOwner(SecurityUtils.getCurrentUser());
 
         result.setPrivate(true);
         result.setConfigurable(deck.isConfigurable());
@@ -79,14 +101,13 @@ public class DeckServiceImpl implements DeckService {
         result.setLanguageTo(deck.getLanguageTo());
         result.setDescription(deck.getDescription());
         result.setName(deck.getName());
-        result.setOwner(deck.getOwner());
         result.setTags(deck.getTags());
 
         for(Card c : deck.getCards()) {
             result.addCard(cardService.createPrivateCopy(c));
         }
 
-        return result;
+        save(deck);
     }
 
     @Override

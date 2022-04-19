@@ -14,5 +14,7 @@ public interface CardService {
 
     Integer create(Card card);
 
-    void update( Card card) throws Exception;
+    void update(Card card) throws Exception;
+
+    void updateAnswers(Card card) throws Exception;
 }

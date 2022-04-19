@@ -53,6 +53,11 @@ public class DeckController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    /**
+     * Used for updating name, description and language of the deck if the deck is configurable.
+     * @param deck
+     * @return
+     */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/edit")
     @ResponseStatus(HttpStatus.CREATED)
@@ -64,6 +69,47 @@ public class DeckController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         LOG.debug("Deck named \"{}\" has been updated.", deck.getName());
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", deck.getId());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
+
+    /**
+     * Used for storing answers as a whole (isKnown, isLearned).
+     * @param deck
+     * @return
+     */
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @PostMapping("/answersStoring")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> storeDeckAnswers(@RequestBody Deck deck) {
+        try {
+            ds.updateAnswers(deck);
+        } catch (Exception e) {
+            LOG.warn("Deck answers could not be stored! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("Deck answers have been stored.");
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", deck.getId());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
+
+    /**
+     * Selects a deck (either public or private) and makes it private so that user can start
+     * answering it without the deck being modified by other users.
+     * @param deck
+     * @return
+     */
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @PostMapping("/selection")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> chooseDeck(@RequestBody Deck deck) {
+        try {
+            ds.createPrivateCopy(deck);
+        } catch (Exception e) {
+            LOG.warn("Deck could not be selected! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("Deck named \"{}\" has been selected.", deck.getName());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", deck.getId());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }

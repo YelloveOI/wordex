@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Card;
+import rsp.model.Deck;
 import rsp.rest.util.RestUtils;
 import rsp.service.CardServiceImpl;
 
@@ -66,6 +67,11 @@ public class CardController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    /**
+     * Used for updating definition, term and translation of the card if the deck is configurable.
+     * @param card
+     * @return
+     */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/edit")
     @ResponseStatus(HttpStatus.CREATED)
@@ -77,6 +83,26 @@ public class CardController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         LOG.debug("Card ID \"{}\" has been updated.", card.getId());
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", card.getId());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
+
+    /**
+     * Used for storing answers (isKnown, isLearned).
+     * @param card
+     * @return
+     */
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @PostMapping("/answersStoring")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> storeAnswers(@RequestBody Card card) {
+        try {
+            cs.updateAnswers(card);
+        } catch (Exception e) {
+            LOG.warn("Card answers could not be stored! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("Card answers have been stored.");
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", card.getId());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
