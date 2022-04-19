@@ -93,8 +93,8 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('')")
-    @PostMapping("/edit")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping("/edit")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> updateUser(@RequestBody User user) {
         try {
             us.update(user);
@@ -105,12 +105,12 @@ public class UserController {
         LOG.debug("User \"{}\" has been updated.", user.getUsername());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
                 us.findByUsername(user.getUsername()).getId());
-        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_SCHOOL_REPRESENTATIVE')")
     @PostMapping("/student")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createStudent(@RequestBody User user, @RequestBody School school) {
         try {
             us.addRole(user, Role.STUDENT);
@@ -122,12 +122,12 @@ public class UserController {
         LOG.debug("Role student has been added to user \"{}\".", user.getUsername());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
                 us.findByUsername(user.getUsername()).getId());
-        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ROLE_SCHOOL_REPRESENTATIVE')")
     @DeleteMapping("/student")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> removeStudent(@RequestBody User user, @RequestBody School school) {
         try {
             us.removeRole(user, Role.STUDENT);
@@ -139,7 +139,7 @@ public class UserController {
         LOG.debug("Role student has been removed from user \"{}\".", user.getUsername());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
                 us.findByUsername(user.getUsername()).getId());
-        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('')")

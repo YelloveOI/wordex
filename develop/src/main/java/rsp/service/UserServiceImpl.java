@@ -1,5 +1,6 @@
 package rsp.service;
 
+import org.assertj.core.util.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,7 @@ import rsp.security.model.AuthenticationToken;
 import rsp.service.interfaces.UserService;
 
 import java.security.Principal;
-import java.util.EmptyStackException;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
