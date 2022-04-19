@@ -33,9 +33,7 @@ public class CardServiceImpl implements CardService {
     public void deleteById(@NotNull Integer id) {
         Optional<Card> toDelete = repo.findById(id);
         if(toDelete.isPresent()) {
-            if(toDelete.get().isPublic()) {
-                throw IllegalActionException.create("DELETE PUBLIC CARDS", toDelete);
-            }
+            repo.deleteById(id);
         } else {
             throw NotFoundException.create(Card.class.getName(), id);
         }
@@ -63,38 +61,8 @@ public class CardServiceImpl implements CardService {
 
         result.setTerm(term);
         result.setDefinition(definition);
-        result.setLanguageFrom(from);
-        result.setLanguageTo(to);
-        result.setPublic(isPublic);
 
         return result;
     }
 
-    public Card createPublicCopy(@NotNull Card card) {
-        if(!card.isPublic()) {
-            Card result = new Card();
-
-            result.setPublic(true);
-            result.setDefinition(card.getDefinition());
-            result.setTerm(card.getTerm());
-            result.setLanguageTo(card.getLanguageTo());
-            result.setLanguageFrom(card.getLanguageFrom());
-
-            return  result;
-        } else {
-            throw IllegalActionException.create("create public card copy of public card", card);
-        }
-    }
-
-    public Card createPrivateCopy(@NotNull Card card) {
-        Card result = new Card();
-
-        result.setPublic(false);
-        result.setDefinition(card.getDefinition());
-        result.setTerm(card.getTerm());
-        result.setLanguageTo(card.getLanguageTo());
-        result.setLanguageFrom(card.getLanguageFrom());
-
-        return  result;
-    }
 }
