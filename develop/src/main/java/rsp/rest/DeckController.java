@@ -41,22 +41,21 @@ public class DeckController {
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createDeck(@RequestBody Deck deck) {
-        Integer id;
         try {
-            id = ds.save(deck);
+            ds.save(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be created! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        LOG.debug("Deck ID \"{}\" has been created.", id);
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", id);
+        LOG.debug("Deck ID \"{}\" has been created.", deck.getId());
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", deck.getId());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     /**
      * Used for updating name, description and language of the deck if the deck is configurable.
      * @param deck
-     * @return
+     * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/edit")
@@ -76,7 +75,7 @@ public class DeckController {
     /**
      * Used for storing answers as a whole (isKnown, isLearned).
      * @param deck
-     * @return
+     * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/answersStoring")
@@ -97,7 +96,7 @@ public class DeckController {
      * Selects a deck (either public or private) and makes it private so that user can start
      * answering it without the deck being modified by other users.
      * @param deck
-     * @return
+     * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/selection")

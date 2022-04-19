@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rsp.exception.IllegalActionException;
 import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.model.Deck;
@@ -29,11 +28,9 @@ public class DeckServiceImpl implements DeckService {
 
 
     @Override
-    public Integer save(@NotNull Deck deck) {
+    public void save(@NotNull Deck deck) {
         deck.setOwner(SecurityUtils.getCurrentUser());
         repo.save(deck);
-
-        return deck.getId();
     }
 
     @Override
@@ -66,7 +63,7 @@ public class DeckServiceImpl implements DeckService {
         repo.save(deck);
     }
 
-    public Deck createPublicCopy(@NotNull Deck deck) {
+    /*public Deck createPublicCopy(@NotNull Deck deck) {
         if(deck.isPrivate()) {
             Deck result = new Deck();
 
@@ -87,7 +84,7 @@ public class DeckServiceImpl implements DeckService {
         } else {
             throw IllegalActionException.create("create public deck copy of public deck", deck);
         }
-    }
+    }*/
 
     @Override
     public void createPrivateCopy(@NotNull Deck deck) {

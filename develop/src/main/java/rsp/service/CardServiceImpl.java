@@ -3,11 +3,9 @@ package rsp.service;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rsp.enums.Language;
 import rsp.exception.IllegalActionException;
 import rsp.exception.NotFoundException;
 import rsp.model.Card;
-import rsp.model.Deck;
 import rsp.repo.CardRepo;
 import rsp.security.SecurityUtils;
 import rsp.service.interfaces.CardService;
@@ -59,21 +57,20 @@ public class CardServiceImpl implements CardService {
             @NotNull String definition,
             @NotNull String translation
     ) {
-        Card result = new Card();
+        Card card = new Card();
 
-        result.setTerm(term);
-        result.setDefinition(definition);
-        result.setTranslation(translation);
+        card.setTerm(term);
+        card.setDefinition(definition);
+        card.setTranslation(translation);
 
-        save(result);
+        save(card);
 
-        return result.getId();
+        return card.getId();
     }
 
     @Override
-    public Integer create(@NotNull Card card) {
+    public void create(@NotNull Card card) {
         save(card);
-        return card.getId();
     }
 
     @Override
@@ -103,11 +100,10 @@ public class CardServiceImpl implements CardService {
         repo.save(card);
     }
 
-    public Card createPublicCopy(@NotNull Card card) {
+    /*public Card createPublicCopy(@NotNull Card card) {
         if(!card.isPublic()) {
             Card result = new Card();
 
-            result.setPublic(true);
             result.setDefinition(card.getDefinition());
             result.setTerm(card.getTerm());
 
@@ -115,7 +111,7 @@ public class CardServiceImpl implements CardService {
         } else {
             throw IllegalActionException.create("create public card copy of public card", card);
         }
-    }
+    }*/
 
     public Card createPrivateCopy(@NotNull Card card) {
         Card result = new Card();
@@ -127,7 +123,7 @@ public class CardServiceImpl implements CardService {
         return result;
     }
 
-    public boolean checkAnswer(int id,@NotNull String answer){
+    public boolean checkAnswer(int id, @NotNull String answer){
         if(findById(id).getTranslation().equals(answer)) {
             return true;
         } else {

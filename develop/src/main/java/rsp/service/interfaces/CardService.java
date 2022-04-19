@@ -12,7 +12,7 @@ public interface CardService {
 
     Integer createUsingValues(String term, String definition, String translation);
 
-    Integer create(Card card);
+    void create(Card card);
 
     void update(Card card) throws Exception;
 

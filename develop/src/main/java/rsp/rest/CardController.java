@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Card;
-import rsp.model.Deck;
 import rsp.rest.util.RestUtils;
 import rsp.service.CardServiceImpl;
 
@@ -55,22 +54,21 @@ public class CardController {
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createCard(@RequestBody Card card) {
-        Integer id;
         try {
-            id = cs.create(card);
+            cs.create(card);
         } catch (Exception e) {
             LOG.warn("Card could not be created! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        LOG.debug("Card ID \"{}\" has been created.", id);
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", id);
+        LOG.debug("Card ID \"{}\" has been created.", card.getId());
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", card.getId());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     /**
      * Used for updating definition, term and translation of the card if the deck is configurable.
      * @param card
-     * @return
+     * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/edit")
@@ -90,7 +88,7 @@ public class CardController {
     /**
      * Used for storing answers (isKnown, isLearned).
      * @param card
-     * @return
+     * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/answersStoring")

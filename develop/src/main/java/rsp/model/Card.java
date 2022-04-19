@@ -38,12 +38,6 @@ public class Card extends AbstractEntity {
     @Setter
     private boolean isLearned;
 
-    @Basic(optional = false)
-    @Column(nullable = false)
-    @Getter
-    @Setter
-    private boolean isPublic;
-
     @ManyToOne
     @Column(nullable = false)
     @Getter

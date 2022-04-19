@@ -4,7 +4,7 @@ import rsp.model.Deck;
 
 public interface DeckService {
 
-    Integer save(Deck deck);
+    void save(Deck deck);
 
     void update(Deck deck) throws Exception;
 
