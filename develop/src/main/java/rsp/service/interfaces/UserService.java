@@ -1,5 +1,6 @@
 package rsp.service.interfaces;
 
+import org.jetbrains.annotations.NotNull;
 import rsp.enums.Role;
 import rsp.model.User;
 
@@ -17,7 +18,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    void update(User user) throws Exception;
+    void update(String username, String email, String password, String matchingPassword) throws Exception;
 
     void addRole(User user, Role role);
 

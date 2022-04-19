@@ -13,6 +13,7 @@ import rsp.enums.Role;
 import rsp.model.School;
 import rsp.model.User;
 import rsp.rest.util.RestUtils;
+import rsp.security.SecurityUtils;
 import rsp.security.model.AuthenticationToken;
 import rsp.service.interfaces.SchoolService;
 import rsp.service.interfaces.UserService;
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     public User getCurrentUser(Principal principal) {
         final AuthenticationToken auth = (AuthenticationToken) principal;
         return auth.getPrincipal().getUser();
@@ -81,18 +82,19 @@ public class UserController {
 
     @PreAuthorize("permitAll()")
     @PostMapping("/edit")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> updateUser(@RequestBody User user) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> updateUser(@RequestBody String username, @RequestBody String email,
+                                           @RequestBody String password, @RequestBody String matchingPassword) {
         try {
-            us.update(user);
+            us.update(username, email, password, matchingPassword);
         } catch (Exception e) {
             LOG.warn("User could not be updated! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        LOG.debug("User \"{}\" has been updated.", user.getUsername());
+        LOG.debug("User \"{}\" has been updated.", username);
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
-                us.findByUsername(user.getUsername()).getId());
-        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+                us.findByUsername(username).getId());
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_SCHOOL_REPRESENTATIVE')")
