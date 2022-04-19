@@ -6,6 +6,13 @@ import rsp.enums.ContentType;
 
 import javax.persistence.*;
 
+/**
+ * Content represents different types of assistant content:
+ * 1) Image
+ * 2) Sound
+ * 3) Video
+ * Content must be immutable
+ */
 @Entity
 public class Content extends AbstractEntity {
 
