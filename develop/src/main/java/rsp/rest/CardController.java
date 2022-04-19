@@ -55,7 +55,7 @@ public class CardController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createCard(@RequestBody Card card) {
         try {
-            cs.create(card);
+//            cs.create(card);
         } catch (Exception e) {
             LOG.warn("Card could not be created! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

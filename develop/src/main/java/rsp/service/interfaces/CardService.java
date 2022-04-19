@@ -1,22 +1,22 @@
 package rsp.service.interfaces;
 
 import rsp.model.Card;
+import rsp.model.Content;
 
 public interface CardService {
-
-    void save(Card card);
 
     void deleteById(Integer id) throws Exception;
 
     Card findById(Integer id);
 
-    Integer createUsingValues(String term, String definition, String translation);
+    Card create(String term, String definition);
 
-    void create(Card card);
+    Card editText(Card card, String term, String definition);
 
-    void update(Card card) throws Exception;
+    Card addContent(Card card, Content content);
 
-    void updateAnswers(Card card) throws Exception;
+    Card removeContent(Card card, Content content);
 
-    boolean checkAnswer(int id, String answer);
+    Card deepCopy(Card card);
+
 }
