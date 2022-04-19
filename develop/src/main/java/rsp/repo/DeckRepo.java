@@ -11,4 +11,6 @@ public interface DeckRepo extends CrudRepository<Deck, Integer> {
 
     List<Deck> findAllByTagsIn(List<String> tags);
 
+    List<Deck> findAllByOwnerId(Integer id);
+
 }

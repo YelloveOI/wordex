@@ -25,7 +25,7 @@ public class School extends AbstractEntity {
     @Column(nullable = false)
     @Getter
     @Setter
-    private String address;
+    private String city;
 
     @ManyToMany
     @Getter
@@ -44,7 +44,7 @@ public class School extends AbstractEntity {
 
     public boolean hasStudent(User user) {
         for (User s : students) {
-            if (s.getId() == user.getId()) {
+            if (s.getId().equals(user.getId())) {
                 return true;
             }
         }
@@ -65,5 +65,13 @@ public class School extends AbstractEntity {
             return;
         }
         students.removeIf(s -> Objects.equals(s.getId(), student.getId()));
+    }
+
+    public void addTeacher(User teacher) {
+        Objects.requireNonNull(teacher);
+        if (teachers == null) {
+            this.teachers = new ArrayList<>();
+        }
+        teachers.add(teacher);
     }
 }

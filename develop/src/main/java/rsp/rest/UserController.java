@@ -10,17 +10,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.enums.Role;
-import rsp.model.Deck;
 import rsp.model.School;
 import rsp.model.User;
 import rsp.rest.util.RestUtils;
+import rsp.security.SecurityUtils;
 import rsp.security.model.AuthenticationToken;
-import rsp.service.UserServiceImpl;
 import rsp.service.interfaces.SchoolService;
+import rsp.service.interfaces.UserService;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -28,25 +26,25 @@ public class UserController {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
-    private final UserServiceImpl us;
+    private final UserService us;
     private final SchoolService ss;
 
     @Autowired
-    public UserController(UserServiceImpl us, SchoolService ss) {
+    public UserController(UserService us, SchoolService ss) {
         this.us = us;
         this.ss = ss;
     }
 
-    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     public User getCurrentUser(Principal principal) {
         final AuthenticationToken auth = (AuthenticationToken) principal;
         return auth.getPrincipal().getUser();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{id}")
-    public User getUser(@PathVariable int id){
-        // TODO create similar method for users and check if they can view this user
+    public User getUser(@PathVariable int id) {
         return us.findById(id);
     }
 
@@ -54,17 +52,6 @@ public class UserController {
     @GetMapping("/all")
     public List<User> getAllUsers() {
     }*/
-
-    /**
-     *
-     * @param id User id
-     * @return
-     */
-    @PreAuthorize("hasAnyRole('')")
-    @GetMapping("/{id}/decks")
-    public List<Deck> getUserDecks(@PathVariable int id) {
-        return new ArrayList<>();
-    }
 
     /**
      *
@@ -76,6 +63,7 @@ public class UserController {
      * @param matchingPassword Must match password.
      * @return No content/Bad request
      */
+    @PreAuthorize("isAnonymous()")
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createUser(@RequestBody String username, @RequestBody String email,
@@ -92,19 +80,20 @@ public class UserController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyRole('')")
-    @PatchMapping("/edit")
+    @PreAuthorize("permitAll()")
+    @PostMapping("/edit")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Void> updateUser(@RequestBody User user) {
+    public ResponseEntity<Void> updateUser(@RequestBody String username, @RequestBody String email,
+                                           @RequestBody String password, @RequestBody String matchingPassword) {
         try {
-            us.update(user);
+            us.update(username, email, password, matchingPassword);
         } catch (Exception e) {
             LOG.warn("User could not be updated! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        LOG.debug("User \"{}\" has been updated.", user.getUsername());
+        LOG.debug("User \"{}\" has been updated.", username);
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
-                us.findByUsername(user.getUsername()).getId());
+                us.findByUsername(username).getId());
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
@@ -116,7 +105,7 @@ public class UserController {
             us.addRole(user, Role.STUDENT);
             ss.addStudent(school, user);
         } catch (Exception e) {
-            LOG.warn("User could not had role student! {}", e.getMessage());
+            LOG.warn("User could not receive the student role! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         LOG.debug("Role student has been added to user \"{}\".", user.getUsername());

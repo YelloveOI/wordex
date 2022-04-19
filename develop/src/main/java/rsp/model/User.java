@@ -15,7 +15,8 @@ import java.util.Objects;
 @Entity
 @NamedQueries({
         @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username"),
-        @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email")
+        @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
+        @NamedQuery(name = "User.findAllUsers", query = "SELECT u FROM User u")
 })
 public class User extends AbstractEntity {
 
@@ -55,7 +56,25 @@ public class User extends AbstractEntity {
     @Setter
     private Statistics statistics;
 
+    public void addDeck(Deck deck) {
+        if (decks == null) {
+            decks = new ArrayList<>();
+        }
+        decks.add(deck);
+    }
+
+    public void removeDeck(Deck deck) {
+        if (decks == null) {
+            return;
+        }
+        decks.remove(deck);
+    }
+
     public User() {}
+
+    public User(Integer id) {
+        this.setId(id);
+    }
 
     public User(String username, String email, String password) {
         this.username = username;
@@ -74,7 +93,7 @@ public class User extends AbstractEntity {
 
     public boolean hasRole(Role role) {
         for (Role r : roles) {
-            if (r.toString() == role.toString()) {
+            if (r.toString().equals(role.toString())) {
                 return true;
             }
         }
@@ -97,7 +116,7 @@ public class User extends AbstractEntity {
         roles.removeIf(r -> Objects.equals(r.toString(), role.toString()));
     }
 
-    public void  encodePassword(PasswordEncoder encoder){
+    public void encodePassword(PasswordEncoder encoder){
         this.password = encoder.encode(password);
     }
 }

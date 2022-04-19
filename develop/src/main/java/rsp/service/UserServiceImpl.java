@@ -1,6 +1,5 @@
 package rsp.service;
 
-import org.assertj.core.util.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,11 +10,14 @@ import rsp.exception.NotFoundException;
 import rsp.model.User;
 import rsp.repo.UserRepo;
 import rsp.security.DefaultAuthenticationProvider;
+import rsp.security.SecurityUtils;
 import rsp.security.model.AuthenticationToken;
 import rsp.service.interfaces.UserService;
 
-import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -55,6 +57,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findAll() {
+        List<User> result = new ArrayList<>();
+
+        Iterable<User> iterable = repo.findAll();
+        iterable.forEach(result::add);
+
+        return result;
+    }
+
+    @Override
     public User findByUsername(@NotNull String username) {
         Optional<User> result = repo.findByUsername(username);
         if (result.isPresent()) {
@@ -79,13 +91,13 @@ public class UserServiceImpl implements UserService {
             throw new Exception("Selected username is too long. (3-20 characters allowed)");
         }
 
-        // Username requirements
+        // Email requirements
         if (!Pattern.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,}$", email)) {
             throw new Exception("Please enter a valid email address.");
         }
 
         // Password requirements
-        if (!password.equals(matchingPassword)) {   // is done differently?
+        if (!password.equals(matchingPassword)) {
             throw new Exception("Passwords do not match.");
         }
         if (password.length() < 8) {
@@ -115,45 +127,72 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void update(User user) throws Exception {
-        // Username requirements
-        if (user.getUsername().length() < 3) {
-            throw new Exception("Selected username is too short. (3-20 characters allowed)");
-        }
-        if (user.getUsername().length() > 20) {
-            throw new Exception("Selected username is too long. (3-20 characters allowed)");
+    public void update(@NotNull String username,
+                       @NotNull String email,
+                       @NotNull String password,
+                       @NotNull String matchingPassword
+    ) throws Exception {
+        User currentUser = SecurityUtils.getCurrentUser();
+
+        // Username
+        if (!currentUser.getUsername().equals(username)) {
+            // Username uniqueness
+            if (repo.findByUsername(username).isPresent()) {
+                throw new Exception("Username is already in use.");
+            }
+
+            // Username requirements
+            if (username.length() < 3) {
+                throw new Exception("Selected username is too short. (3-20 characters allowed)");
+            }
+            if (username.length() > 20) {
+                throw new Exception("Selected username is too long. (3-20 characters allowed)");
+            }
         }
 
-        // Username requirements
-        if (!Pattern.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,}$", user.getEmail())) {
-            throw new Exception("Please enter a valid email address.");
+        // Email
+        if (!currentUser.getEmail().equals(email)) {
+            // Email uniqueness
+            if (repo.findByEmail(email).isPresent()) {
+                throw new Exception("This email address is already in use.");
+            }
+
+            // Email requirements
+            if (!Pattern.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,}$", email)) {
+                throw new Exception("Please enter a valid email address.");
+            }
         }
 
-        // Password requirements
-        if (user.getPassword().length() < 8) {
-            throw new Exception("Selected password is too short. (8-20 characters allowed)");
-        }
-        if (user.getPassword().length() > 20) {
-            throw new Exception("Selected password is too long. (8-20 characters allowed)");
-        }
-        if (!Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–{}:;',?/*~$^+=<>]).{8,20}$",
-                user.getPassword())) {
-            throw new Exception("Password has to contain at least one digit [0-9], " +
-                    "at least one lowercase character [a-z], " +
-                    "at least one uppercase character [A-Z] and " +
-                    "at least one special character like ! @ # & ( ).");
+        // Password
+        if (!password.equals(matchingPassword)) {
+            throw new Exception("Passwords do not match.");
         }
 
-        // Username uniqueness
-        if (repo.findByUsername(user.getUsername()).isPresent()) {
-            throw new Exception("Username is already in use.");
-        }
-        // Email uniqueness
-        if (repo.findByEmail(user.getEmail()).isPresent()) {
-            throw new Exception("This email address is already in use.");
+        if (!currentUser.getPassword().equals(provider.encode(password))) {
+            // Password requirements
+            if (password.length() < 8) {
+                throw new Exception("Selected password is too short. (8-20 characters allowed)");
+            }
+            if (password.length() > 20) {
+                throw new Exception("Selected password is too long. (8-20 characters allowed)");
+            }
+            if (!Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–{}:;',?/*~$^+=<>]).{8,20}$",
+                    password)) {
+                throw new Exception("Password has to contain at least one digit [0-9], " +
+                        "at least one lowercase character [a-z], " +
+                        "at least one uppercase character [A-Z] and " +
+                        "at least one special character like ! @ # & ( ).");
+            }
+
+            // Encode
+            currentUser.setPassword(provider.encode(password));
         }
 
-        repo.save(user);
+        // set values
+        currentUser.setUsername(username);
+        currentUser.setEmail(email);
+
+        repo.save(currentUser);
     }
 
     @Override

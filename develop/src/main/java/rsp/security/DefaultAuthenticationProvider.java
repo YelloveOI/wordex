@@ -1,6 +1,5 @@
 package rsp.security;
 
-
 import rsp.security.model.AuthenticationToken;
 import rsp.security.model.UserDetails;
 import org.slf4j.Logger;

@@ -6,10 +6,17 @@ import java.util.List;
 
 public interface DeckService {
 
-    Deck save(Deck deck);
+    void save(Deck deck);
 
-    void deleteById(Integer id);
+    void update(Deck deck) throws Exception;
+
+    void updateAnswers( Deck deck) throws Exception;
+
+    void deleteById(Integer id) throws Exception;
 
     Deck findById(Integer id);
 
+    void createPrivateCopy(Deck deck);
+
+    List<Deck> getUserDecks();
 }

@@ -8,6 +8,7 @@ import rsp.exception.IllegalActionException;
 import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.repo.CardRepo;
+import rsp.security.SecurityUtils;
 import rsp.service.interfaces.CardService;
 
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public void deleteById(@NotNull Integer id) {
+    public void deleteById(@NotNull Integer id) throws Exception {
         Optional<Card> toDelete = repo.findById(id);
         if(toDelete.isPresent()) {
             repo.deleteById(id);

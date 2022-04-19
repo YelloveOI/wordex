@@ -3,7 +3,6 @@ package rsp.repo;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import rsp.enums.Role;
 import rsp.model.User;
 
 import java.util.Optional;
@@ -17,4 +16,6 @@ public interface UserRepo extends CrudRepository<User, Integer> {
 
     void deleteById(Integer id);
 
+    @Override
+    Iterable<User> findAll();
 }
