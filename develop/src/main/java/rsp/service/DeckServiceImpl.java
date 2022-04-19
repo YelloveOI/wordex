@@ -11,6 +11,7 @@ import rsp.repo.DeckRepo;
 import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +25,11 @@ public class DeckServiceImpl implements DeckService {
     public DeckServiceImpl(DeckRepo repo, CardServiceImpl cardService) {
         this.repo = repo;
         this.cardService = cardService;
+    }
+
+    @Override
+    public List<Deck> getUserDecks() {
+        return repo.findAllByOwnerId(SecurityUtils.getCurrentUser().getId());
     }
 
 

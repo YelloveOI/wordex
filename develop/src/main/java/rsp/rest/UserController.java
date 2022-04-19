@@ -57,17 +57,6 @@ public class UserController {
 
     /**
      *
-     * @param id User id
-     * @return
-     */
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @GetMapping("/{id}/decks")
-    public List<Deck> getUserDecks(@PathVariable int id) {
-        return new ArrayList<>();
-    }
-
-    /**
-     *
      * @param username Selected username has to be 3-20 characters long and cannot be already in use.
      * @param email Selected Email has to have a valid form and cannot be already in use.
      * @param password Selected password has to be 8-20 characters long.

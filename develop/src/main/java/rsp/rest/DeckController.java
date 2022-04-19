@@ -12,6 +12,9 @@ import rsp.model.Deck;
 import rsp.rest.util.RestUtils;
 import rsp.service.DeckServiceImpl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/deck")
 public class DeckController {
@@ -30,6 +33,26 @@ public class DeckController {
     public Deck getDeck(@PathVariable int id) {
         // TODO check if owned
         return ds.findById(id);
+    }
+
+    /**
+     * Get current user's decks.
+     * @return Current user's decks
+     */
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @GetMapping("/my")
+    public List<Deck> getUserDecks() {
+        List<Deck> decks;
+        try {
+            decks = ds.getUserDecks();
+        } catch (Exception e) {
+            LOG.warn("Decks could not be found! {}", e.getMessage());
+            //return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return null;
+        }
+        LOG.debug("Decks were found.");
+        //return new ResponseEntity<>(HttpStatus.OK);
+        return decks;
     }
 
     /**

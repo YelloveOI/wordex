@@ -2,6 +2,8 @@ package rsp.service.interfaces;
 
 import rsp.model.Deck;
 
+import java.util.List;
+
 public interface DeckService {
 
     void save(Deck deck);
@@ -15,4 +17,6 @@ public interface DeckService {
     Deck findById(Integer id);
 
     void createPrivateCopy(Deck deck);
+
+    List<Deck> getUserDecks();
 }
