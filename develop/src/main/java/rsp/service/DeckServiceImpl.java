@@ -107,7 +107,7 @@ public class DeckServiceImpl implements DeckService {
         result.setTags(deck.getTags());
 
         for(Card c : deck.getCards()) {
-            result.addCard(cardService.createPrivateCopy(c));
+//            result.addCard(cardService.createPrivateCopy(c));
         }
 
         save(deck);

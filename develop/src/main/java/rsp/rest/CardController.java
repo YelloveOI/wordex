@@ -45,21 +45,22 @@ public class CardController {
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateCard(@PathVariable int id) {
         try {
-            cs.update(card);
+//            cs.update(card);
         } catch (Exception e) {
             LOG.warn("Card could not be updated! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        LOG.debug("Card ID \"{}\" has been updated.", card.getId());
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", card.getId());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+//        LOG.debug("Card ID \"{}\" has been updated.", card.getId());
+//        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", card.getId());
+//        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        return null;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCard(@PathVariable int id) {
         try {
-            cs.deleteById(id);
+//            cs.deleteById(id);
         } catch (Exception e) {
             LOG.warn("Card could not be deleted! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
