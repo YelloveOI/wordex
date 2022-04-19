@@ -10,7 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Card;
 import rsp.rest.util.RestUtils;
-import rsp.service.CardServiceImpl;
+import rsp.service.interfaces.CardService;
 
 @RestController
 @RequestMapping("/card")
@@ -18,10 +18,10 @@ public class CardController {
 
     private static final Logger LOG = LoggerFactory.getLogger(CardController.class);
 
-    private final CardServiceImpl cs;
+    private final CardService cs;
 
     @Autowired
-    public CardController(CardServiceImpl cs) {
+    public CardController(CardService cs) {
         this.cs = cs;
     }
 
@@ -123,7 +123,7 @@ public class CardController {
     @PostMapping("/answer/{id}/{value}")
     public ResponseEntity<Void> answerCard(@PathVariable int id, @PathVariable String value) {
         //TODO private or public card, if is card owned and so on
-        if(cs.checkAnswer(id,value)) {
+        if (cs.checkAnswer(id,value)) {
             final HttpHeaders headers = RestUtils.createCardAnswerRightHeaders("/{id}", cs.findById(id));
             return new ResponseEntity<>(headers, HttpStatus.ACCEPTED);
         } else {

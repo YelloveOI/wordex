@@ -10,17 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.enums.Role;
-import rsp.model.Deck;
 import rsp.model.School;
 import rsp.model.User;
 import rsp.rest.util.RestUtils;
 import rsp.security.model.AuthenticationToken;
-import rsp.service.UserServiceImpl;
 import rsp.service.interfaces.SchoolService;
+import rsp.service.interfaces.UserService;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -28,11 +25,11 @@ public class UserController {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
-    private final UserServiceImpl us;
+    private final UserService us;
     private final SchoolService ss;
 
     @Autowired
-    public UserController(UserServiceImpl us, SchoolService ss) {
+    public UserController(UserService us, SchoolService ss) {
         this.us = us;
         this.ss = ss;
     }

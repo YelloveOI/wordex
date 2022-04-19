@@ -123,6 +123,7 @@ public class CardServiceImpl implements CardService {
         return result;
     }
 
+    @Override
     public boolean checkAnswer(int id, @NotNull String answer){
         if(findById(id).getTranslation().equals(answer)) {
             return true;

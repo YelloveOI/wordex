@@ -10,7 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.School;
 import rsp.rest.util.RestUtils;
-import rsp.service.SchoolServiceImpl;
+import rsp.service.interfaces.SchoolService;
 
 @RestController
 @RequestMapping("/school")
@@ -18,10 +18,10 @@ public class SchoolController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SchoolController.class);
 
-    private final SchoolServiceImpl ss;
+    private final SchoolService ss;
 
     @Autowired
-    public SchoolController(SchoolServiceImpl ss) {
+    public SchoolController(SchoolService ss) {
         this.ss = ss;
     }
 

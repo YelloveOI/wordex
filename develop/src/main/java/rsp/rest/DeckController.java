@@ -10,9 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Deck;
 import rsp.rest.util.RestUtils;
-import rsp.service.DeckServiceImpl;
+import rsp.service.interfaces.DeckService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,10 +20,10 @@ public class DeckController {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeckController.class);
 
-    private final DeckServiceImpl ds;
+    private final DeckService ds;
 
     @Autowired
-    public DeckController(DeckServiceImpl ds) {
+    public DeckController(DeckService ds) {
         this.ds = ds;
     }
 

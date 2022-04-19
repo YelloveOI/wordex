@@ -17,4 +17,6 @@ public interface CardService {
     void update(Card card) throws Exception;
 
     void updateAnswers(Card card) throws Exception;
+
+    boolean checkAnswer(int id, String answer);
 }
