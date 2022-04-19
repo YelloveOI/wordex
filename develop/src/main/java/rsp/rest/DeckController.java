@@ -41,14 +41,15 @@ public class DeckController {
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createDeck(@RequestBody Deck deck) {
+        Integer id;
         try {
-            ds.save(deck);
+            id = ds.save(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be created! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        LOG.debug("Deck named \"{}\" has been created.", deck.getName());
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", deck.getId());
+        LOG.debug("Deck ID \"{}\" has been created.", id);
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", id);
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 

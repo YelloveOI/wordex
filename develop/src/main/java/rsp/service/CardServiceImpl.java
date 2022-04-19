@@ -7,6 +7,7 @@ import rsp.enums.Language;
 import rsp.exception.IllegalActionException;
 import rsp.exception.NotFoundException;
 import rsp.model.Card;
+import rsp.model.Deck;
 import rsp.repo.CardRepo;
 import rsp.security.SecurityUtils;
 import rsp.service.interfaces.CardService;
@@ -25,9 +26,8 @@ public class CardServiceImpl implements CardService {
 
 
     @Override
-    public Card save(@NotNull Card card) {
+    public void save(@NotNull Card card) {
         repo.save(card);
-        return card;
     }
 
     @Override
@@ -54,20 +54,37 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card create(
+    public Integer createUsingValues(
             @NotNull String term,
             @NotNull String definition,
-            @NotNull Language from,
-            @NotNull Language to,
-            @NotNull boolean isPublic
+            @NotNull String translation
     ) {
         Card result = new Card();
 
         result.setTerm(term);
         result.setDefinition(definition);
-        result.setPublic(isPublic);
+        result.setTranslation(translation);
 
-        return result;
+        save(result);
+
+        return result.getId();
+    }
+
+    @Override
+    public Integer create(@NotNull Card card) {
+        save(card);
+        return card.getId();
+    }
+
+    @Override
+    public void update(@NotNull Card card) throws Exception {
+        if (!card.getDeck().getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
+            throw new Exception("You can't edit someone else's card.");
+        }
+        if (!card.getDeck().isConfigurable()) {
+            throw new Exception("The deck, this card belongs to, is not configurable.");
+        }
+        repo.save(card);
     }
 
     public Card createPublicCopy(@NotNull Card card) {

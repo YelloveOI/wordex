@@ -1,16 +1,18 @@
 package rsp.service.interfaces;
 
-import rsp.enums.Language;
 import rsp.model.Card;
 
 public interface CardService {
 
-    Card save(Card card);
+    void save(Card card);
 
     void deleteById(Integer id) throws Exception;
 
     Card findById(Integer id);
 
-    Card create(String term, String definition, Language from, Language to, boolean isPublic);
+    Integer createUsingValues(String term, String definition, String translation);
 
+    Integer create(Card card);
+
+    void update( Card card) throws Exception;
 }

@@ -33,16 +33,52 @@ public class CardController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping("/new")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> createCard(@RequestBody Card card) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    @PostMapping("/newUsingValues")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> createCardUsingValues(@RequestBody String term,
+                                                      @RequestBody String definition,
+                                                      @RequestBody String translation) {
+        Integer id;
+        try {
+            id = cs.createUsingValues(term, definition, translation);
+        } catch (Exception e) {
+            LOG.warn("Card could not be created! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("Card ID \"{}\" has been created.", id);
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", id);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PutMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateCard(@RequestBody Card card) {
+    @PostMapping("/new")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> createCard(@RequestBody Card card) {
+        Integer id;
+        try {
+            id = cs.create(card);
+        } catch (Exception e) {
+            LOG.warn("Card could not be created! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("Card ID \"{}\" has been created.", id);
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", id);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @PostMapping("/edit")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> updateCard(@RequestBody Card card) {
+        try {
+            cs.update(card);
+        } catch (Exception e) {
+            LOG.warn("Card could not be updated! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("Card ID \"{}\" has been updated.", card.getId());
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", card.getId());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER')")

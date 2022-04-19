@@ -29,15 +29,20 @@ public class DeckServiceImpl implements DeckService {
 
 
     @Override
-    public void save(@NotNull Deck deck) {
+    public Integer save(@NotNull Deck deck) {
         deck.setOwner(SecurityUtils.getCurrentUser());
         repo.save(deck);
+
+        return deck.getId();
     }
 
     @Override
     public void update(@NotNull Deck deck) throws Exception {
         if (!deck.getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
             throw new Exception("You can't edit someone else's deck.");
+        }
+        if (!deck.isConfigurable()) {
+            throw new Exception("This deck is not configurable.");
         }
         repo.save(deck);
     }
