@@ -46,11 +46,27 @@ public class DeckController {
             decks = ds.getUserDecks();
         } catch (Exception e) {
             LOG.warn("Decks could not be found! {}", e.getMessage());
-            //return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             return null;
         }
         LOG.debug("Decks were found.");
-        //return new ResponseEntity<>(HttpStatus.OK);
+        return decks;
+    }
+
+    /**
+     * Get public decks.
+     * @return Public decks
+     */
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @GetMapping("/public")
+    public List<Deck> getPublicDecks() {
+        List<Deck> decks;
+        try {
+            decks = ds.getPublicDecks();
+        } catch (Exception e) {
+            LOG.warn("Public decks could not be found! {}", e.getMessage());
+            return null;
+        }
+        LOG.debug("Public decks were found.");
         return decks;
     }
 
@@ -94,11 +110,11 @@ public class DeckController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    /**
+    /*
      * Used for storing answers as a whole (isKnown, isLearned).
      * @param deck
      * @return Created/Bad request
-     */
+
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/answersStoring")
     @ResponseStatus(HttpStatus.CREATED)
@@ -112,7 +128,7 @@ public class DeckController {
         LOG.debug("Deck answers have been stored.");
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", deck.getId());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
-    }
+    }*/
 
     /**
      * Selects a deck (either public or private) and makes it private so that user can start
