@@ -25,7 +25,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getAllUsers_getsOneUser_Test() {  // required a bean named 'entityManagerFactory'
+    public void getAllUsers_getsOneUser_Test() {  // Failed to resolve parameter [rsp.repo.UserRepo repo]
         final User user = Generator.generateRandomUser();
         repo.save(user);
 

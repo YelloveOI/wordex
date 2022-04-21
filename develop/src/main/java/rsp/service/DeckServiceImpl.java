@@ -32,6 +32,11 @@ public class DeckServiceImpl implements DeckService {
         return repo.findAllByOwnerId(SecurityUtils.getCurrentUser().getId());
     }
 
+    @Override
+    public List<Deck> getPublicDecks() {
+        return repo.findByIsPrivateFalse();
+    }
+
 
     @Override
     public void save(@NotNull Deck deck) {
