@@ -19,4 +19,6 @@ public interface DeckService {
     void createPrivateCopy(Deck deck);
 
     List<Deck> getUserDecks();
+
+    List<Deck> getPublicDecks();
 }

@@ -8,7 +8,6 @@ import rsp.model.Card;
 import rsp.model.Content;
 import rsp.repo.CardRepo;
 import rsp.service.interfaces.CardService;
-import rsp.service.interfaces.ContentService;
 
 import java.util.Optional;
 

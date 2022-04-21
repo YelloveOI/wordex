@@ -25,9 +25,6 @@ public class Generator {
 
         card.setDefinition("Definition"+randomInt());
         card.setTerm("Term"+randomInt());
-        card.setTranslation("Translation"+randomInt());
-        card.setKnown(randomBoolean());
-        card.setLearned(randomBoolean());
 
         return card;
     }
