@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rsp.enums.Language;
+import rsp.exception.IllegalActionException;
 import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.model.Deck;
@@ -28,7 +30,7 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public List<Deck> getUserDecks() {
+    public List<Deck> getCurrentUserDecks() {
         return repo.findAllByOwnerId(SecurityUtils.getCurrentUser().getId());
     }
 
@@ -37,44 +39,48 @@ public class DeckServiceImpl implements DeckService {
         return repo.findByIsPrivateFalse();
     }
 
+    //TODO Tags logic
 
+    /**
+     * Creates private deck w/o cards
+     */
     @Override
-    public void save(@NotNull Deck deck) {
+    public Deck create(
+            @NotNull String description,
+            @NotNull String name,
+            @NotNull Language languageTo,
+            @NotNull Language languageFrom
+    ) {
+        Deck deck = new Deck();
+
         deck.setOwner(SecurityUtils.getCurrentUser());
+        deck.setDescription(description);
+        deck.setName(name);
+        deck.setLanguageTo(languageTo);
+        deck.setLanguageFrom(languageFrom);
+        deck.setPrivate(true);
+
+        repo.save(deck);
+
+        return deck;
+    }
+
+    @Override
+    public void addCard(@NotNull Deck deck, @NotNull Card card) {
+        deck.addCard(card);
+
         repo.save(deck);
     }
 
     @Override
-    public void update(@NotNull Deck deck) throws Exception {
-        if (!deck.getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
-            throw new Exception("You can't edit someone else's deck.");
-        }
-        if (!deck.isConfigurable()) {
-            throw new Exception("This deck is not configurable.");
-        }
+    public void removeCard(@NotNull Deck deck, @NotNull Card card) {
+        deck.removeCard(card);
+
         repo.save(deck);
     }
 
     @Override
-    public void updateAnswers(@NotNull Deck deck) throws Exception {
-        if (!deck.getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
-            throw new Exception("You can't edit someone else's deck.");
-        }
-        if (!deck.isConfigurable()) { // check if deck values weren't changed if not configurable
-            Deck result = findById(deck.getId());
-            if (!result.getDescription().equals(deck.getDescription())
-                    || result.isConfigurable() != deck.isConfigurable()
-                    || result.isPrivate() != deck.isPrivate()
-                    || !result.getName().equals(deck.getName())
-                    || result.getLanguageFrom() != deck.getLanguageFrom()
-                    || result.getLanguageTo() != deck.getLanguageTo()) {
-                throw new Exception("This deck is not configurable.");
-            }
-        }
-        repo.save(deck);
-    }
-
-    /*public Deck createPublicCopy(@NotNull Deck deck) {
+    public Deck createPublicCopy(@NotNull Deck deck) {
         if(deck.isPrivate()) {
             Deck result = new Deck();
 
@@ -84,21 +90,21 @@ public class DeckServiceImpl implements DeckService {
             result.setLanguageTo(deck.getLanguageTo());
             result.setDescription(deck.getDescription());
             result.setName(deck.getName());
-            result.setOwner(deck.getOwner());
+            result.setOwner(SecurityUtils.getCurrentUser());
             result.setTags(deck.getTags());
 
             for(Card c : deck.getCards()) {
-                result.addCard(cardService.createPublicCopy(c));
+                result.addCard(cardService.createCopy(c));
             }
 
             return result;
         } else {
             throw IllegalActionException.create("create public deck copy of public deck", deck);
         }
-    }*/
+    }
 
     @Override
-    public void createPrivateCopy(@NotNull Deck deck) {
+    public Deck createPrivateCopy(@NotNull Deck deck) {
         Deck result = new Deck();
 
         result.setOwner(SecurityUtils.getCurrentUser());
@@ -110,12 +116,15 @@ public class DeckServiceImpl implements DeckService {
         result.setDescription(deck.getDescription());
         result.setName(deck.getName());
         result.setTags(deck.getTags());
+        result.setOwner(SecurityUtils.getCurrentUser());
 
         for(Card c : deck.getCards()) {
-//            result.addCard(cardService.createPrivateCopy(c));
+            result.addCard(cardService.createCopy(c));
         }
 
-        save(deck);
+        repo.save(result);
+
+        return result;
     }
 
     @Override

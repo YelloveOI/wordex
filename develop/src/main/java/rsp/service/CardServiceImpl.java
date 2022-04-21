@@ -8,7 +8,10 @@ import rsp.model.Card;
 import rsp.model.Content;
 import rsp.repo.CardRepo;
 import rsp.service.interfaces.CardService;
+import rsp.service.interfaces.ContentService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,9 +19,11 @@ import java.util.Optional;
 public class CardServiceImpl implements CardService {
 
     private final CardRepo repo;
+    private final ContentService contentService;
 
-    public CardServiceImpl(CardRepo repo) {
+    public CardServiceImpl(CardRepo repo, ContentService contentService) {
         this.repo = repo;
+        this.contentService = contentService;
     }
 
     /**
@@ -45,6 +50,19 @@ public class CardServiceImpl implements CardService {
         } else {
             throw NotFoundException.create(Card.class.getName(), id);
         }
+    }
+
+    @Override
+    public Card createCopy(@NotNull Card card) {
+        Card result = new Card();
+
+        result.setTerm(card.getTerm());
+        result.setDefinition(card.getDefinition());
+        result.setContentList(card.getContentList());
+
+        repo.save(result);
+
+        return result;
     }
 
     @Override

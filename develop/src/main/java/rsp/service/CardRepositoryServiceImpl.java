@@ -14,7 +14,6 @@ public class CardRepositoryServiceImpl implements CardRepositoryService {
     private final CardService cas;
     private final ContentService cos;
     private final DeckService des;
-    //TODO deckService
 
     public CardRepositoryServiceImpl(CardService cas, ContentService cos, DeckService des) {
         this.cas = cas;

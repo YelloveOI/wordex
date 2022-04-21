@@ -43,7 +43,7 @@ public class DeckController {
     public List<Deck> getUserDecks() {
         List<Deck> decks;
         try {
-            decks = ds.getUserDecks();
+            decks = ds.getCurrentUserDecks();
         } catch (Exception e) {
             LOG.warn("Decks could not be found! {}", e.getMessage());
             return null;
