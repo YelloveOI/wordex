@@ -31,7 +31,7 @@ public class DeckController {
     @GetMapping("/{id}")
     public Deck getDeck(@PathVariable int id) {
         // TODO check if owned
-        return ds.findById(id);
+//        return ds.findById(id);
     }
 
     /**
@@ -80,7 +80,7 @@ public class DeckController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createDeck(@RequestBody Deck deck) {
         try {
-            ds.save(deck);
+//            ds.save(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be created! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -100,7 +100,7 @@ public class DeckController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> updateDeck(@RequestBody Deck deck) {
         try {
-            ds.update(deck);
+//            ds.update(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be updated! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -166,7 +166,7 @@ public class DeckController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<Void> deleteDeck(@PathVariable int id) {
         try {
-            ds.deleteById(id);
+//            ds.deleteById(id);
         } catch (Exception e) {
             LOG.warn("Deck could not be deleted! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

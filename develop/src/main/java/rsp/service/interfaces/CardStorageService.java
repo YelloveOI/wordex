@@ -7,27 +7,19 @@ import java.util.List;
 
 public interface CardStorageService {
 
-    Card addCardToMyStorage(Card card);
+    void addCardToStorage(Card card);
 
-    void removeCardFromMyStorage(Card card);
+    void removeCardFromStorage(Card card);
 
-    Card editText();
+    void addDeck(Deck deck);
 
-    void addContent();
+    void removeDeck(Deck deck);
 
-    void removeContent();
+    Deck shareDeck(Deck deck);
 
-    Deck createDeck();
+    Deck downloadDeck(Deck deck);
 
-    Deck shareDeck();
-
-    Deck downloadDeck();
-
-    void addCardToDeck();
-
-    void removeCardFromDeck();
-
-    List<Deck> getMyDeck();
+    List<Deck> getMyDecks();
 
     List<Deck> getPublicDecks();
 

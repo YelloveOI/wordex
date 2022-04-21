@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rsp.enums.Language;
 import rsp.exception.IllegalActionException;
-import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.model.Deck;
 import rsp.repo.DeckRepo;
@@ -14,7 +13,6 @@ import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -53,7 +51,6 @@ public class DeckServiceImpl implements DeckService {
     ) {
         Deck deck = new Deck();
 
-        deck.setCardRepo(SecurityUtils.getCurrentUser().getCardRepo());
         deck.setDescription(description);
         deck.setName(name);
         deck.setLanguageTo(languageTo);
@@ -84,7 +81,6 @@ public class DeckServiceImpl implements DeckService {
         if(deck.isPrivate()) {
             Deck result = new Deck();
 
-            result.setCardRepo(SecurityUtils.getCurrentUser().getCardRepo());
             result.setPrivate(false);
             result.setConfigurable(deck.isConfigurable());
             result.setLanguageFrom(deck.getLanguageFrom());
@@ -107,7 +103,6 @@ public class DeckServiceImpl implements DeckService {
     public Deck createPrivateCopy(@NotNull Deck deck) {
         Deck result = new Deck();
 
-        result.setCardRepo(SecurityUtils.getCurrentUser().getCardRepo());
         result.setPrivate(true);
         result.setConfigurable(deck.isConfigurable());
         result.setLanguageFrom(deck.getLanguageFrom());
