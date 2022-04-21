@@ -27,12 +27,12 @@ public class DeckController {
         this.ds = ds;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @GetMapping("/{id}")
-    public Deck getDeck(@PathVariable int id) {
-        // TODO check if owned
-//        return ds.findById(id);
-    }
+//    @PreAuthorize("hasAnyRole('ROLE_USER')")
+//    @GetMapping("/{id}")
+//    public Deck getDeck(@PathVariable int id) {
+//        // TODO check if owned
+////        return ds.findById(id);
+//    }
 
     /**
      * Get current user's decks.
