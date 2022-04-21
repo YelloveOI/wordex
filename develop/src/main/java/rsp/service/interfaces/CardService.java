@@ -8,9 +8,9 @@ public interface CardService {
 
     Card createCopy(Card card);
 
-    void deleteById(Integer id) throws Exception;
+//    void deleteById(Integer id) throws Exception;
 
-    Card findById(Integer id);
+//    Card findById(Integer id);
 
     Card create(String term, String definition);
 

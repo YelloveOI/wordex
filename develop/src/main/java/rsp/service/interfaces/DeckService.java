@@ -18,9 +18,9 @@ public interface DeckService {
 
     void removeCard(Deck deck, Card card);
 
-    void deleteById(Integer id) throws Exception;
-
-    Deck findById(Integer id);
+//    void deleteById(Integer id) throws Exception;
+//
+//    Deck findById(Integer id);
 
     List<Deck> getCurrentUserDecks();
 

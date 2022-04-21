@@ -53,7 +53,7 @@ public class DeckServiceImpl implements DeckService {
     ) {
         Deck deck = new Deck();
 
-        deck.setOwner(SecurityUtils.getCurrentUser());
+        deck.setCardRepo(SecurityUtils.getCurrentUser().getCardRepo());
         deck.setDescription(description);
         deck.setName(name);
         deck.setLanguageTo(languageTo);
@@ -84,13 +84,13 @@ public class DeckServiceImpl implements DeckService {
         if(deck.isPrivate()) {
             Deck result = new Deck();
 
+            result.setCardRepo(SecurityUtils.getCurrentUser().getCardRepo());
             result.setPrivate(false);
             result.setConfigurable(deck.isConfigurable());
             result.setLanguageFrom(deck.getLanguageFrom());
             result.setLanguageTo(deck.getLanguageTo());
             result.setDescription(deck.getDescription());
             result.setName(deck.getName());
-            result.setOwner(SecurityUtils.getCurrentUser());
             result.setTags(deck.getTags());
 
             for(Card c : deck.getCards()) {
@@ -107,8 +107,7 @@ public class DeckServiceImpl implements DeckService {
     public Deck createPrivateCopy(@NotNull Deck deck) {
         Deck result = new Deck();
 
-        result.setOwner(SecurityUtils.getCurrentUser());
-
+        result.setCardRepo(SecurityUtils.getCurrentUser().getCardRepo());
         result.setPrivate(true);
         result.setConfigurable(deck.isConfigurable());
         result.setLanguageFrom(deck.getLanguageFrom());
@@ -116,7 +115,6 @@ public class DeckServiceImpl implements DeckService {
         result.setDescription(deck.getDescription());
         result.setName(deck.getName());
         result.setTags(deck.getTags());
-        result.setOwner(SecurityUtils.getCurrentUser());
 
         for(Card c : deck.getCards()) {
             result.addCard(cardService.createCopy(c));
@@ -127,26 +125,26 @@ public class DeckServiceImpl implements DeckService {
         return result;
     }
 
-    @Override
-    public void deleteById(@NotNull Integer id) throws Exception {
-        Optional<Deck> toDelete = repo.findById(id);
-        if(toDelete.isPresent()) {
-            if (!toDelete.get().getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
-                throw new Exception("You can't delete someone else's deck.");
-            }
-            repo.deleteById(id);
-        } else {
-            throw NotFoundException.create(Deck.class.getName(), id);
-        }
-    }
-
-    @Override
-    public Deck findById(@NotNull Integer id) {
-        Optional<Deck> result = repo.findById(id);
-        if(result.isPresent()) {
-            return result.get();
-        } else {
-            throw NotFoundException.create(Deck.class.getName(), id);
-        }
-    }
+//    @Override
+//    public void deleteById(@NotNull Integer id) throws Exception {
+//        Optional<Deck> toDelete = repo.findById(id);
+//        if(toDelete.isPresent()) {
+//            if (!toDelete.get().getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
+//                throw new Exception("You can't delete someone else's deck.");
+//            }
+//            repo.deleteById(id);
+//        } else {
+//            throw NotFoundException.create(Deck.class.getName(), id);
+//        }
+//    }
+//
+//    @Override
+//    public Deck findById(@NotNull Integer id) {
+//        Optional<Deck> result = repo.findById(id);
+//        if(result.isPresent()) {
+//            return result.get();
+//        } else {
+//            throw NotFoundException.create(Deck.class.getName(), id);
+//        }
+//    }
 }

@@ -26,31 +26,31 @@ public class CardServiceImpl implements CardService {
         this.contentService = contentService;
     }
 
-    /**
-     * Deletes a card by id, deleting couldn't affect
-     * foreign decks
-     * @param id
-     * @throws Exception
-     */
-    @Override
-    public void deleteById(@NotNull Integer id) throws NotFoundException {
-        Optional<Card> toDelete = repo.findById(id);
-        if(toDelete.isPresent()) {
-            repo.deleteById(id);
-        } else {
-            throw NotFoundException.create(Card.class.getName(), id);
-        }
-    }
+//    /**
+//     * Deletes a card by id, deleting couldn't affect
+//     * foreign decks
+//     * @param id
+//     * @throws Exception
+//     */
+//    @Override
+//    public void deleteById(@NotNull Integer id) throws NotFoundException {
+//        Optional<Card> toDelete = repo.findById(id);
+//        if(toDelete.isPresent()) {
+//            repo.deleteById(id);
+//        } else {
+//            throw NotFoundException.create(Card.class.getName(), id);
+//        }
+//    }
 
-    @Override
-    public Card findById(@NotNull Integer id) throws NotFoundException {
-        Optional<Card> result = repo.findById(id);
-        if(result.isPresent()) {
-            return  result.get();
-        } else {
-            throw NotFoundException.create(Card.class.getName(), id);
-        }
-    }
+//    @Override
+//    public Card findById(@NotNull Integer id) throws NotFoundException {
+//        Optional<Card> result = repo.findById(id);
+//        if(result.isPresent()) {
+//            return  result.get();
+//        } else {
+//            throw NotFoundException.create(Card.class.getName(), id);
+//        }
+//    }
 
     @Override
     public Card createCopy(@NotNull Card card) {
