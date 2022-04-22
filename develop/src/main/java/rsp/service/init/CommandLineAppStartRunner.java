@@ -31,9 +31,9 @@ class CommandLineAppStartupRunner implements CommandLineRunner {
             admin.setPassword("1234");
             admin.addRole(Role.ADMIN);
             admin.setEmail("email@com.cz");
-            admin.setDecks(new LinkedList<Deck>());
+            admin.setDecks(new LinkedList<Deck>()); // LinkedList nebo ArrayList
             Statistics statistics = new Statistics();
-            statistics.setLearnedCards(0);
+            //statistics.setLearnedCards(0);
             admin.setStatistics(statistics);
 
             userService.createAdmin(admin);

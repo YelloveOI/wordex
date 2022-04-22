@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import rsp.model.Deck;
 import rsp.rest.util.RestUtils;
 import rsp.service.interfaces.DeckService;
+import rsp.service.interfaces.StatisticsService;
 
 import java.util.List;
 
@@ -21,10 +22,12 @@ public class DeckController {
     private static final Logger LOG = LoggerFactory.getLogger(DeckController.class);
 
     private final DeckService ds;
+    private final StatisticsService ss;
 
     @Autowired
-    public DeckController(DeckService ds) {
+    public DeckController(DeckService ds, StatisticsService ss) {
         this.ds = ds;
+        this.ss = ss;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER')")
@@ -65,6 +68,7 @@ public class DeckController {
     public ResponseEntity<Void> createDeck(@RequestBody Deck deck) {
         try {
             ds.save(deck);
+            ss.createDeck(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be created! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -95,26 +99,6 @@ public class DeckController {
     }
 
     /**
-     * Used for storing answers as a whole (isKnown, isLearned).
-     * @param deck
-     * @return Created/Bad request
-     */
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping("/answersStoring")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> storeDeckAnswers(@RequestBody Deck deck) {
-        try {
-            ds.updateAnswers(deck);
-        } catch (Exception e) {
-            LOG.warn("Deck answers could not be stored! {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        LOG.debug("Deck answers have been stored.");
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", deck.getId());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
-    }
-
-    /**
      * Selects a deck (either public or private) and makes it private so that user can start
      * answering it without the deck being modified by other users.
      * @param deck
@@ -126,6 +110,7 @@ public class DeckController {
     public ResponseEntity<Void> chooseDeck(@RequestBody Deck deck) {
         try {
             ds.createPrivateCopy(deck);
+            ss.createDeck(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be selected! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -151,6 +136,7 @@ public class DeckController {
     public ResponseEntity<Void> deleteDeck(@PathVariable int id) {
         try {
             ds.deleteById(id);
+            ss.deleteDeck(id);
         } catch (Exception e) {
             LOG.warn("Deck could not be deleted! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
