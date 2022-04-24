@@ -1,5 +1,6 @@
 package rsp.model;
 
+import org.springframework.boot.test.context.SpringBootTest;
 import rsp.environment.Generator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

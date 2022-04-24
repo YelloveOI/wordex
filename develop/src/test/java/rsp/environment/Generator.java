@@ -97,8 +97,8 @@ public class Generator {
         final User user = new User();
 
         user.setUsername("Username"+randomInt());
-        user.setEmail("Email"+randomInt());
-        user.setPassword(Integer.toString(randomInt()));
+        user.setEmail("Email"+randomInt() + "@gmail.com");
+        user.setPassword(Integer.toString(randomInt())+ "@?5aaHH");
 
         List<Role> roles = new ArrayList<>();
         roles.add(Role.USER);
