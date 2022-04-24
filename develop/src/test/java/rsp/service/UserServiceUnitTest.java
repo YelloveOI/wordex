@@ -4,16 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static  org.mockito.Mockito.*;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
-import org.springframework.boot.test.context.SpringBootTest;
 import rsp.environment.Generator;
-import rsp.environment.TestConfig;
 import rsp.model.User;
 import rsp.repo.UserRepo;
 import rsp.security.DefaultAuthenticationProvider;
@@ -21,8 +18,6 @@ import rsp.service.interfaces.UserService;
 
 import java.util.Optional;
 
-
-@SpringBootTest(classes = TestConfig.class)
 @ExtendWith(MockitoExtension.class)
 public class UserServiceUnitTest {
 
@@ -35,7 +30,7 @@ public class UserServiceUnitTest {
     private UserService sut;
 
     @BeforeEach
-    private void setUp(){
+    public void setUp(){
         this.sut = new UserServiceImpl(repoMock, authMock);
     }
 

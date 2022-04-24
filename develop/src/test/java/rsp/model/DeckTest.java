@@ -4,9 +4,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import rsp.environment.Generator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import rsp.environment.TestConfig;
 
-@SpringBootTest(classes = TestConfig.class)
 public class DeckTest {
 
     @Test

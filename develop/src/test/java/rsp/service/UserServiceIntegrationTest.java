@@ -1,26 +1,40 @@
 package rsp.service;
 
 
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import rsp.repo.UserRepo;
-import rsp.security.DefaultAuthenticationProvider;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+import rsp.environment.Generator;
+import rsp.model.User;
 import rsp.service.interfaces.UserService;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest()
+@ActiveProfiles("test")
+@Transactional
 public class UserServiceIntegrationTest {
 
-    @Mock
-    private UserRepo repoMock;
 
-    private DefaultAuthenticationProvider authMock;
-
+    @Autowired
     private UserService sut;
 
     @BeforeEach
-    private void setUp(){
-        this.sut = new UserServiceImpl(repoMock, authMock);
+    public void setUp(){
+    }
+
+    @Test
+    public void testTest(){
+        //arrange
+        User user = Generator.generateRandomUser();
+        sut.save(user);
+
+        //act
+        User result = sut.findByUsername(user.getUsername());
+
+        //assert
+        assertEquals(user.getUsername(), result.getUsername());
     }
 }
