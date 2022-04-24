@@ -46,29 +46,10 @@ public class User extends AbstractEntity {
     @Setter
     private List<Role> roles;
 
-    @OneToMany
-    @Getter
-    @Setter
-    private List<Deck> decks;
-
     @OneToOne(cascade = CascadeType.ALL)
     @Getter
     @Setter
     private Statistics statistics;
-
-    public void addDeck(Deck deck) {
-        if (decks == null) {
-            decks = new ArrayList<>();
-        }
-        decks.add(deck);
-    }
-
-    public void removeDeck(Deck deck) {
-        if (decks == null) {
-            return;
-        }
-        decks.remove(deck);
-    }
 
     public User() {}
 

@@ -1,13 +1,16 @@
 package rsp.service.interfaces;
 
+import org.jetbrains.annotations.NotNull;
 import rsp.model.Card;
 import rsp.model.Content;
 
 public interface CardService {
 
-    void deleteById(Integer id) throws Exception;
+    Card createCopy(Card card);
 
-    Card findById(Integer id);
+//    void deleteById(Integer id) throws Exception;
+
+//    Card findById(Integer id);
 
     Card create(String term, String definition);
 

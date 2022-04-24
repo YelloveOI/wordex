@@ -53,10 +53,17 @@ public class Deck extends AbstractEntity {
     @Setter
     private List<Tag> tags;
 
-    @ManyToOne
-    @Getter
-    @Setter
-    private User owner;
+    public Deck(String description, boolean isConfigurable, boolean isPrivate, String name, Language languageFrom, Language languageTo) {
+        this.description = description;
+        this.isConfigurable = isConfigurable;
+        this.isPrivate = isPrivate;
+        this.name = name;
+        this.languageFrom = languageFrom;
+        this.languageTo = languageTo;
+    }
+
+    public Deck() {
+    }
 
     public boolean isConfigurable() {
         return isConfigurable;
@@ -94,15 +101,6 @@ public class Deck extends AbstractEntity {
         tags.remove(tag);
     }
 
-    public Deck(String description, boolean isConfigurable, boolean isPrivate, String name, Language languageFrom, Language languageTo) {
-        this.description = description;
-        this.isConfigurable = isConfigurable;
-        this.isPrivate = isPrivate;
-        this.name = name;
-        this.languageFrom = languageFrom;
-        this.languageTo = languageTo;
-    }
 
-    public Deck() {
-    }
+
 }

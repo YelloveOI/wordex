@@ -1,24 +1,28 @@
 package rsp.service.interfaces;
 
+import rsp.enums.Language;
+import rsp.model.Card;
 import rsp.model.Deck;
 
 import java.util.List;
 
 public interface DeckService {
 
-    void save(Deck deck);
+    Deck create(String description, String name, Language languageTo, Language languageFrom);
 
-    void update(Deck deck) throws Exception;
+    Deck createPublicCopy(Deck deck);
 
-    void updateAnswers( Deck deck) throws Exception;
+    Deck createPrivateCopy(Deck deck);
 
-    void deleteById(Integer id) throws Exception;
+    void addCard(Deck deck, Card card);
 
-    Deck findById(Integer id);
+    void removeCard(Deck deck, Card card);
 
-    void createPrivateCopy(Deck deck);
+//    void deleteById(Integer id) throws Exception;
+//
+//    Deck findById(Integer id);
 
-    List<Deck> getUserDecks();
+    List<Deck> getCurrentUserDecks();
 
     List<Deck> getPublicDecks();
 }

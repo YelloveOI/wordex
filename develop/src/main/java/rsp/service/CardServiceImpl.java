@@ -8,7 +8,10 @@ import rsp.model.Card;
 import rsp.model.Content;
 import rsp.repo.CardRepo;
 import rsp.service.interfaces.CardService;
+import rsp.service.interfaces.ContentService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,35 +19,50 @@ import java.util.Optional;
 public class CardServiceImpl implements CardService {
 
     private final CardRepo repo;
+    private final ContentService contentService;
 
-    public CardServiceImpl(CardRepo repo) {
+    public CardServiceImpl(CardRepo repo, ContentService contentService) {
         this.repo = repo;
+        this.contentService = contentService;
     }
 
-    /**
-     * Deletes a card by id, deleting couldn't affect
-     * foreign decks
-     * @param id
-     * @throws Exception
-     */
-    @Override
-    public void deleteById(@NotNull Integer id) throws NotFoundException {
-        Optional<Card> toDelete = repo.findById(id);
-        if(toDelete.isPresent()) {
-            repo.deleteById(id);
-        } else {
-            throw NotFoundException.create(Card.class.getName(), id);
-        }
-    }
+//    /**
+//     * Deletes a card by id, deleting couldn't affect
+//     * foreign decks
+//     * @param id
+//     * @throws Exception
+//     */
+//    @Override
+//    public void deleteById(@NotNull Integer id) throws NotFoundException {
+//        Optional<Card> toDelete = repo.findById(id);
+//        if(toDelete.isPresent()) {
+//            repo.deleteById(id);
+//        } else {
+//            throw NotFoundException.create(Card.class.getName(), id);
+//        }
+//    }
+
+//    @Override
+//    public Card findById(@NotNull Integer id) throws NotFoundException {
+//        Optional<Card> result = repo.findById(id);
+//        if(result.isPresent()) {
+//            return  result.get();
+//        } else {
+//            throw NotFoundException.create(Card.class.getName(), id);
+//        }
+//    }
 
     @Override
-    public Card findById(@NotNull Integer id) throws NotFoundException {
-        Optional<Card> result = repo.findById(id);
-        if(result.isPresent()) {
-            return  result.get();
-        } else {
-            throw NotFoundException.create(Card.class.getName(), id);
-        }
+    public Card createCopy(@NotNull Card card) {
+        Card result = new Card();
+
+        result.setTerm(card.getTerm());
+        result.setDefinition(card.getDefinition());
+        result.setContentList(card.getContentList());
+
+        repo.save(result);
+
+        return result;
     }
 
     @Override
