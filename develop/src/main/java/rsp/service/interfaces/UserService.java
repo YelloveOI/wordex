@@ -14,11 +14,11 @@ public interface UserService {
 
     User findById(Integer id);
 
-    void register(String username, String email, String password, String matchingPassword) throws Exception;
+    void register(User user) throws Exception;
 
     User findByUsername(String username);
 
-    void update(String username, String email, String password, String matchingPassword) throws Exception;
+    void update(User user) throws Exception;
 
     void addRole(User user, Role role);
 

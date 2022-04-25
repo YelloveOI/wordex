@@ -69,7 +69,7 @@ public class UserServiceUnitTest {
 
         //act
         try{
-            sut.register(orgUser.getUsername(),orgUser.getEmail(), orgUser.getPassword(), orgUser.getPassword());
+            sut.register(orgUser);
         }
         catch (Exception ex){
             fail("Unexpected error " + ex.getMessage());

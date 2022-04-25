@@ -77,37 +77,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void register(
-            @NotNull String username,
-            @NotNull String email,
-            @NotNull String password,
-            @NotNull String matchingPassword
-    ) throws Exception {
+    public void register(@NotNull User user) throws Exception {
         // Username requirements
-        if (username.length() < 3) {
+        if (user.getUsername().length() < 3) {
             throw new Exception("Selected username is too short. (3-20 characters allowed)");
         }
-        if (username.length() > 20) {
+        if (user.getUsername().length() > 20) {
             throw new Exception("Selected username is too long. (3-20 characters allowed)");
         }
 
         // Email requirements
-        if (!Pattern.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,}$", email)) {
+        if (!Pattern.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,}$", user.getEmail())) {
             throw new Exception("Please enter a valid email address.");
         }
 
         // Password requirements
-        if (!password.equals(matchingPassword)) {
-            throw new Exception("Passwords do not match.");
-        }
-        if (password.length() < 8) {
+        if (user.getPassword().length() < 8) {
             throw new Exception("Selected password is too short. (8-20 characters allowed)");
         }
-        if (password.length() > 20) {
+        if (user.getPassword().length() > 20) {
             throw new Exception("Selected password is too long. (8-20 characters allowed)");
         }
         if (!Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–{}:;',?/*~$^+=<>]).{8,20}$",
-                password)) {
+                user.getPassword())) {
             throw new Exception("Password has to contain at least one digit [0-9], " +
                     "at least one lowercase character [a-z], " +
                     "at least one uppercase character [A-Z] and " +
@@ -115,69 +107,61 @@ public class UserServiceImpl implements UserService {
         }
 
         // Username uniqueness
-        if (repo.findByUsername(username).isPresent()) {
+        if (repo.findByUsername(user.getUsername()).isPresent()) {
             throw new Exception("Username is already in use.");
         }
         // Email uniqueness
-        if (repo.findByEmail(email).isPresent()) {
+        if (repo.findByEmail(user.getEmail()).isPresent()) {
             throw new Exception("This email address is already in use.");
         }
 
-        repo.save(new User(username, email, provider.encode(password)));
+        repo.save(new User(user.getUsername(), user.getEmail(), provider.encode(user.getPassword())));
     }
 
     @Transactional
-    public void update(@NotNull String username,
-                       @NotNull String email,
-                       @NotNull String password,
-                       @NotNull String matchingPassword
-    ) throws Exception {
+    public void update(@NotNull User user) throws Exception {
         User currentUser = SecurityUtils.getCurrentUser();
 
         // Username
-        if (!currentUser.getUsername().equals(username)) {
+        if (!currentUser.getUsername().equals(user.getUsername())) {
             // Username uniqueness
-            if (repo.findByUsername(username).isPresent()) {
+            if (repo.findByUsername(user.getUsername()).isPresent()) {
                 throw new Exception("Username is already in use.");
             }
 
             // Username requirements
-            if (username.length() < 3) {
+            if (user.getUsername().length() < 3) {
                 throw new Exception("Selected username is too short. (3-20 characters allowed)");
             }
-            if (username.length() > 20) {
+            if (user.getUsername().length() > 20) {
                 throw new Exception("Selected username is too long. (3-20 characters allowed)");
             }
         }
 
         // Email
-        if (!currentUser.getEmail().equals(email)) {
+        if (!currentUser.getEmail().equals(user.getEmail())) {
             // Email uniqueness
-            if (repo.findByEmail(email).isPresent()) {
+            if (repo.findByEmail(user.getEmail()).isPresent()) {
                 throw new Exception("This email address is already in use.");
             }
 
             // Email requirements
-            if (!Pattern.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,}$", email)) {
+            if (!Pattern.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,}$", user.getEmail())) {
                 throw new Exception("Please enter a valid email address.");
             }
         }
 
         // Password
-        if (!password.equals(matchingPassword)) {
-            throw new Exception("Passwords do not match.");
-        }
-
-        if (!currentUser.getPassword().equals(provider.encode(password))) {
+        if (!currentUser.getPassword().equals(provider.encode(user.getPassword()))) {
             // Password requirements
-            if (password.length() < 8) {
+            if (user.getPassword().length() < 8) {
                 throw new Exception("Selected password is too short. (8-20 characters allowed)");
             }
-            if (password.length() > 20) {
+            if (user.getPassword().length() > 20) {
                 throw new Exception("Selected password is too long. (8-20 characters allowed)");
             }
             if (!Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–{}:;',?/*~$^+=<>]).{8,20}$",
-                    password)) {
+                    user.getPassword())) {
                 throw new Exception("Password has to contain at least one digit [0-9], " +
                         "at least one lowercase character [a-z], " +
                         "at least one uppercase character [A-Z] and " +
@@ -185,12 +169,12 @@ public class UserServiceImpl implements UserService {
             }
 
             // Encode
-            currentUser.setPassword(provider.encode(password));
+            currentUser.setPassword(provider.encode(user.getPassword()));
         }
 
         // set values
-        currentUser.setUsername(username);
-        currentUser.setEmail(email);
+        currentUser.setUsername(user.getUsername());
+        currentUser.setEmail(user.getEmail());
 
         repo.save(currentUser);
     }

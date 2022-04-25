@@ -54,46 +54,37 @@ public class UserController {
     }*/
 
     /**
-     *
-     * @param username Selected username has to be 3-20 characters long and cannot be already in use.
-     * @param email Selected Email has to have a valid form and cannot be already in use.
-     * @param password Selected password has to be 8-20 characters long.
-     *                 Has to contain at least one digit [0-9], at least one lowercase character [a-z],
-     *                 at least one uppercase character [A-Z] and at least one special character like ! @ # & ( ).
-     * @param matchingPassword Must match password.
      * @return No content/Bad request
      */
     @PreAuthorize("isAnonymous()")
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createUser(@RequestBody String username, @RequestBody String email,
-                                           @RequestBody String password, @RequestBody String matchingPassword) {
+    public ResponseEntity<Void> createUser(@RequestBody User user) {
         try {
-            us.register(username, email, password, matchingPassword);
+            us.register(user);
         } catch (Exception e) {
             LOG.warn("User could not be registered! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        LOG.debug("User \"{}\" has been registered.", username);
+        LOG.debug("User \"{}\" has been registered.", user.getUsername());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
-                us.findByUsername(username).getId());   // TODO edit to log in
+                us.findByUsername(user.getUsername()).getId());   // TODO edit to log in
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @PreAuthorize("permitAll()")
     @PostMapping("/edit")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Void> updateUser(@RequestBody String username, @RequestBody String email,
-                                           @RequestBody String password, @RequestBody String matchingPassword) {
+    public ResponseEntity<Void> updateUser(@RequestBody User user) {
         try {
-            us.update(username, email, password, matchingPassword);
+            us.update(user);
         } catch (Exception e) {
             LOG.warn("User could not be updated! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        LOG.debug("User \"{}\" has been updated.", username);
+        LOG.debug("User \"{}\" has been updated.", user.getUsername());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
-                us.findByUsername(username).getId());
+                us.findByUsername(user.getUsername()).getId());
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
