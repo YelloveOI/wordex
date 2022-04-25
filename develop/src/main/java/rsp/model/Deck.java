@@ -17,13 +17,16 @@ public class Deck extends AbstractEntity {
     @Setter
     private String description;
 
+    //TODO deprecated??
     @Basic(optional = false)
     @Column(nullable = false)
+    @Getter
     @Setter
     private boolean isConfigurable;
 
     @Basic(optional = false)
     @Column(nullable = false)
+    @Getter
     @Setter
     private boolean isPrivate;
 
@@ -63,14 +66,6 @@ public class Deck extends AbstractEntity {
     }
 
     public Deck() {
-    }
-
-    public boolean isConfigurable() {
-        return isConfigurable;
-    }
-
-    public boolean isPrivate() {
-        return isPrivate;
     }
 
     public void addCard(Card card) {

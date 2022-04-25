@@ -1,11 +1,9 @@
 package rsp.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "achievement")
 public class Achievement extends AbstractEntity {
 
     @Basic(optional = false)

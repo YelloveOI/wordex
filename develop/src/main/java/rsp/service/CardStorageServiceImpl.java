@@ -1,5 +1,8 @@
 package rsp.service;
 
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.model.CardStorage;
@@ -16,6 +19,8 @@ import java.util.Optional;
  * User-oriented service, processes only current
  * user's own card storage
  */
+@Service
+@Transactional
 public class CardStorageServiceImpl implements CardStorageService {
 
     private final CardStorageRepo repo;
@@ -27,7 +32,7 @@ public class CardStorageServiceImpl implements CardStorageService {
     }
 
     @Override
-    public void addCardToStorage(Card card) {
+    public void addCardToStorage(@NotNull Card card) {
         Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
 
         if(cardStorage.isPresent()) {
@@ -40,7 +45,7 @@ public class CardStorageServiceImpl implements CardStorageService {
     }
 
     @Override
-    public void removeCardFromStorage(Card card) {
+    public void removeCardFromStorage(@NotNull Card card) {
         Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
 
         if(cardStorage.isPresent()) {
@@ -53,7 +58,7 @@ public class CardStorageServiceImpl implements CardStorageService {
     }
 
     @Override
-    public void addDeck(Deck deck) {
+    public void addDeck(@NotNull Deck deck) {
         Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
 
         if(cardStorage.isPresent()) {
@@ -64,7 +69,7 @@ public class CardStorageServiceImpl implements CardStorageService {
     }
 
     @Override
-    public void removeDeck(Deck deck) {
+    public void removeDeck(@NotNull Deck deck) {
         Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
 
         if(cardStorage.isPresent()) {
@@ -76,13 +81,13 @@ public class CardStorageServiceImpl implements CardStorageService {
 
     //For further processing
     @Override
-    public Deck shareDeck(Deck deck) {
+    public Deck shareDeck(@NotNull Deck deck) {
         return deckService.createPublicCopy(deck);
     }
 
     //For further processing
     @Override
-    public Deck downloadDeck(Deck deck) {
+    public Deck downloadDeck(@NotNull Deck deck) {
         Deck result = deckService.createPrivateCopy(deck);
 
         addDeck(result);
@@ -115,5 +120,21 @@ public class CardStorageServiceImpl implements CardStorageService {
         } else {
             throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
         }
+    }
+
+    @Override
+    public Deck updateDeck(Deck deck) {
+        removeDeck(deck);
+        addDeck(deck);
+
+        return deck;
+    }
+
+    @Override
+    public Card updateCard(Card card) {
+        removeCardFromStorage(card);
+        addCardToStorage(card);
+
+        return card;
     }
 }

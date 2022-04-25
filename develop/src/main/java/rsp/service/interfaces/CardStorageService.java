@@ -24,4 +24,8 @@ public interface CardStorageService {
     List<Deck> getPublicDecks();
 
     List<Card> getMyFreeCards();
+
+    Deck updateDeck(Deck deck);
+
+    Card updateCard(Card card);
 }

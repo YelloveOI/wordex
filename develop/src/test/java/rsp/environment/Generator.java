@@ -107,13 +107,14 @@ public class Generator {
         return user;
     }
 
-    public static User generateRandomUserWithDecks() {
-        final User user = generateRandomUser();
-
-        user.setDecks(ListGenerators.generateDecks());
-
-        return user;
-    }
+    //Deprecated
+//    public static User generateRandomUserWithDecks() {
+//        final User user = generateRandomUser();
+//
+//        user.setDecks(ListGenerators.generateDecks());
+//
+//        return user;
+//    }
 
     public static User generateStudent() {
         final User user = generateRandomUser();

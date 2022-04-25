@@ -38,19 +38,19 @@ public class DeckController {
      * Get current user's decks.
      * @return Current user's decks
      */
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @GetMapping("/my")
-    public List<Deck> getUserDecks() {
-        List<Deck> decks;
-        try {
-            decks = ds.getCurrentUserDecks();
-        } catch (Exception e) {
-            LOG.warn("Decks could not be found! {}", e.getMessage());
-            return null;
-        }
-        LOG.debug("Decks were found.");
-        return decks;
-    }
+//    @PreAuthorize("hasAnyRole('ROLE_USER')")
+//    @GetMapping("/my")
+//    public List<Deck> getUserDecks() {
+//        List<Deck> decks;
+//        try {
+//            decks = ds.getCurrentUserDecks();
+//        } catch (Exception e) {
+//            LOG.warn("Decks could not be found! {}", e.getMessage());
+//            return null;
+//        }
+//        LOG.debug("Decks were found.");
+//        return decks;
+//    }
 
     /**
      * Get public decks.

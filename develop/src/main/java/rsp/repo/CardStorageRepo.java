@@ -8,7 +8,7 @@ import rsp.model.CardStorage;
 import java.util.Optional;
 
 @Repository
-public interface CardStorageRepo extends CrudRepository<CardStorage, Integer> {
+public interface CardStorageRepo extends CrudRepository<CardStorage, Long> {
 
     Optional<CardStorage> findByOwnerId(Integer id);
 

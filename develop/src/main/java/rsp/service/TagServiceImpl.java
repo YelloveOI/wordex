@@ -1,5 +1,6 @@
 package rsp.service;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +27,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Deck> findDecksWithTag(String tagName, int decksQuantity) {
+    public List<Deck> findPublicDecksWithTag(@NotNull String tagName, @NotNull int decksQuantity) {
         Optional<Tag> tag = repo.findByName(tagName);
         if(tag.isPresent()) {
             return tag.get().getDecks().stream()
+                    .filter(v -> !v.isPrivate())
                     .limit(decksQuantity)
                     .collect(Collectors.toList());
         } else {
@@ -57,8 +59,14 @@ public class TagServiceImpl implements TagService {
 //    }
 
     @Override
-    public Boolean tagWithNameExists(String tagName) {
-        return repo.existsByName(tagName);
+    public Tag findByName(@NotNull String tagName) {
+        Optional<Tag> result = repo.findByName(tagName);
+
+        if(result.isPresent()) {
+            return result.get();
+        } else {
+            throw NotFoundException.create(Tag.class.getName(), tagName);
+        }
     }
 
     @Override
@@ -72,16 +80,21 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void addDeck(Tag tag, Deck deck) {
+    public void addDeck(@NotNull Tag tag, @NotNull Deck deck) {
         tag.addDeck(deck);
 
         repo.save(tag);
     }
 
     @Override
-    public void removeDeck(Tag tag, Deck deck) {
+    public void removeDeck(@NotNull Tag tag, @NotNull Deck deck) {
         tag.removeDeck(deck);
 
         repo.save(tag);
+    }
+
+    @Override
+    public Boolean tagWithNameExists(String name) {
+        return repo.existsByName(name);
     }
 }

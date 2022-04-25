@@ -27,14 +27,10 @@ public class DeckServiceImpl implements DeckService {
         this.cardService = cardService;
     }
 
-    @Override
-    public List<Deck> getCurrentUserDecks() {
-        return repo.findAllByOwnerId(SecurityUtils.getCurrentUser().getId());
-    }
-
+    //TODO get N deck
     @Override
     public List<Deck> getPublicDecks() {
-        return repo.findByIsPrivateFalse();
+        return repo.findAllByIsPrivateFalse();
     }
 
     //TODO Tags logic
@@ -118,6 +114,20 @@ public class DeckServiceImpl implements DeckService {
         repo.save(result);
 
         return result;
+    }
+
+    @Override
+    public Deck editText(
+            @NotNull Deck deck,
+            @NotNull String name,
+            @NotNull String description
+            ) {
+        deck.setName(name);
+        deck.setDescription(description);
+
+        repo.save(deck);
+
+        return deck;
     }
 
 //    @Override

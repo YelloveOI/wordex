@@ -1,5 +1,8 @@
 package rsp.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -9,17 +12,11 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
 
+    @Getter
+    @Setter
     @Id
     @GeneratedValue
     private Integer id;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     @Override
     public boolean equals(Object o) {

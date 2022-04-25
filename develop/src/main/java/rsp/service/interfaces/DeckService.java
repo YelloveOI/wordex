@@ -18,11 +18,11 @@ public interface DeckService {
 
     void removeCard(Deck deck, Card card);
 
+    Deck editText(Deck deck, String name, String definition);
+
 //    void deleteById(Integer id) throws Exception;
 //
 //    Deck findById(Integer id);
-
-    List<Deck> getCurrentUserDecks();
 
     List<Deck> getPublicDecks();
 }
