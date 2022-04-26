@@ -2,11 +2,15 @@ package rsp.service;
 
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import rsp.enums.Role;
@@ -27,10 +31,27 @@ public class UserServiceIntegrationTest {
     private UserService sut;
 
     @Autowired
+    private PasswordEncoder encoder;
+
+    @Autowired
     private DefaultAuthenticationProvider auth;
 
     @BeforeEach
     public void setUp(){
+    }
+
+    @Test
+    public void register_validUser_encodesPassword() {
+        final User user = Generator.generateRandomUser();
+        final String rawPassword = user.getPassword();
+        try{
+            sut.register(user);
+        }
+        catch(Exception ex){
+            fail("Exception encountered " + ex.getMessage());
+        }
+        User res = sut.findByUsername(user.getUsername());
+        assertTrue(encoder.matches(rawPassword, res.getPassword()));
     }
 
     @Test
@@ -68,6 +89,7 @@ public class UserServiceIntegrationTest {
         assertNotNull(user.getId());
         assertNotNull(user.hasRole(Role.USER));
     }
+
 
 
     @Test

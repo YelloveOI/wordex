@@ -11,6 +11,8 @@ import static  org.mockito.Mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import rsp.enums.Role;
 import rsp.environment.Generator;
 import rsp.exception.NotFoundException;
@@ -48,6 +50,7 @@ public class UserServiceUnitTest {
 
         assertEquals(user, result);
     }
+
 
     @Test
     public void saveUser_validUser_userSaved(){
