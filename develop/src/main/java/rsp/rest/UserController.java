@@ -35,6 +35,12 @@ public class UserController {
         this.ss = ss;
     }
 
+    @GetMapping(value = "/hi")
+    @ResponseStatus(HttpStatus.OK)
+    public String sanityCheck() {
+        return "hi";
+    }
+
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     public User getCurrentUser(Principal principal) {
