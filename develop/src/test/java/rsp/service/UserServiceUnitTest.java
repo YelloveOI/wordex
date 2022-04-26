@@ -4,18 +4,22 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import static  org.mockito.Mockito.*;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
+import rsp.enums.Role;
 import rsp.environment.Generator;
+import rsp.exception.NotFoundException;
 import rsp.model.User;
 import rsp.repo.UserRepo;
 import rsp.security.DefaultAuthenticationProvider;
 import rsp.service.interfaces.UserService;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,7 +48,6 @@ public class UserServiceUnitTest {
 
         assertEquals(user, result);
     }
-    //TODO unit tests
 
     @Test
     public void saveUser_validUser_userSaved(){
@@ -83,7 +86,40 @@ public class UserServiceUnitTest {
 
         orgUser.setPassword(encryptedString);
         User resultUser = verify(repoMock,times(1)).save(any(User.class));
-        //assertNotNull(resultUser.getId());
-        //assertEquals(encryptedString, resultUser.getPassword());
+    }
+
+    @Test
+    public void addRole_StudentRole_roleAdded(){
+        //arrange
+        User user = Generator.generateRandomUser();
+        user.setId(12);
+        when(repoMock.findById(user.getId())).thenReturn(Optional.of(user));
+        Role res= Role.STUDENT;
+
+        //act
+        try{
+            sut.addRole(user,res);
+        }
+        catch (Exception ex){
+            fail("Error not expected " + ex.getMessage());
+        }
+        //assert
+
+        final ArgumentCaptor<User> captor =ArgumentCaptor.forClass(User.class);
+        verify(repoMock).save(captor.capture());
+        assertTrue(captor.getValue().hasRole(res));
+
+    }
+
+    @Test
+    public void addRole_StudentRole_UserNotFound(){
+        //arrange
+        User user = Generator.generateRandomUser();
+        user.setId(12);
+        when(repoMock.findById(user.getId())).thenReturn(Optional.empty());
+        //act
+        //assert
+        assertThrows(NotFoundException.class, ()->sut.addRole(user,Role.STUDENT));
+        verify(repoMock).findById(user.getId());
     }
 }
