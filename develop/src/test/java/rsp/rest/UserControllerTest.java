@@ -105,7 +105,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void createUser_validUser_registerUser(){
         final User userToReg = Generator.generateRandomUser();
         try{
