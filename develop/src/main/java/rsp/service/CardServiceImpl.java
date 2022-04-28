@@ -53,6 +53,12 @@ public class CardServiceImpl implements CardService {
 //        }
 //    }
 
+    /**
+     * Deep copy of a card, contents of a card are immutable,
+     * thus there is swallow copy there
+     * @param card to copy
+     * @return copy of the card
+     */
     @Override
     public Card createCopy(@NotNull Card card) {
         Card result = new Card();
@@ -133,25 +139,6 @@ public class CardServiceImpl implements CardService {
         } else {
             throw NotFoundException.create(Card.class.getName(), card.getId());
         }
-    }
-
-    /**
-     * Deep copy of a card, contents of a card are immutable,
-     * thus there is swallow copy there
-     * @param card to copy
-     * @return copy of the card
-     */
-    @Override
-    public Card deepCopy(@NotNull Card card) {
-        Card result = new Card();
-
-        result.setDefinition(card.getDefinition());
-        result.setTerm(card.getTerm());
-        result.setContentList(card.getContentList());
-
-        repo.save(result);
-
-        return result;
     }
 
     /**

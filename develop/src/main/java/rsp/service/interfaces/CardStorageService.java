@@ -15,17 +15,7 @@ public interface CardStorageService {
 
     void removeDeck(Deck deck);
 
-    Deck shareDeck(Deck deck);
-
-    Deck downloadDeck(Deck deck);
-
     List<Deck> getMyDecks();
 
-    List<Deck> getPublicDecks();
-
     List<Card> getMyFreeCards();
-
-    Deck updateDeck(Deck deck);
-
-    Card updateCard(Card card);
 }

@@ -20,8 +20,6 @@ public interface CardService {
 
     Card removeContent(Card card, Content content);
 
-    Card deepCopy(Card card);
-
     boolean exists(Card card);
 
 }

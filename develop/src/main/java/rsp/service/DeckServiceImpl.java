@@ -19,12 +19,10 @@ import java.util.List;
 public class DeckServiceImpl implements DeckService {
 
     private final DeckRepo repo;
-    private final CardServiceImpl cardService;
 
     @Autowired
-    public DeckServiceImpl(DeckRepo repo, CardServiceImpl cardService) {
+    public DeckServiceImpl(DeckRepo repo) {
         this.repo = repo;
-        this.cardService = cardService;
     }
 
     //TODO get N deck
@@ -72,6 +70,11 @@ public class DeckServiceImpl implements DeckService {
         repo.save(deck);
     }
 
+    /**
+     * Creates deck w/o cards
+     * @param deck
+     * @return
+     */
     @Override
     public Deck createPublicCopy(@NotNull Deck deck) {
         if(deck.isPrivate()) {
@@ -85,16 +88,17 @@ public class DeckServiceImpl implements DeckService {
             result.setName(deck.getName());
             result.setTags(deck.getTags());
 
-            for(Card c : deck.getCards()) {
-                result.addCard(cardService.createCopy(c));
-            }
-
             return result;
         } else {
             throw IllegalActionException.create("create public deck copy of public deck", deck);
         }
     }
 
+    /**
+     * Creates deck w/o cards
+     * @param deck
+     * @return
+     */
     @Override
     public Deck createPrivateCopy(@NotNull Deck deck) {
         Deck result = new Deck();
@@ -106,10 +110,6 @@ public class DeckServiceImpl implements DeckService {
         result.setDescription(deck.getDescription());
         result.setName(deck.getName());
         result.setTags(deck.getTags());
-
-        for(Card c : deck.getCards()) {
-            result.addCard(cardService.createCopy(c));
-        }
 
         repo.save(result);
 

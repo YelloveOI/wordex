@@ -24,11 +24,9 @@ import java.util.Optional;
 public class CardStorageServiceImpl implements CardStorageService {
 
     private final CardStorageRepo repo;
-    private final DeckService deckService;
 
-    public CardStorageServiceImpl(CardStorageRepo repo, DeckService deckService) {
+    public CardStorageServiceImpl(CardStorageRepo repo) {
         this.repo = repo;
-        this.deckService = deckService;
     }
 
     @Override
@@ -79,22 +77,6 @@ public class CardStorageServiceImpl implements CardStorageService {
         }
     }
 
-    //For further processing
-    @Override
-    public Deck shareDeck(@NotNull Deck deck) {
-        return deckService.createPublicCopy(deck);
-    }
-
-    //For further processing
-    @Override
-    public Deck downloadDeck(@NotNull Deck deck) {
-        Deck result = deckService.createPrivateCopy(deck);
-
-        addDeck(result);
-
-        return result;
-    }
-
     @Override
     public List<Deck> getMyDecks() {
         Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
@@ -107,11 +89,6 @@ public class CardStorageServiceImpl implements CardStorageService {
     }
 
     @Override
-    public List<Deck> getPublicDecks() {
-        return deckService.getPublicDecks();
-    }
-
-    @Override
     public List<Card> getMyFreeCards() {
         Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
 
@@ -120,21 +97,5 @@ public class CardStorageServiceImpl implements CardStorageService {
         } else {
             throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
         }
-    }
-
-    @Override
-    public Deck updateDeck(Deck deck) {
-        removeDeck(deck);
-        addDeck(deck);
-
-        return deck;
-    }
-
-    @Override
-    public Card updateCard(Card card) {
-        removeCardFromStorage(card);
-        addCardToStorage(card);
-
-        return card;
     }
 }
