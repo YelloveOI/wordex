@@ -28,27 +28,4 @@ public class SecurityUtils {
 
         return userDetails.getUser();
     }
-
-//    public static UserDetails getCurrentUserDetails() {
-//        final SecurityContext context = SecurityContextHolder.getContext();
-//        if (context.getAuthentication() != null && context.getAuthentication().getDetails() instanceof UserDetails) {
-//            return (UserDetails) context.getAuthentication().getDetails();
-//        } else {
-//            return null;
-//        }
-//    }
-
-//    public static AuthenticationToken setCurrentUser(UserDetails userDetails) {
-//        final AuthenticationToken token = new AuthenticationToken(userDetails.getAuthorities(), userDetails);
-//        token.setAuthenticated(true);
-//
-//        final SecurityContext context = new SecurityContextImpl();
-//        context.setAuthentication(token);
-//        SecurityContextHolder.setContext(context);
-//        return token;
-//    }
-
-//    public static boolean isAuthenticatedAnonymously() {
-//        return getCurrentUserDetails() == null;
-//    }
 }

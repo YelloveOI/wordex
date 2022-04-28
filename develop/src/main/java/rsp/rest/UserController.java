@@ -34,13 +34,11 @@ public class UserController {
         this.ss = ss;
     }
 
-// TODO: Fix when new security is implemented
-//    @PreAuthorize("hasRole('ROLE_USER')")
-//    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public User getCurrentUser(Principal principal) {
-//        final AuthenticationToken auth = (AuthenticationToken) principal;
-//        return auth.getPrincipal().getUser();
-//    }
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+    public User getCurrentUser(Principal principal) {
+        return SecurityUtils.getCurrentUser();
+    }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{id}")
