@@ -13,8 +13,6 @@ import rsp.enums.Role;
 import rsp.model.School;
 import rsp.model.User;
 import rsp.rest.util.RestUtils;
-import rsp.security.SecurityUtils;
-import rsp.security.model.AuthenticationToken;
 import rsp.service.interfaces.SchoolService;
 import rsp.service.interfaces.UserService;
 
@@ -41,12 +39,13 @@ public class UserController {
         return "hi";
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-    public User getCurrentUser(Principal principal) {
-        final AuthenticationToken auth = (AuthenticationToken) principal;
-        return auth.getPrincipal().getUser();
-    }
+// TODO: Fix when new security is implemented
+//    @PreAuthorize("hasRole('ROLE_USER')")
+//    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public User getCurrentUser(Principal principal) {
+//        final AuthenticationToken auth = (AuthenticationToken) principal;
+//        return auth.getPrincipal().getUser();
+//    }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{id}")
