@@ -13,6 +13,7 @@ import rsp.enums.Role;
 import rsp.model.School;
 import rsp.model.User;
 import rsp.rest.util.RestUtils;
+import rsp.security.SecurityUtils;
 import rsp.service.interfaces.SchoolService;
 import rsp.service.interfaces.UserService;
 
@@ -33,12 +34,6 @@ public class UserController {
         this.ss = ss;
     }
 
-    @GetMapping(value = "/hi")
-    @ResponseStatus(HttpStatus.OK)
-    public String sanityCheck() {
-        return "hi";
-    }
-
 // TODO: Fix when new security is implemented
 //    @PreAuthorize("hasRole('ROLE_USER')")
 //    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -57,25 +52,6 @@ public class UserController {
     @GetMapping("/all")
     public List<User> getAllUsers() {
     }*/
-
-    /**
-     * @return No content/Bad request
-     */
-    @PreAuthorize("isAnonymous()")
-    @PostMapping("/registration")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createUser(@RequestBody User user) {
-        try {
-            us.register(user);
-        } catch (Exception e) {
-            LOG.warn("User could not be registered! {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        LOG.debug("User \"{}\" has been registered.", user.getUsername());
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
-                us.findByUsername(user.getUsername()).getId());   // TODO edit to log in
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
-    }
 
     @PreAuthorize("permitAll()")
     @PostMapping("/edit")
@@ -131,5 +107,11 @@ public class UserController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable int id) {
+    }
+
+
+    @PostMapping("check")
+    public ResponseEntity<?> sanityCheck() {
+        return ResponseEntity.ok(SecurityUtils.getCurrentUser().getEmail());
     }
 }
