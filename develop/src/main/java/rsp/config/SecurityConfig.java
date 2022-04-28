@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import rsp.security.filters.JwtAuthorizationFilter;
 import rsp.security.service.UserDetailsService;
 
 @Configuration
@@ -21,6 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     final private PasswordEncoder passwordEncoder;
     final private UserDetailsService userDetailsService;
+    final private JwtAuthorizationFilter jwtAuthorizationFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -34,9 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers(HttpMethod.POST, "/auth/*").permitAll()
             .anyRequest().authenticated();
-            // .and()
-            // TODO: Add authentication filter
-            // TODO: Add authorization filter
+
+        http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

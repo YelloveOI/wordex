@@ -2,12 +2,12 @@ package rsp.security.service;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import rsp.model.User;
 import rsp.repo.UserRepo;
+import rsp.security.UserDetails;
 
 @Service
 @RequiredArgsConstructor

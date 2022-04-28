@@ -1,5 +1,6 @@
 package rsp.security;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -11,11 +12,13 @@ import java.util.stream.Collectors;
 
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
 
+    @Getter
     final private User user;
     final private Collection<? extends GrantedAuthority> authorities;
 
     public UserDetails(User user) {
         this.user = user;
+
         authorities = user.getRoles()
                 .stream()
                 .map(Role::toString)
@@ -30,7 +33,7 @@ public class UserDetails implements org.springframework.security.core.userdetail
 
     @Override
     public String getPassword() {
-        return null;
+        return user.getPassword();
     }
 
     @Override
