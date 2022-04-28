@@ -1,4 +1,4 @@
-package rsp.service.security;
+package rsp.security.service;
 
 import lombok.RequiredArgsConstructor;
 
