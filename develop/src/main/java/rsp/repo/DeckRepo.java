@@ -11,4 +11,6 @@ public interface DeckRepo extends CrudRepository<Deck, Integer> {
 
     List<Deck> findAllByIsPrivateFalse();
 
+    //List<Deck> findAllByOwnerId(Integer id);
+
 }

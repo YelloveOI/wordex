@@ -10,7 +10,6 @@ import rsp.model.Deck;
 import rsp.repo.CardStorageRepo;
 import rsp.security.SecurityUtils;
 import rsp.service.interfaces.CardStorageService;
-import rsp.service.interfaces.DeckService;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,73 +28,98 @@ public class CardStorageServiceImpl implements CardStorageService {
         this.repo = repo;
     }
 
-    @Override
-    public void addCardToStorage(@NotNull Card card) {
+    private CardStorage getCardStorage() {
         Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
 
         if(cardStorage.isPresent()) {
-            cardStorage.get().addUnassignedCard(card);
-
-            repo.save(cardStorage.get());
+            return cardStorage.get();
         } else {
             throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
         }
+    }
+
+    @Override
+    public void addCardToStorage(@NotNull Card card) {
+        CardStorage cardStorage = getCardStorage();
+
+        cardStorage.addUnassignedCard(card);
+        repo.save(cardStorage);
     }
 
     @Override
     public void removeCardFromStorage(@NotNull Card card) {
-        Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
+        CardStorage cardStorage = getCardStorage();
 
-        if(cardStorage.isPresent()) {
-            cardStorage.get().removeUnassignedCard(card);
-
-            repo.save(cardStorage.get());
-        } else {
-            throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
-        }
+        cardStorage.removeUnassignedCard(card);
+        repo.save(cardStorage);
     }
 
     @Override
     public void addDeck(@NotNull Deck deck) {
-        Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
+        CardStorage cardStorage = getCardStorage();
 
-        if(cardStorage.isPresent()) {
-            cardStorage.get().addDeck(deck);
-        } else {
-            throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
-        }
+        cardStorage.addDeck(deck);
+        repo.save(cardStorage);
     }
 
     @Override
-    public void removeDeck(@NotNull Deck deck) {
-        Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
+    public void update(@NotNull Deck deck) throws Exception {
+        Deck current = repo.findByDeckList_Id(deck.getId());
 
-        if(cardStorage.isPresent()) {
-            cardStorage.get().removeDeck(deck);
-        } else {
-            throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
+        if (!current.isConfigurable()) {
+            throw new Exception("This deck is not configurable.");
         }
+
+        CardStorage cardStorage = getCardStorage();
+
+        cardStorage.removeDeck(current);
+        cardStorage.addDeck(deck);
+
+        repo.save(cardStorage);
+    }
+
+    @Override
+    public void removeDeck(@NotNull Integer id) {
+        CardStorage cardStorage = getCardStorage();
+        Deck deck = repo.findByDeckList_Id(id);
+
+        cardStorage.removeDeck(deck);
+        repo.save(cardStorage);
     }
 
     @Override
     public List<Deck> getMyDecks() {
-        Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
+        CardStorage cardStorage = getCardStorage();
 
-        if(cardStorage.isPresent()) {
-            return cardStorage.get().getDeckList();
-        } else {
-            throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
-        }
+        return cardStorage.getDeckList();
     }
 
     @Override
     public List<Card> getMyFreeCards() {
-        Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
+        CardStorage cardStorage = getCardStorage();
 
-        if(cardStorage.isPresent()) {
-            return cardStorage.get().getFreeCards();
-        } else {
-            throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
-        }
+        return cardStorage.getFreeCards();
+    }
+
+    /**
+     * Creates deck w/o cards
+     * @param deck
+     * @return
+     */
+    @Override
+    public void createPrivateCopy(@NotNull Deck deck) {
+        CardStorage cardStorage = getCardStorage();
+
+        Deck result = new Deck();
+        result.setPrivate(true);
+        result.setConfigurable(deck.isConfigurable());
+        result.setLanguageFrom(deck.getLanguageFrom());
+        result.setLanguageTo(deck.getLanguageTo());
+        result.setDescription(deck.getDescription());
+        result.setName(deck.getName());
+        result.setTags(deck.getTags());
+
+        cardStorage.addDeck(result);
+        repo.save(cardStorage);
     }
 }

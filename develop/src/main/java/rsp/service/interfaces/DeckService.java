@@ -10,19 +10,13 @@ public interface DeckService {
 
     Deck create(String description, String name, Language languageTo, Language languageFrom);
 
-    Deck createPublicCopy(Deck deck);
-
-    Deck createPrivateCopy(Deck deck);
-
     void addCard(Deck deck, Card card);
 
     void removeCard(Deck deck, Card card);
 
     Deck editText(Deck deck, String name, String definition);
 
-//    void deleteById(Integer id) throws Exception;
-//
-//    Deck findById(Integer id);
-
     List<Deck> getPublicDecks();
+
+    Deck findById(Integer id);
 }

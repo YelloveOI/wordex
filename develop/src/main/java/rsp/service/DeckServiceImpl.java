@@ -5,14 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rsp.enums.Language;
-import rsp.exception.IllegalActionException;
+import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.model.Deck;
 import rsp.repo.DeckRepo;
-import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -70,52 +70,6 @@ public class DeckServiceImpl implements DeckService {
         repo.save(deck);
     }
 
-    /**
-     * Creates deck w/o cards
-     * @param deck
-     * @return
-     */
-    @Override
-    public Deck createPublicCopy(@NotNull Deck deck) {
-        if(deck.isPrivate()) {
-            Deck result = new Deck();
-
-            result.setPrivate(false);
-            result.setConfigurable(deck.isConfigurable());
-            result.setLanguageFrom(deck.getLanguageFrom());
-            result.setLanguageTo(deck.getLanguageTo());
-            result.setDescription(deck.getDescription());
-            result.setName(deck.getName());
-            result.setTags(deck.getTags());
-
-            return result;
-        } else {
-            throw IllegalActionException.create("create public deck copy of public deck", deck);
-        }
-    }
-
-    /**
-     * Creates deck w/o cards
-     * @param deck
-     * @return
-     */
-    @Override
-    public Deck createPrivateCopy(@NotNull Deck deck) {
-        Deck result = new Deck();
-
-        result.setPrivate(true);
-        result.setConfigurable(deck.isConfigurable());
-        result.setLanguageFrom(deck.getLanguageFrom());
-        result.setLanguageTo(deck.getLanguageTo());
-        result.setDescription(deck.getDescription());
-        result.setName(deck.getName());
-        result.setTags(deck.getTags());
-
-        repo.save(result);
-
-        return result;
-    }
-
     @Override
     public Deck editText(
             @NotNull Deck deck,
@@ -130,26 +84,15 @@ public class DeckServiceImpl implements DeckService {
         return deck;
     }
 
-//    @Override
-//    public void deleteById(@NotNull Integer id) throws Exception {
-//        Optional<Deck> toDelete = repo.findById(id);
-//        if(toDelete.isPresent()) {
-//            if (!toDelete.get().getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
-//                throw new Exception("You can't delete someone else's deck.");
-//            }
-//            repo.deleteById(id);
-//        } else {
-//            throw NotFoundException.create(Deck.class.getName(), id);
-//        }
-//    }
-//
-//    @Override
-//    public Deck findById(@NotNull Integer id) {
-//        Optional<Deck> result = repo.findById(id);
-//        if(result.isPresent()) {
-//            return result.get();
-//        } else {
-//            throw NotFoundException.create(Deck.class.getName(), id);
-//        }
-//    }
+
+    @Override
+    public Deck findById(@NotNull Integer id) {
+        Optional<Deck> result = repo.findById(id);
+        if(result.isPresent()) {
+            return result.get();
+        } else {
+            throw NotFoundException.create(Deck.class.getName(), id);
+        }
+    }
+
 }

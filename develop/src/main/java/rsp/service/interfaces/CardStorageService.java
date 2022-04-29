@@ -13,9 +13,13 @@ public interface CardStorageService {
 
     void addDeck(Deck deck);
 
-    void removeDeck(Deck deck);
+    void update(Deck deck) throws Exception;
+
+    void removeDeck(Integer id);
 
     List<Deck> getMyDecks();
 
     List<Card> getMyFreeCards();
+
+    void createPrivateCopy(Deck deck);
 }
