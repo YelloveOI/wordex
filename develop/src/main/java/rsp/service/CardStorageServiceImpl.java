@@ -7,6 +7,7 @@ import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.model.CardStorage;
 import rsp.model.Deck;
+import rsp.model.User;
 import rsp.repo.CardStorageRepo;
 import rsp.security.SecurityUtils;
 import rsp.service.interfaces.CardStorageService;
@@ -15,10 +16,6 @@ import rsp.service.interfaces.DeckService;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * User-oriented service, processes only current
- * user's own card storage
- */
 @Service
 @Transactional
 public class CardStorageServiceImpl implements CardStorageService {
@@ -30,72 +27,46 @@ public class CardStorageServiceImpl implements CardStorageService {
     }
 
     @Override
-    public void addCardToStorage(@NotNull Card card) {
-        Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
+    public void addCard(@NotNull CardStorage cardStorage, @NotNull Card card) {
+        cardStorage.addUnassignedCard(card);
+
+        repo.save(cardStorage);
+    }
+
+    @Override
+    public void removeCard(@NotNull CardStorage cardStorage, @NotNull Card card) {
+        cardStorage.removeUnassignedCard(card);
+
+        repo.save(cardStorage);
+    }
+
+    @Override
+    public void addDeck(@NotNull CardStorage cardStorage, @NotNull Deck deck) {
+        cardStorage.addDeck(deck);
+
+        repo.save(cardStorage);
+    }
+
+    @Override
+    public void removeDeck(@NotNull CardStorage cardStorage, @NotNull Deck deck) {
+        cardStorage.removeDeck(deck);
+
+        repo.save(cardStorage);
+    }
+
+    @Override
+    public CardStorage getCardStorage(User user) {
+        Optional<CardStorage> cardStorage = repo.findByOwnerId(user.getId());
 
         if(cardStorage.isPresent()) {
-            cardStorage.get().addUnassignedCard(card);
-
-            repo.save(cardStorage.get());
+            return cardStorage.get();
         } else {
-            throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
+            throw NotFoundException.create(CardStorage.class.getName(), user.getId());
         }
     }
 
     @Override
-    public void removeCardFromStorage(@NotNull Card card) {
-        Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
-
-        if(cardStorage.isPresent()) {
-            cardStorage.get().removeUnassignedCard(card);
-
-            repo.save(cardStorage.get());
-        } else {
-            throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
-        }
-    }
-
-    @Override
-    public void addDeck(@NotNull Deck deck) {
-        Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
-
-        if(cardStorage.isPresent()) {
-            cardStorage.get().addDeck(deck);
-        } else {
-            throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
-        }
-    }
-
-    @Override
-    public void removeDeck(@NotNull Deck deck) {
-        Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
-
-        if(cardStorage.isPresent()) {
-            cardStorage.get().removeDeck(deck);
-        } else {
-            throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
-        }
-    }
-
-    @Override
-    public List<Deck> getMyDecks() {
-        Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
-
-        if(cardStorage.isPresent()) {
-            return cardStorage.get().getDeckList();
-        } else {
-            throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
-        }
-    }
-
-    @Override
-    public List<Card> getMyFreeCards() {
-        Optional<CardStorage> cardStorage = repo.findByOwnerId(SecurityUtils.getCurrentUser().getId());
-
-        if(cardStorage.isPresent()) {
-            return cardStorage.get().getFreeCards();
-        } else {
-            throw NotFoundException.create(CardStorage.class.getName(), SecurityUtils.getCurrentUser());
-        }
+    public boolean exists(@NotNull CardStorage cardStorage, Card card) {
+        return cardStorage.getFreeCards().contains(card);
     }
 }

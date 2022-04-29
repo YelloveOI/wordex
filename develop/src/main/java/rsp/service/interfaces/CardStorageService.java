@@ -1,21 +1,26 @@
 package rsp.service.interfaces;
 
 import rsp.model.Card;
+import rsp.model.CardStorage;
 import rsp.model.Deck;
+import rsp.model.User;
+import rsp.repo.CardRepo;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CardStorageService {
 
-    void addCardToStorage(Card card);
+    void addCard(CardStorage cardStorage, Card card);
 
-    void removeCardFromStorage(Card card);
+    void removeCard(CardStorage cardStorage, Card card);
 
-    void addDeck(Deck deck);
+    void addDeck(CardStorage cardStorage, Deck deck);
 
-    void removeDeck(Deck deck);
+    void removeDeck(CardStorage cardStorage, Deck deck);
 
-    List<Deck> getMyDecks();
+    CardStorage getCardStorage(User user);
 
-    List<Card> getMyFreeCards();
+    boolean exists(CardStorage cardStorage, Card card);
+
 }
