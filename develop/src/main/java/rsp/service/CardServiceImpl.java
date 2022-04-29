@@ -27,21 +27,18 @@ public class CardServiceImpl implements CardService {
         this.contentService = contentService;
     }
 
-//    /**
-//     * Deletes a card by id, deleting couldn't affect
-//     * foreign decks
-//     * @param id
-//     * @throws Exception
-//     */
-//    @Override
-//    public void deleteById(@NotNull Integer id) throws NotFoundException {
-//        Optional<Card> toDelete = repo.findById(id);
-//        if(toDelete.isPresent()) {
-//            repo.deleteById(id);
-//        } else {
-//            throw NotFoundException.create(Card.class.getName(), id);
-//        }
-//    }
+    /**
+     * Deletes a card, deleting couldn't affect
+     * foreign decks
+     * @param card
+     * @throws Exception
+     */
+    @Override
+    public void delete(@NotNull Card card) throws NotFoundException {
+        if(exists(card)) {
+            repo.delete(card);
+        }
+    }
 
 //    @Override
 //    public Card findById(@NotNull Integer id) throws NotFoundException {

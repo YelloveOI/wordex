@@ -7,16 +7,13 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Card extends AbstractEntity {
 
     public Card() {
-        contentList = new HashSet<>();
+        contentList = new ArrayList<>();
     }
 
     @Basic(optional = false)

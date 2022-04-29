@@ -144,15 +144,9 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public void deleteById(@NotNull Integer id) throws Exception {
-        Optional<Deck> toDelete = repo.findById(id);
-        if(toDelete.isPresent()) {
-            if (!toDelete.get().getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
-                throw new Exception("You can't delete someone else's deck.");
-            }
-            repo.deleteById(id);
-        } else {
-            throw NotFoundException.create(Deck.class.getName(), id);
+    public void delete(@NotNull Deck deck){
+        if(exists(deck)) {
+            repo.delete(deck);
         }
     }
 //

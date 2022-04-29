@@ -20,7 +20,7 @@ public interface DeckService {
 
     Deck editText(Deck deck, String name, String definition);
 
-    void deleteById(Integer id) throws Exception;
+    void delete(Deck deck);
 
     boolean exists(Deck deck);
 
