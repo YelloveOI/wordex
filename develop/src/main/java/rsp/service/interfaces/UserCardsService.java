@@ -11,7 +11,7 @@ public interface UserCardsService {
 
     Card createCard(String term, String definition);
 
-    void deleteCard();
+    void deleteCard(Integer id);
 
     Card editCardText(Card card, String term, String definition);
 
@@ -20,7 +20,7 @@ public interface UserCardsService {
 
     Deck createDeck(String description, String name, Language languageTo, Language languageFrom);
 
-    void deleteDeck();
+    void deleteDeck(Integer id);
 
     Deck editDeckText(Deck deck, String name, String description);
 

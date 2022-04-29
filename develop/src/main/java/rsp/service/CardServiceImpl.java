@@ -147,12 +147,11 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public boolean exists(Card card) {
-        Optional<Card> result = repo.findById(card.getId());
-
-        if(result.isPresent()) {
-            return result.get().equals(card);
-        } else {
-            return false;
-        }
+        return repo.existsByContentListAndTermAndDefinitionAndId(
+                card.getContentList(),
+                card.getTerm(),
+                card.getDefinition(),
+                card.getId()
+        );
     }
 }

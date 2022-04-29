@@ -20,8 +20,10 @@ public interface DeckService {
 
     Deck editText(Deck deck, String name, String definition);
 
-//    void deleteById(Integer id) throws Exception;
-//
+    void deleteById(Integer id) throws Exception;
+
+    boolean exists(Deck deck);
+
 //    Deck findById(Integer id);
 
     List<Deck> getPublicDecks();

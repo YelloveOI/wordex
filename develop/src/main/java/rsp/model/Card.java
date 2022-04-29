@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -33,7 +34,7 @@ public class Card extends AbstractEntity {
     @OneToMany
     @Getter
     @Setter
-    private Set<Content> contentList;
+    private List<Content> contentList;
 
     public void addContent(Content content) {
         contentList.add(content);

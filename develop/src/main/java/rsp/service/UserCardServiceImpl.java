@@ -35,7 +35,7 @@ public class UserCardServiceImpl implements UserCardsService {
     }
 
     @Override
-    public void deleteCard() {
+    public void deleteCard(Integer id) {
         //TODO
     }
 
@@ -54,7 +54,7 @@ public class UserCardServiceImpl implements UserCardsService {
     }
 
     @Override
-    public void deleteDeck() {
+    public void deleteDeck(Integer id) {
         //TODO
     }
 

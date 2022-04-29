@@ -130,18 +130,31 @@ public class DeckServiceImpl implements DeckService {
         return deck;
     }
 
-//    @Override
-//    public void deleteById(@NotNull Integer id) throws Exception {
-//        Optional<Deck> toDelete = repo.findById(id);
-//        if(toDelete.isPresent()) {
-//            if (!toDelete.get().getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
-//                throw new Exception("You can't delete someone else's deck.");
-//            }
-//            repo.deleteById(id);
-//        } else {
-//            throw NotFoundException.create(Deck.class.getName(), id);
-//        }
-//    }
+    @Override
+    public boolean exists(Deck deck) {
+        return repo.existsByNameAndAndCardsAndIdAndDescriptionAndLanguageFromAndLanguageToAndPrivate(
+                deck.getName(),
+                deck.getCards(),
+                deck.getId(),
+                deck.getDescription(),
+                deck.getLanguageFrom(),
+                deck.getLanguageTo(),
+                deck.isPrivate()
+        );
+    }
+
+    @Override
+    public void deleteById(@NotNull Integer id) throws Exception {
+        Optional<Deck> toDelete = repo.findById(id);
+        if(toDelete.isPresent()) {
+            if (!toDelete.get().getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
+                throw new Exception("You can't delete someone else's deck.");
+            }
+            repo.deleteById(id);
+        } else {
+            throw NotFoundException.create(Deck.class.getName(), id);
+        }
+    }
 //
 //    @Override
 //    public Deck findById(@NotNull Integer id) {
