@@ -17,8 +17,6 @@ public class UserDetails implements org.springframework.security.core.userdetail
     final private Collection<? extends GrantedAuthority> authorities;
 
     public UserDetails(User user) {
-        user.setPassword(null);
-
         this.user = user;
 
         authorities = user.getRoles()
