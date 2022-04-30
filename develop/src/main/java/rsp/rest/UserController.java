@@ -36,24 +36,19 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-    public User getCurrentUser(Principal principal) {
+    public User getCurrentUser() {
         return SecurityUtils.getCurrentUser();
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping("/{id}")
     public User getUser(@PathVariable int id) {
         return us.findById(id);
     }
 
-    /*@PreAuthorize("hasAnyRole('')")
-    @GetMapping("/all")
-    public List<User> getAllUsers() {
-    }*/
 
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/edit")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> updateUser(@RequestBody User user) {
         try {
             us.update(user);
@@ -61,15 +56,13 @@ public class UserController {
             LOG.warn("User could not be updated! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        LOG.debug("User \"{}\" has been updated.", user.getUsername());
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
-                us.findByUsername(user.getUsername()).getId());
-        return new ResponseEntity<>(headers, HttpStatus.OK);
+        LOG.info("User \"{}\" has been updated.", user.getUsername());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_SCHOOL_REPRESENTATIVE')")
     @PostMapping("/student")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createStudent(@RequestBody User user, @RequestBody School school) {
         try {
             us.addRole(user, Role.STUDENT);

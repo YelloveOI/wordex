@@ -1,6 +1,7 @@
 package rsp.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.regex.Pattern;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepo repo;
@@ -112,7 +114,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void update(@NotNull User user) throws Exception {
         User currentUser = SecurityUtils.getCurrentUser();
-
         // Username
         if (!currentUser.getUsername().equals(user.getUsername())) {
             // Username uniqueness
