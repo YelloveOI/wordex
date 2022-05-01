@@ -34,7 +34,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NotNull HttpServletRequest req, @NotNull HttpServletResponse res, @NotNull FilterChain filterChain) throws ServletException, IOException {
         log.info("Running Authorization filter");
 
-        if (req.getServletPath().startsWith("/auth")) {
+        if (req.getRequestURI().startsWith("/auth")) {
             filterChain.doFilter(req, res);
             return;
         }

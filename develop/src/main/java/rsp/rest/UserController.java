@@ -47,6 +47,12 @@ public class UserController {
     }
 
 
+
+    /*
+    Testing
+
+    Results - cant change one value, must change all -> logic in service is faulty or need more methods
+     */
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/edit")
     public ResponseEntity<Void> updateUser(@RequestBody User user) {
@@ -101,7 +107,7 @@ public class UserController {
     }
 
 
-    @PostMapping("check")
+    @PostMapping("/check")
     public ResponseEntity<?> sanityCheck() {
         return ResponseEntity.ok(SecurityUtils.getCurrentUser().getEmail());
     }
