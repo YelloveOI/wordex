@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 public class UserTest {
 
-    //Deprecated
 //    @Test
 //    public void addDeck_AddsADeckToAnEmptyUser() {
 //        final User user = Generator.generateRandomUser();

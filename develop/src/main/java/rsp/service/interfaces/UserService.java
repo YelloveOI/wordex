@@ -14,7 +14,7 @@ public interface UserService {
 
     User findById(Integer id);
 
-    void register(User user) throws Exception;
+    User register(User user) throws Exception;
 
     User findByUsername(String username);
 

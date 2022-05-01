@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import rsp.enums.Role;
 import rsp.environment.Generator;
 import rsp.model.User;
+import rsp.security.SecurityUtils;
 import rsp.service.interfaces.UserService;
 
 @SpringBootTest()
@@ -63,7 +67,6 @@ public class UserServiceIntegrationTest {
         //arrange
         User user = Generator.generateRandomUser();
 
-
         //act
         try{
             sut.register(user);
@@ -77,11 +80,47 @@ public class UserServiceIntegrationTest {
 
         assertEquals(user.getUsername(), result.getUsername());
         assertEquals(user.getEmail(), result.getEmail());
-        assertNotNull(user.getId());
-        assertNotNull(user.hasRole(Role.USER));
+        assertNotNull(result.getId());
+        assertNotNull(result.hasRole(Role.USER));
     }
 
+    @Test
+    public void updateUser_updateUsername_updatesUsernameRestStaysSame(){
+        //arrange
+        User user = Generator.generateRandomUser();
 
+        try{
+            sut.register(user);
+        }
+        catch(Exception ex){
+            fail("Exception not expected: " + ex.getMessage());
+        }
+        user = sut.findByUsername(user.getUsername());
+        String newUsername = "PartyPoop345!!";
+
+        //mock login
+        try (MockedStatic<SecurityUtils> utilities = Mockito.mockStatic(SecurityUtils.class)) {
+            utilities.when(() -> SecurityUtils.getCurrentUser())
+                    .thenReturn(user);
+            //act
+            user.setUsername(newUsername);
+            try{
+                sut.update(user);
+            }
+            catch(Exception ex){
+                fail("Exception not expected: " + ex.getMessage());
+            }
+        }
+
+
+        //assert
+
+        assertDoesNotThrow(()->sut.findByUsername(newUsername));
+        User result = sut.findByUsername(newUsername);
+
+        assertEquals(user.getId(), result.getId());
+        assertEquals(user.getEmail(), result.getEmail());
+    }
 
     @Test
     public void registerUser_invalidUserName_throwsException(){

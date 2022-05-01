@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepo repo;
     private final PasswordEncoder passwordEncoder;
 
+    @Deprecated
     @Override
     public User save(@NotNull User user) {
         repo.save(user);
@@ -70,7 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void register(@NotNull User user) throws Exception {
+    public User register(@NotNull User user) throws Exception {
         // Username requirements
         if (user.getUsername().length() < 3) {
             throw new Exception("Selected username is too short. (3-20 characters allowed)");
@@ -108,12 +109,18 @@ public class UserServiceImpl implements UserService {
             throw new Exception("This email address is already in use.");
         }
 
-        repo.save(new User(user.getUsername(), user.getEmail(), passwordEncoder.encode(user.getPassword())));
+        return repo.save(new User(user.getUsername(), user.getEmail(), passwordEncoder.encode(user.getPassword())));
     }
 
     @Transactional
     public void update(@NotNull User user) throws Exception {
         User currentUser = SecurityUtils.getCurrentUser();
+
+        // check
+        if (!currentUser.getId().equals(user.getId())) {
+            throw new Exception("You can't update other users.");
+        }
+
         // Username
         if (!currentUser.getUsername().equals(user.getUsername())) {
             // Username uniqueness
@@ -173,7 +180,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addRole(@NotNull User user, @NotNull Role role) {
-        if (repo.findById(user.getId()).isPresent()) {
+        if (!repo.findById(user.getId()).isPresent()) {
             throw NotFoundException.create(User.class.getName(), user.getId());
         } else {
             if (repo.findById(user.getId()).orElse(user).hasRole(role)) {
