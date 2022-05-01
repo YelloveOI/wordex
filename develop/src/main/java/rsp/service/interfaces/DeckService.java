@@ -20,7 +20,7 @@ public interface DeckService {
 
     //Deck editText(Deck deck, String name, String definition);
 
-    void save(Deck deck);
+    void save(Deck deck) throws Exception;
 
     void update(Deck deck) throws Exception;
 
@@ -39,4 +39,6 @@ public interface DeckService {
     boolean exists(Deck deck);
 
     List<Deck> getPublicDecks();
+
+    List<Deck> findDecksByTags(List<String> tags);
 }

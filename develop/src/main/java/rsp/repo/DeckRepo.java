@@ -1,5 +1,6 @@
 package rsp.repo;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import rsp.enums.Language;
@@ -27,5 +28,5 @@ public interface DeckRepo extends CrudRepository<Deck, Integer> {
 
     Optional<Deck> findFirstByName(String name);
 
-    List<Deck> findAllByTagsIn(List<String> tags);
+    List<Deck> findAllByIsPrivateFalseAndTagsIn(List<String> tags);
 }

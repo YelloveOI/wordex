@@ -190,4 +190,23 @@ public class DeckController {
         LOG.debug("Deck ID \"{}\" has been deleted.", id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
+
+    /**
+     * Get public decks having any of given tags
+     * @param tags
+     * @return
+     */
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @PostMapping("/tags")
+    public List<Deck> getDecksByTags(@RequestBody List<String> tags) {
+        List<Deck> decks;
+        try {
+            decks = ds.findDecksByTags(tags);
+        } catch (Exception e) {
+            LOG.warn("Decks could not be found! {}", e.getMessage());
+            return null;
+        }
+        LOG.debug("Decks were found.");
+        return decks;
+    }
 }

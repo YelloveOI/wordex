@@ -8,6 +8,7 @@ import rsp.enums.Language;
 import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.model.Deck;
+import rsp.model.Tag;
 import rsp.repo.DeckRepo;
 import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
@@ -152,7 +153,12 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public void save(@NotNull Deck deck) {
+    public void save(@NotNull Deck deck) throws Exception {
+        if (deck.getOwner() != null) {
+            if (!deck.getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
+                throw new Exception("You can't save someone else's deck.");
+            }
+        }
         deck.setOwner(SecurityUtils.getCurrentUser());
         repo.save(deck);
     }
@@ -212,6 +218,16 @@ public class DeckServiceImpl implements DeckService {
         } else {
             throw NotFoundException.create(Deck.class.getName(), id);
         }
+    }
+
+    /**
+     * Get public decks having any of given tags
+     * @param tags
+     * @return
+     */
+    @Override
+    public List<Deck> findDecksByTags(@NotNull List<String> tags) {
+        return repo.findAllByIsPrivateFalseAndTagsIn(tags);
     }
 
 }
