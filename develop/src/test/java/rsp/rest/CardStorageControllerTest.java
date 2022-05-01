@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import rsp.environment.Generator;
 import rsp.model.User;
-import rsp.service.interfaces.CardStorageService;
 import rsp.service.interfaces.UserService;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -31,14 +30,11 @@ public class CardStorageControllerTest {
 
     private User generatedU;
 
-    @Autowired
-    private ObjectMapper mapper;
+    //@Autowired
+    //private ObjectMapper mapper;
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private CardStorageService storageService;
 
     String uri = "http://localhost:7797";
 

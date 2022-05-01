@@ -36,11 +36,6 @@ public class Deck extends AbstractEntity {
     @Setter
     private String name;
 
-    @OneToOne
-    @Getter
-    @Setter
-    private User owner;
-
     @Enumerated(EnumType.STRING)
     @Getter
     @Setter
