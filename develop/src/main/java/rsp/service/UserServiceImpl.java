@@ -115,6 +115,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void update(@NotNull User user) throws Exception {
         User currentUser = SecurityUtils.getCurrentUser();
+
+        // check
+        if (!currentUser.getId().equals(user.getId())) {
+            throw new Exception("You can't update other users.");
+        }
+
         // Username
         if (!currentUser.getUsername().equals(user.getUsername())) {
             // Username uniqueness
