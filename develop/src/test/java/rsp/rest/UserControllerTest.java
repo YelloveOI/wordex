@@ -1,67 +1,46 @@
 package rsp.rest;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.test.context.support.TestExecutionEvent;
-import org.springframework.security.test.context.support.WithMockUser;
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import rsp.enums.Role;
+import org.springframework.transaction.annotation.Transactional;
 import rsp.environment.Generator;
 import rsp.exception.NotFoundException;
 import rsp.model.User;
-import rsp.security.SecurityConstants;
-import rsp.security.SecurityUtils;
-import rsp.security.UserDetails;
 import rsp.service.interfaces.UserService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc(addFilters = false)
+@Transactional
 public class UserControllerTest {
 
-    @Autowired
-    private WebApplicationContext context;
 
     @Autowired
     private MockMvc mockMvc;
 
     private User user;
 
-    private String accessToken;
-
+    private User generatedU;
 
 
     @BeforeEach
     public void setUp(){
         try{
-            User generatedU = Generator.generateRandomUser();
+            generatedU = Generator.generateRandomUser();
             generatedU.setUsername("userName69");
             user = sut.register(generatedU);
-            accessToken = SecurityConstants.TOKEN_PREFIX + SecurityUtils.jwtGenerateAccessToken(user);
         }
         catch(Exception e){
             fail("Failed to set up tests " + e.getMessage());
@@ -70,9 +49,6 @@ public class UserControllerTest {
 
     @Autowired
     private ObjectMapper mapper;
-
-    @Autowired
-    private TestRestTemplate template;
 
     @Autowired
     private UserService sut;
@@ -101,18 +77,18 @@ public class UserControllerTest {
             assertDoesNotThrow(()->sut.findByUsername(user.getUsername()));
             String originalName = user.getUsername();
             String newName = "PartyPooper";
-            User updatedUser = new User();
-            updatedUser.setUsername(newName);
+            user.setUsername(newName);
+
+            //change to raw pswd
+            user.setPassword(generatedU.getPassword());
 
             mockMvc.perform(post(uri+"/user/edit")
-                            .content(mapper.writeValueAsString(updatedUser))
+                            .content(mapper.writeValueAsString(user))
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(user)));
+                    .andExpect(status().isOk());
 
             assertDoesNotThrow(()->sut.findByUsername(newName));
             assertThrows(NotFoundException.class, ()->sut.findByUsername(originalName));
-            assertEquals(user.getPassword(), sut.findByUsername(newName).getPassword());
             assertEquals(user.getEmail(), sut.findByUsername(newName).getEmail());
             assertEquals(user.getId(), sut.findByUsername(newName).getId());
         }
@@ -127,7 +103,7 @@ public class UserControllerTest {
             assertNotNull(user.getId());
             mockMvc.perform(get(uri+"/user/me")
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
-                    .andExpect(status().isUnauthorized());
+                    .andExpect(status().is4xxClientError());
         }
         catch (Exception ex){
             fail("Unexpected Exception " + ex.getMessage());

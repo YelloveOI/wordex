@@ -7,11 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import static  org.mockito.Mockito.*;
-
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import rsp.enums.Role;
 import rsp.environment.Generator;
@@ -19,10 +15,11 @@ import rsp.exception.NotFoundException;
 import rsp.model.User;
 import rsp.repo.UserRepo;
 import rsp.service.interfaces.UserService;
-
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
+/*
+Example unit test, it would be great if developers tested their methods themselves, *sigh
+ */
 @ExtendWith(MockitoExtension.class)
 public class UserServiceUnitTest {
 

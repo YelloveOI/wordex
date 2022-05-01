@@ -54,9 +54,7 @@ public class DeckServiceImpl implements DeckService {
         deck.setPrivate(true);
         deck.setOwner(SecurityUtils.getCurrentUser());
 
-        repo.save(deck);
-
-        return deck;
+        return repo.save(deck);
     }
 
     @Override
