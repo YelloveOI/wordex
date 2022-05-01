@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import rsp.model.Deck;
 import rsp.rest.util.RestUtils;
 import rsp.service.interfaces.CardService;
-import rsp.service.interfaces.CardStorageService;
 import rsp.service.interfaces.DeckService;
 import rsp.service.interfaces.TagService;
 
@@ -28,8 +27,6 @@ public class CardStorageController {
 
     private final CardService cardService;
 
-    private final CardStorageService cardStorageService;
-
     private final DeckService deckService;
 
     private final TagService tagService;
@@ -37,12 +34,10 @@ public class CardStorageController {
 
     public CardStorageController(
             CardService cardService,
-            CardStorageService cardStorageService,
             DeckService deckService,
             TagService tagService
     ) {
         this.cardService = cardService;
-        this.cardStorageService = cardStorageService;
         this.deckService = deckService;
         this.tagService = tagService;
     }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rsp.enums.Language;
 import rsp.exception.IllegalActionException;
+import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.model.Deck;
 import rsp.repo.DeckRepo;
@@ -13,6 +14,7 @@ import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -50,6 +52,7 @@ public class DeckServiceImpl implements DeckService {
         deck.setLanguageTo(languageTo);
         deck.setLanguageFrom(languageFrom);
         deck.setPrivate(true);
+        deck.setOwner(SecurityUtils.getCurrentUser());
 
         repo.save(deck);
 
@@ -87,6 +90,7 @@ public class DeckServiceImpl implements DeckService {
             result.setDescription(deck.getDescription());
             result.setName(deck.getName());
             result.setTags(deck.getTags());
+            result.setOwner(SecurityUtils.getCurrentUser());
 
             return result;
         } else {
@@ -110,6 +114,7 @@ public class DeckServiceImpl implements DeckService {
         result.setDescription(deck.getDescription());
         result.setName(deck.getName());
         result.setTags(deck.getTags());
+        result.setOwner(SecurityUtils.getCurrentUser());
 
         repo.save(result);
 
@@ -160,14 +165,5 @@ public class DeckServiceImpl implements DeckService {
             repo.delete(deck);
         }
     }
-//
-//    @Override
-//    public Deck findById(@NotNull Integer id) {
-//        Optional<Deck> result = repo.findById(id);
-//        if(result.isPresent()) {
-//            return result.get();
-//        } else {
-//            throw NotFoundException.create(Deck.class.getName(), id);
-//        }
-//    }
+
 }

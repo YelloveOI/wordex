@@ -30,7 +30,7 @@ public interface UserCardsService {
 
     List<Deck> getMyDecks();
 
-    List<Card> getMyFreeCards();
+    Deck getMyFreeCards();
 
     List<Deck> getPublicDecksByTag(Tag tag, int quantity);
 
