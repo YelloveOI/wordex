@@ -20,22 +20,22 @@ public class CardStorage extends AbstractEntity {
      * This list server as a "deck" for the
      * cards which are not assigned to any other deck
      */
-    @OneToMany
+    @OneToOne
     @Getter
     @Setter
-    private List<Card> freeCards;
+    private Deck deck;
 
     @OneToOne
     @Getter
     @Setter
     private User owner;
 
-    public void addUnassignedCard(Card card) {
-        freeCards.add(card);
+    public void addFreeCard(Card card) {
+        deck.addCard(card);
     }
 
-    public void removeUnassignedCard(Card card) {
-        freeCards.remove(card);
+    public void removeFreeCard(Card card) {
+        deck.removeCard(card);
     }
 
     public void addDeck(Deck deck) {

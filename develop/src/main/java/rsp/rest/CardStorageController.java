@@ -52,7 +52,7 @@ public class CardStorageController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<Void> deleteDeck(@PathVariable int id) {
         try {
-            cardStorageService.removeDeck(id);
+//            cardStorageService.removeDeck(id);
         } catch (Exception e) {
             LOG.warn("Deck could not be deleted! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -70,13 +70,14 @@ public class CardStorageController {
     public List<Deck> getMyDecks() {
         List<Deck> decks;
         try {
-            decks = cardStorageService.getMyDecks();
+//            decks = cardStorageService.getMyDecks();
         } catch (Exception e) {
             LOG.warn("Decks could not be found! {}", e.getMessage());
             return null;
         }
         LOG.debug("Decks were found.");
-        return decks;
+//        return decks;
+        return null;
     }
 
     /**
@@ -89,7 +90,7 @@ public class CardStorageController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> addDeck(@RequestBody Deck deck) {
         try {
-            cardStorageService.addDeck(deck);
+//            cardStorageService.addDeck(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be created! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -109,7 +110,7 @@ public class CardStorageController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> updateDeck(@RequestBody Deck deck) {
         try {
-            cardStorageService.update(deck);
+//            cardStorageService.update(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be updated! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -130,7 +131,7 @@ public class CardStorageController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> chooseDeck(@RequestBody Deck deck) {
         try {
-            cardStorageService.createPrivateCopy(deck);
+//            cardStorageService.createPrivateCopy(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be selected! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -28,14 +28,16 @@ public class CardStorageServiceImpl implements CardStorageService {
 
     @Override
     public void addCard(@NotNull CardStorage cardStorage, @NotNull Card card) {
-        cardStorage.addUnassignedCard(card);
+        cardStorage.addFreeCard(card);
 
         repo.save(cardStorage);
     }
 
     @Override
     public void removeCard(@NotNull CardStorage cardStorage, @NotNull Card card) {
-        cardStorage.removeUnassignedCard(card);
+        cardStorage.removeFreeCard(card);
+
+        //TODO find deck by card etc
 
         repo.save(cardStorage);
     }
@@ -66,7 +68,45 @@ public class CardStorageServiceImpl implements CardStorageService {
     }
 
     @Override
-    public boolean exists(@NotNull CardStorage cardStorage, Card card) {
-        return cardStorage.getFreeCards().contains(card);
+    public boolean exists(@NotNull CardStorage cardStorage, @NotNull Card card) {
+        if(cardStorage.getDeck().getCards().contains(card)) {
+            return true;
+        } else {
+            for(Deck d : cardStorage.getDeckList()) {
+                if(d.getCards().contains(card)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
+
+    @Override
+    public boolean exists(@NotNull CardStorage cardStorage, @NotNull Deck deck) {
+        if(cardStorage.getDeck().equals(deck) || cardStorage.getDeckList().contains(deck)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public Deck getDeckOf(@NotNull CardStorage cardStorage, @NotNull Card card) {
+        Deck result = null;
+
+        if(cardStorage.getDeck().getCards().contains(card)) {
+            result = cardStorage.getDeck();
+        }
+
+        for(Deck d : cardStorage.getDeckList()) {
+            if(d.getCards().contains(card)) {
+                result = d;
+            }
+        }
+
+        return result;
+    }
+
+
 }
