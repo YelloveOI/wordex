@@ -61,6 +61,11 @@ public class Deck extends AbstractEntity {
     @Setter
     private List<Tag> tags;
 
+    @ManyToOne
+    @Getter
+    @Setter
+    private User owner;
+
     public Deck(String description, boolean isConfigurable, boolean isPrivate, String name, Language languageFrom, Language languageTo) {
         this.description = description;
         this.isConfigurable = isConfigurable;

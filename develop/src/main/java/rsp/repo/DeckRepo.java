@@ -7,12 +7,14 @@ import rsp.model.Card;
 import rsp.model.Deck;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DeckRepo extends CrudRepository<Deck, Integer> {
 
     List<Deck> findAllByIsPrivateFalse();
 
+    List<Deck> findAllByOwnerId(Integer id);
     boolean existsByNameAndAndCardsAndIdAndDescriptionAndLanguageFromAndLanguageToAndPrivate(
             String name,
             List<Card> cards,
@@ -23,4 +25,7 @@ public interface DeckRepo extends CrudRepository<Deck, Integer> {
             boolean isPrivate
             );
 
+    Optional<Deck> findFirstByName(String name);
+
+    List<Deck> findAllByTagsIn(List<String> tags);
 }

@@ -10,23 +10,33 @@ public interface DeckService {
 
     Deck create(String description, String name, Language languageTo, Language languageFrom);
 
-    Deck createPublicCopy(Deck deck);
+    //Deck createPublicCopy(Deck deck);
 
-    Deck createPrivateCopy(Deck deck);
+    //Deck createPrivateCopy(Deck deck);
 
-    void addCard(Deck deck, Card card);
+    //void addCard(Deck deck, Card card);
 
-    void removeCard(Deck deck, Card card);
+    //void removeCard(Deck deck, Card card);
 
-    Deck editText(Deck deck, String name, String definition);
+    //Deck editText(Deck deck, String name, String definition);
+
+    void save(Deck deck);
+
+    void update(Deck deck) throws Exception;
+
+    void deleteById(Integer id) throws Exception;
+
+    Deck findById(Integer id) throws Exception;
+
+    Deck findByName(String name) throws Exception;
+
+    void createPrivateCopy(Integer id) throws Exception;
+
+    List<Deck> getUserDecks();
 
     void delete(Deck deck);
 
     boolean exists(Deck deck);
 
-//    Deck findById(Integer id);
-
     List<Deck> getPublicDecks();
-
-    Deck findById(Integer id);
 }
