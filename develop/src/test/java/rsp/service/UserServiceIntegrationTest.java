@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import rsp.model.User;
 import rsp.security.SecurityUtils;
 import rsp.service.interfaces.UserService;
 
-@SpringBootTest()
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
 @Transactional
 public class UserServiceIntegrationTest {
@@ -88,6 +87,7 @@ public class UserServiceIntegrationTest {
     public void updateUser_updateUsername_updatesUsernameRestStaysSame(){
         //arrange
         User user = Generator.generateRandomUser();
+        String rawPswd = user.getPassword();
 
         try{
             sut.register(user);
@@ -97,6 +97,7 @@ public class UserServiceIntegrationTest {
         }
         user = sut.findByUsername(user.getUsername());
         String newUsername = "PartyPoop345!!";
+        user.setPassword(rawPswd);
 
         //mock login
         try (MockedStatic<SecurityUtils> utilities = Mockito.mockStatic(SecurityUtils.class)) {

@@ -50,10 +50,7 @@ public class DeckServiceImpl implements DeckService {
         deck.setLanguageTo(languageTo);
         deck.setLanguageFrom(languageFrom);
         deck.setPrivate(true);
-
-        repo.save(deck);
-
-        return deck;
+        return repo.save(deck);
     }
 
     @Override
