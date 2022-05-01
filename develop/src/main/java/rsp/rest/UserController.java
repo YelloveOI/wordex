@@ -14,7 +14,6 @@ import rsp.model.School;
 import rsp.model.User;
 import rsp.rest.util.RestUtils;
 import rsp.security.SecurityUtils;
-import rsp.security.model.AuthenticationToken;
 import rsp.service.interfaces.SchoolService;
 import rsp.service.interfaces.UserService;
 
@@ -35,52 +34,21 @@ public class UserController {
         this.ss = ss;
     }
 
-    @GetMapping(value = "/hi")
-    @ResponseStatus(HttpStatus.OK)
-    public String sanityCheck() {
-        return "hi";
-    }
-
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-    public User getCurrentUser(Principal principal) {
-        final AuthenticationToken auth = (AuthenticationToken) principal;
-        return auth.getPrincipal().getUser();
+    public User getCurrentUser() {
+        return SecurityUtils.getCurrentUser();
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping("/{id}")
     public User getUser(@PathVariable int id) {
         return us.findById(id);
     }
 
-    /*@PreAuthorize("hasAnyRole('')")
-    @GetMapping("/all")
-    public List<User> getAllUsers() {
-    }*/
 
-    /**
-     * @return No content/Bad request
-     */
-    @PreAuthorize("isAnonymous()")
-    @PostMapping("/registration")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createUser(@RequestBody User user) {
-        try {
-            us.register(user);
-        } catch (Exception e) {
-            LOG.warn("User could not be registered! {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        LOG.debug("User \"{}\" has been registered.", user.getUsername());
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
-                us.findByUsername(user.getUsername()).getId());   // TODO edit to log in
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
-    }
-
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/edit")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> updateUser(@RequestBody User user) {
         try {
             us.update(user);
@@ -88,15 +56,13 @@ public class UserController {
             LOG.warn("User could not be updated! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        LOG.debug("User \"{}\" has been updated.", user.getUsername());
-        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
-                us.findByUsername(user.getUsername()).getId());
-        return new ResponseEntity<>(headers, HttpStatus.OK);
+        LOG.info("User \"{}\" has been updated.", user.getUsername());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_SCHOOL_REPRESENTATIVE')")
     @PostMapping("/student")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createStudent(@RequestBody User user, @RequestBody School school) {
         try {
             us.addRole(user, Role.STUDENT);
@@ -132,5 +98,11 @@ public class UserController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable int id) {
+    }
+
+
+    @PostMapping("check")
+    public ResponseEntity<?> sanityCheck() {
+        return ResponseEntity.ok(SecurityUtils.getCurrentUser().getEmail());
     }
 }

@@ -27,4 +27,6 @@ public interface DeckService {
 //    Deck findById(Integer id);
 
     List<Deck> getPublicDecks();
+
+    Deck findById(Integer id);
 }

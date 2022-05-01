@@ -2,24 +2,18 @@ package rsp.service;
 
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import rsp.enums.Role;
 import rsp.environment.Generator;
 import rsp.model.User;
-import rsp.security.DefaultAuthenticationProvider;
 import rsp.service.interfaces.UserService;
-
-import java.beans.Encoder;
 
 @SpringBootTest()
 @ActiveProfiles("test")
@@ -32,9 +26,6 @@ public class UserServiceIntegrationTest {
 
     @Autowired
     private PasswordEncoder encoder;
-
-    @Autowired
-    private DefaultAuthenticationProvider auth;
 
     @BeforeEach
     public void setUp(){

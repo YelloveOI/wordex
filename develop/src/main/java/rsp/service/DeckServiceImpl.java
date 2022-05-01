@@ -130,6 +130,17 @@ public class DeckServiceImpl implements DeckService {
         return deck;
     }
 
+
+    @Override
+    public Deck findById(@NotNull Integer id) {
+        Optional<Deck> result = repo.findById(id);
+        if(result.isPresent()) {
+            return result.get();
+        } else {
+            throw NotFoundException.create(Deck.class.getName(), id);
+        }
+    }
+
     @Override
     public boolean exists(Deck deck) {
         return repo.existsByNameAndAndCardsAndIdAndDescriptionAndLanguageFromAndLanguageToAndPrivate(

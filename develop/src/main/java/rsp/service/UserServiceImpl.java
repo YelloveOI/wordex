@@ -1,7 +1,9 @@
 package rsp.service;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,31 +11,22 @@ import rsp.enums.Role;
 import rsp.exception.NotFoundException;
 import rsp.model.User;
 import rsp.repo.UserRepo;
-import rsp.security.DefaultAuthenticationProvider;
 import rsp.security.SecurityUtils;
-import rsp.security.model.AuthenticationToken;
 import rsp.service.interfaces.UserService;
 
 import java.util.ArrayList;
-import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
-
     private final UserRepo repo;
-
-    private final DefaultAuthenticationProvider provider;
-
-    @Autowired
-    public UserServiceImpl(UserRepo repo, DefaultAuthenticationProvider provider) {
-        this.repo = repo;
-        this.provider = provider;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User save(@NotNull User user) {
@@ -115,13 +108,12 @@ public class UserServiceImpl implements UserService {
             throw new Exception("This email address is already in use.");
         }
 
-        repo.save(new User(user.getUsername(), user.getEmail(), provider.encode(user.getPassword())));
+        repo.save(new User(user.getUsername(), user.getEmail(), passwordEncoder.encode(user.getPassword())));
     }
 
     @Transactional
     public void update(@NotNull User user) throws Exception {
         User currentUser = SecurityUtils.getCurrentUser();
-
         // Username
         if (!currentUser.getUsername().equals(user.getUsername())) {
             // Username uniqueness
@@ -152,7 +144,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Password
-        if (!currentUser.getPassword().equals(provider.encode(user.getPassword()))) {
+        if (!currentUser.getPassword().equals(passwordEncoder.encode(user.getPassword()))) {
             // Password requirements
             if (user.getPassword().length() < 8) {
                 throw new Exception("Selected password is too short. (8-20 characters allowed)");
@@ -169,7 +161,7 @@ public class UserServiceImpl implements UserService {
             }
 
             // Encode
-            currentUser.setPassword(provider.encode(user.getPassword()));
+            currentUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
         // set values
@@ -207,7 +199,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createAdmin(@NotNull User user) {
-        user.setPassword(provider.encode("1234"));
+        user.setPassword(passwordEncoder.encode("1234"));
         repo.save(user);
     }
 
