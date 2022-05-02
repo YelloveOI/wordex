@@ -96,6 +96,7 @@ public class Generator {
     public static User generateRandomUser() {
         final User user = new User();
 
+        user.setId(randomInt());
         user.setUsername("Username"+randomInt());
         user.setEmail("Email"+randomInt() + "@gmail.com");
         user.setPassword(Integer.toString(randomInt())+ "@?5aaHH");
