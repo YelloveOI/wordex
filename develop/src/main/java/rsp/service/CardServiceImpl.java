@@ -136,6 +136,12 @@ public class CardServiceImpl implements CardService {
      * @return true if exists (in repo) 100% same card, false otherwise
      */
     @Override
+    public boolean exists(Card card){
+        return repo.existsById(card.getId());
+    }
+
+    /*
+    @Override
     public boolean exists(Card card) {
         return repo.existsByContentListAndTermAndDefinitionAndId(
                 card.getContentList(),
@@ -144,4 +150,6 @@ public class CardServiceImpl implements CardService {
                 card.getId()
         );
     }
+
+     */
 }

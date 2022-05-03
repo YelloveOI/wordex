@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface CardRepo extends CrudRepository<Card, Integer> {
 
-    boolean existsByContentListAndTermAndDefinitionAndId(List<Content> contentList, String term, String definition, Integer id);
+    //not working because of illegal List argument, wont run with this
+
+    //boolean existsByContentListAndTermAndDefinitionAndId(List<Content> contentList, String term, String definition, Integer id);
 
 }

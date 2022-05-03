@@ -16,6 +16,7 @@ public interface DeckRepo extends CrudRepository<Deck, Integer> {
     List<Deck> findAllByIsPrivateFalse();
 
     List<Deck> findAllByOwnerId(Integer id);
+    /*
     boolean existsByNameAndAndCardsAndIdAndDescriptionAndLanguageFromAndLanguageToAndPrivate(
             String name,
             List<Card> cards,
@@ -25,6 +26,8 @@ public interface DeckRepo extends CrudRepository<Deck, Integer> {
             Language languageTo,
             boolean isPrivate
             );
+
+     */
 
     Optional<Deck> findFirstByName(String name);
 
