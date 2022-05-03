@@ -27,8 +27,9 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Deck> findPublicDecksWithTag(@NotNull String tagName, @NotNull int decksQuantity) {
+    public List<Deck> findPublicDecksWithTag(@NotNull String tagName, int decksQuantity) {
         Optional<Tag> tag = repo.findByName(tagName);
+
         if(tag.isPresent()) {
             return tag.get().getDecks().stream()
                     .filter(v -> !v.isPrivate())
@@ -41,7 +42,7 @@ public class TagServiceImpl implements TagService {
 
     //TODO
 //    @Override
-//    public List<Deck> findDecksWithTags(List<String> tagNames, int deckQuantity) {
+//    public List<Deck> findDecksWithTags(List<String> tagNames, int decksQuantity) {
 //        List<Tag> tagList = new ArrayList<>();
 //        List<Deck> deckList = new ArrayList<>();
 //        Optional<Tag> tag;

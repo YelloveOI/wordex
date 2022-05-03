@@ -3,7 +3,6 @@ package rsp.service;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rsp.enums.Language;
 import rsp.exception.NotFoundException;
 import rsp.model.Card;
 import rsp.model.Content;
@@ -11,20 +10,14 @@ import rsp.repo.CardRepo;
 import rsp.service.interfaces.CardService;
 import rsp.service.interfaces.ContentService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 @Service
 @Transactional
 public class CardServiceImpl implements CardService {
 
     private final CardRepo repo;
-    private final ContentService contentService;
 
     public CardServiceImpl(CardRepo repo, ContentService contentService) {
         this.repo = repo;
-        this.contentService = contentService;
     }
 
     /**
