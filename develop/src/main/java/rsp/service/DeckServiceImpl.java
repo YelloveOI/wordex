@@ -87,6 +87,13 @@ public class DeckServiceImpl implements DeckService {
 
     @Override
     public boolean exists(Deck deck) {
+        return repo.existsById(deck.getId());
+    }
+
+    /*
+    This method destroys repository. App wont run with this repo function. Its becouse of the List of cards.
+    @Override
+    public boolean exists(Deck deck) {
         return repo.existsByNameAndAndCardsAndIdAndDescriptionAndLanguageFromAndLanguageToAndPrivate(
                 deck.getName(),
                 deck.getCards(),
@@ -98,6 +105,8 @@ public class DeckServiceImpl implements DeckService {
         );
     }
 
+
+     */
     @Override
     public void delete(@NotNull Deck deck){
         if(exists(deck)) {
