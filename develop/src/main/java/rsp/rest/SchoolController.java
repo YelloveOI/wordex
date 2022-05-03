@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -54,19 +55,18 @@ public class SchoolController {
     }*/
 
     @PreAuthorize("hasAnyRole('ROLE_SCHOOL_REPRESENTATIVE', 'ROLE_ADMINISTRATOR')")
-    @PostMapping("/new")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createSchool(@RequestBody School school) {
+    @PostMapping(value = "/new",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createSchool(@RequestBody School school) {
         try {
             ss.createSchool(school);
         } catch (Exception e) {
             LOG.warn("School could not be created! {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
         LOG.debug("School \"{}\" has been created.", school.getName());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
                 ss.findByName(school.getName()).getId());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        return ResponseEntity.ok().headers(headers).body("OK");
     }
 
     @PreAuthorize("hasAnyRole('')")

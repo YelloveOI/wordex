@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface SchoolRepo extends CrudRepository<School, Integer> {
 
-    Optional<School> findSchoolByName(String username);
+    Optional<School> findSchoolByName(String name);
 
 }

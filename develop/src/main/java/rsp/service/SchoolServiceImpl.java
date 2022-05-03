@@ -67,7 +67,7 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public void addStudent(@NotNull School school, @NotNull User user) {
-        if (repo.findById(school.getId()).isPresent()) {
+        if (!repo.findById(school.getId()).isPresent()) {
             throw NotFoundException.create(School.class.getName(), school.getId());
         } else {
             if (repo.findById(school.getId()).orElse(school).hasStudent(user)) {

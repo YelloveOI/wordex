@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import rsp.enums.Role;
 import rsp.model.School;
 import rsp.model.User;
+import rsp.rest.dto.CreateStudent;
 import rsp.rest.util.RestUtils;
 import rsp.security.SecurityUtils;
 import rsp.service.interfaces.SchoolService;
@@ -34,8 +35,8 @@ public class UserController {
         this.ss = ss;
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMINISTRATOR')")
+    @GetMapping(value = "/me")
     public User getCurrentUser() {
         return SecurityUtils.getCurrentUser();
     }
@@ -54,25 +55,26 @@ public class UserController {
     Results - cant change one value, must change all -> logic in service is faulty or need more methods
      */
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/edit")
-    public ResponseEntity<Void> updateUser(@RequestBody User user) {
+    @PostMapping(value = "/edit",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateUser(@RequestBody User user) {
         try {
             us.update(user);
         } catch (Exception e) {
             LOG.warn("User could not be updated! {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("WRONG", HttpStatus.BAD_REQUEST);
         }
         LOG.info("User \"{}\" has been updated.", user.getUsername());
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
     }
-
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ROLE_SCHOOL_REPRESENTATIVE')")
-    @PostMapping("/student")
-    public ResponseEntity<Void> createStudent(@RequestBody User user, @RequestBody School school) {
+    //ROLE_SCHOOL_REPRESENTATIVE
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping(value = "/student",produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody ResponseEntity<?> createStudent(@RequestBody CreateStudent createStudent) {
+        User user;
         try {
+            user = us.findByUsername(createStudent.getUsername());
             us.addRole(user, Role.STUDENT);
-            ss.addStudent(school, user);
+            ss.addStudent(ss.findByName(createStudent.getNameSchool()), user);
         } catch (Exception e) {
             LOG.warn("User could not receive the student role! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -80,7 +82,7 @@ public class UserController {
         LOG.debug("Role student has been added to user \"{}\".", user.getUsername());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}",
                 us.findByUsername(user.getUsername()).getId());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        return ResponseEntity.ok().headers(headers).body("OK");
     }
 
     @PreAuthorize("hasRole('ROLE_SCHOOL_REPRESENTATIVE')")
