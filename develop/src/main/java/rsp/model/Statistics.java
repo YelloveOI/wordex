@@ -32,25 +32,46 @@ public class Statistics extends AbstractEntity {
     }
 
     public void addDeck(Deck deck) {
-        List<Integer> cardIdList = deck.getCards().stream().map(Card::getId).collect(Collectors.toList());
-        Map<Integer, Integer> map = new HashMap<>(cardIdList.size());
-        for (Integer i : cardIdList) {
-            map.put(i, 0);
+        StatisticDeck statisticDeck;
+        Map<Integer, Integer> map;
+        if (deck.getCards() != null) {
+            List<Integer> cardIdList = deck.getCards().stream().map(Card::getId).collect(Collectors.toList());
+            map = new HashMap<>(cardIdList.size());
+            for (Integer i : cardIdList) {
+                map.put(i, 0);
+            }
+        } else {
+            map = new HashMap<>(0);
         }
-
-        StatisticDeck statisticDeck = new StatisticDeck(map);
+        statisticDeck = new StatisticDeck(map);
         statisticDeck.setDeckId(deck.getId());
         decks.add(statisticDeck);
     }
 
     public void removeDeck(Integer deckId) {
         Optional<StatisticDeck> deck = decks.stream().filter(x -> x.getDeckId() == deckId).findFirst();
-        decks.remove(deck.get().getId());
+        if (deck.isPresent()) {
+            decks.remove(deck.get().getId());
+        }
     }
 
-    public void updateDeck(StatisticDeck deck) {
-        Optional<StatisticDeck> OptionalDeck = decks.stream().filter(x -> x.getDeckId() == deck.getDeckId()).findFirst();
-        decks.remove(OptionalDeck.get().getId());
-        decks.add(deck);
+    public void updateDeck(Deck deck) {
+        removeDeck(deck.getId());
+        addDeck(deck);
+    }
+
+    public void reset(Integer deckId) {
+        Optional<StatisticDeck> optionalDeck = decks.stream().filter(x -> x.getDeckId() == deckId).findFirst();
+        if (optionalDeck.isPresent()) {
+            optionalDeck.get().resetAll();
+        }
+    }
+
+    public void storeDeck(StatisticDeck deck) {
+        Optional<StatisticDeck> optionalDeck = decks.stream().filter(x -> x.getDeckId() == deck.getDeckId()).findFirst();
+        if (optionalDeck.isPresent()) {
+            decks.remove(optionalDeck.get().getId());
+            decks.add(deck);
+        }
     }
 }

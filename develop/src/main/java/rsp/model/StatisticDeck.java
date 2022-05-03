@@ -47,4 +47,10 @@ public class StatisticDeck extends AbstractEntity {
     public Integer getNumberOfUnknown() {
         return cards.size() - getNumberOfLearned();
     }
+
+    public void resetAll() {
+        for (Integer key : cards.keySet()) {
+            cards.replace(key, cards.get(key), 0);
+        }
+    }
 }

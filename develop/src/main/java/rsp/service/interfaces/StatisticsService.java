@@ -13,5 +13,7 @@ public interface StatisticsService {
 
     void deleteDeck(Integer deckId);
 
-    void updateDeck(StatisticDeck deck);
+    void updateDeck(Deck deck);
+
+    void storeAnswer(StatisticDeck deck);
 }

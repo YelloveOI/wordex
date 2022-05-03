@@ -5,12 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Deck;
 import rsp.rest.util.RestUtils;
 import rsp.service.interfaces.DeckService;
+import rsp.service.interfaces.StatisticsService;
 
 import java.util.List;
 
@@ -21,10 +23,12 @@ public class DeckController {
     private static final Logger LOG = LoggerFactory.getLogger(DeckController.class);
 
     private final DeckService ds;
+    private final StatisticsService ss;
 
     @Autowired
-    public DeckController(DeckService ds) {
+    public DeckController(DeckService ds, StatisticsService ss) {
         this.ds = ds;
+        this.ss = ss;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER')")
@@ -102,11 +106,12 @@ public class DeckController {
      * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping("/new")
+    @PostMapping(value = "/new", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createDeck(@RequestBody Deck deck) {
         try {
             ds.save(deck);
+            ss.createDeck(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be created! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -127,6 +132,7 @@ public class DeckController {
     public ResponseEntity<Void> updateDeck(@RequestBody Deck deck) {
         try {
             ds.update(deck);
+            ss.updateDeck(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be updated! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -168,6 +174,7 @@ public class DeckController {
     public ResponseEntity<Void> chooseDeck(@RequestBody Integer id) {
         try {
             ds.createPrivateCopy(id);
+            ss.createDeck(getDeck(id));
         } catch (Exception e) {
             LOG.warn("Deck could not be selected! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -183,6 +190,7 @@ public class DeckController {
     public ResponseEntity<Void> deleteDeck(@PathVariable int id) {
         try {
             ds.deleteById(id);
+            ss.deleteDeck(id);
         } catch (Exception e) {
             LOG.warn("Deck could not be deleted! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

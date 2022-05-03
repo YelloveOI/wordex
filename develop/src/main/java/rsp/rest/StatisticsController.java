@@ -48,7 +48,7 @@ public class StatisticsController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> storeDeckAnswers(@RequestBody StatisticDeck deck) {
         try {
-            service.updateDeck(deck);
+            service.storeAnswer(deck);
         } catch (Exception e) {
             LOG.warn("Deck answers could not be stored! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

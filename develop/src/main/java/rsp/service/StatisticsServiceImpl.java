@@ -47,9 +47,16 @@ public class StatisticsServiceImpl implements StatisticsService {
         statistics.removeDeck(deckId);
     }
 
-    public void updateDeck(StatisticDeck deck) {
+    public void updateDeck(Deck deck) {
         User currentUser = SecurityUtils.getCurrentUser();
         Statistics statistics = currentUser.getStatistics();
         statistics.updateDeck(deck);
+        statistics.reset(deck.getId());
+    }
+
+    public void storeAnswer(StatisticDeck deck) {
+        User currentUser = SecurityUtils.getCurrentUser();
+        Statistics statistics = currentUser.getStatistics();
+        statistics.storeDeck(deck);
     }
 }
