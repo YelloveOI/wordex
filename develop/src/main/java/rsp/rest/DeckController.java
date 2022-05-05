@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Deck;
+import rsp.rest.dto.CreateDeck;
 import rsp.rest.util.RestUtils;
 import rsp.service.interfaces.DeckService;
 import rsp.service.interfaces.StatisticsService;
@@ -102,23 +103,24 @@ public class DeckController {
 
     /**
      *
-     * @param deck Deck to store (doesn't have to have owner)
+     * @param createDeck to store (doesn't have to have owner)
      * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping(value = "/new", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createDeck(@RequestBody Deck deck) {
+    @PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createDeck(@RequestBody CreateDeck createDeck) {
+        Deck deck;
         try {
+            deck = ds.mapDto(createDeck);
             ds.save(deck);
             ss.createDeck(deck);
         } catch (Exception e) {
             LOG.warn("Deck could not be created! {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body("WRONG");
         }
         LOG.debug("Deck ID \"{}\" has been created.", deck.getId());
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", deck.getId());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        return ResponseEntity.ok().headers(headers).body("OK");
     }
 
     /**

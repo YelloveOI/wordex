@@ -38,6 +38,9 @@ public class StatisticsServiceImpl implements StatisticsService {
     public void createDeck(Deck deck) {
         User currentUser = SecurityUtils.getCurrentUser();
         Statistics statistics = currentUser.getStatistics();
+        if(statistics == null){
+            return;
+        }
         statistics.addDeck(deck);
     }
 

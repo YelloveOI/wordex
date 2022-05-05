@@ -46,12 +46,12 @@ public class Deck extends AbstractEntity {
     @Setter
     private Language languageTo;
 
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL)
     @Getter
     @Setter
     private List<Card> cards;
 
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.ALL)
     @Getter
     @Setter
     private List<Tag> tags;

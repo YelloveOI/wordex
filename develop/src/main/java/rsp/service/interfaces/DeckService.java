@@ -3,6 +3,7 @@ package rsp.service.interfaces;
 import rsp.enums.Language;
 import rsp.model.Card;
 import rsp.model.Deck;
+import rsp.rest.dto.CreateDeck;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ public interface DeckService {
     //void removeCard(Deck deck, Card card);
 
     //Deck editText(Deck deck, String name, String definition);
+
+    Deck mapDto(CreateDeck createDeck);
 
     void save(Deck deck) throws Exception;
 

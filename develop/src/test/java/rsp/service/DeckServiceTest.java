@@ -59,7 +59,8 @@ public class DeckServiceTest {
         emptyDeck.setId(11);
         emptyDeck.setName("name2");
 
-        this.sut = new DeckServiceImpl(repoMock);
+        //need repair
+        //this.sut = new DeckServiceImpl(repoMock);
     }
 
     @Test

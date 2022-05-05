@@ -7,12 +7,18 @@ import org.springframework.transaction.annotation.Transactional;
 import rsp.enums.Language;
 import rsp.exception.NotFoundException;
 import rsp.model.Card;
+import rsp.model.Content;
 import rsp.model.Deck;
 import rsp.model.Tag;
 import rsp.repo.DeckRepo;
+import rsp.repo.TagRepo;
+import rsp.rest.dto.CardDto;
+import rsp.rest.dto.CreateDeck;
+import rsp.rest.dto.TagDto;
 import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,11 +27,14 @@ import java.util.Optional;
 public class DeckServiceImpl implements DeckService {
 
     private final DeckRepo repo;
+    private final TagRepo tagRepo;
 
     @Autowired
-    public DeckServiceImpl(DeckRepo repo) {
+    public DeckServiceImpl(DeckRepo repo, TagRepo tagRepo) {
+        this.tagRepo = tagRepo;
         this.repo = repo;
     }
+
 
     //TODO get N deck
     @Override
@@ -55,6 +64,49 @@ public class DeckServiceImpl implements DeckService {
         deck.setOwner(SecurityUtils.getCurrentUser());
 
         return repo.save(deck);
+    }
+
+    @Override
+    public Deck mapDto(CreateDeck createDeck) {
+        Deck deck = new Deck();
+        deck.setDescription(createDeck.getDescription());
+        if(createDeck.getIsConfigurable().equals("true")){
+            deck.setConfigurable(true);
+        }else {
+            deck.setConfigurable(false);
+        }
+        if(createDeck.getIsPrivate().equals("true")){
+            deck.setPrivate(true);
+        }else {
+            deck.setPrivate(false);
+        }
+        deck.setName(createDeck.getName());
+        deck.setLanguageFrom(createDeck.getLanguageFrom());
+        deck.setLanguageTo(createDeck.getLanguageTo());
+        deck.setOwner(null);
+        for(CardDto cardDto : createDeck.getCards()){
+            Card card = new Card();
+            card.setDefinition(cardDto.getDefinition());
+            card.setTerm(cardDto.getTerm());
+            List<Content> contentList = new LinkedList<>();
+            card.setContentList(contentList);
+            deck.addCard(card);
+        }
+        //maybe problem
+        for(TagDto tagDto : createDeck.getTags()){
+            Tag tag = new Tag();
+            Optional<Tag> findTag;
+            findTag = tagRepo.findByName(tagDto.getName());
+            if(findTag.isPresent()){
+                findTag.get().addDeck(deck);
+                deck.addTag(findTag.get());
+            }else {
+                tag.setName(tagDto.getName());
+                tag.addDeck(deck);
+                deck.addTag(tag);
+            }
+        }
+        return deck;
     }
 
     /*@Override
