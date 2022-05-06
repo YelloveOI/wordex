@@ -13,7 +13,6 @@ public class ContentServiceImpl implements ContentService {
 
     private final ContentRepo repo;
 
-
     public ContentServiceImpl(ContentRepo repo) {
         this.repo = repo;
     }

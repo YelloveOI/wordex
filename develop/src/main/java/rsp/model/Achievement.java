@@ -27,6 +27,11 @@ public class Achievement extends AbstractEntity {
     @Column(nullable = false)
     private String imgSource;
 
+    @Getter
+    @Setter
+    @ManyToOne
+    private User owner;
+
     //@OneToMany
     //List<Goal> goals;
 
