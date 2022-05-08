@@ -17,9 +17,9 @@ public class CreateDeck {
 
     private String description;
 
-    private String isConfigurable;
+    private Boolean isConfigurable;
 
-    private String isPrivate;
+    private Boolean isPrivate;
 
     private String name;
 
