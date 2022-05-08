@@ -114,14 +114,25 @@ public class DeckServiceTest {
     @Test
     public void createPrivateCopy_invalidArgument_throwsException(){
         //arrange
+        Integer arg = -1;
+
         //act
         //assert
+        assertThrows(Exception.class, () -> sut.createPrivateCopy(arg));
     }
 
     @Test
-    public void createPrivateCopy_validArgument_savesDeepCopyToRepoWithDifferingIdsAndOwners(){
+    public void createPrivateCopy_validArgument_savesDeepCopyToRepoWithDifferingIdsAndOwners() throws Exception {
         //arrange
+        Integer arg = fullDeck.getId();
+        when(repoMock.findById(arg))
+                .thenReturn(Optional.of(fullDeck));
+
         //act
+        Deck result;
+        sut.createPrivateCopy(arg);
+        //TODO
+
         //assert
     }
 
@@ -135,8 +146,11 @@ public class DeckServiceTest {
     @Test
     public void deleteById_invalidArgument_throwsException(){
         //arrange
+        Integer arg  = -1;
+
         //act
         //assert
+        assertThrows(Exception.class, () -> sut.deleteById(arg));
     }
 
     @Test

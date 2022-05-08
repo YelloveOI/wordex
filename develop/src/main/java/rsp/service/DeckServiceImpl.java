@@ -141,7 +141,7 @@ public class DeckServiceImpl implements DeckService {
     public boolean exists(Deck deck) {
         return repo.existsById(deck.getId());
     }
-    
+
     @Override
     public void delete(@NotNull Deck deck){
         if(exists(deck)) {
