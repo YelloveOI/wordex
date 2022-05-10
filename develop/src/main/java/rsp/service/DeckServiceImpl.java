@@ -21,6 +21,7 @@ import rsp.service.interfaces.DeckService;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -190,8 +191,8 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public List<Deck> getUserPrivateDecks() {
-        return repo.findAllByIsPrivateTrue();
+    public List<Deck> getUserPrivateDecks(Integer id) {
+        return repo.findAllByIsPrivateTrueAndOwnerId(id);
     }
 
     @Override
@@ -269,7 +270,13 @@ public class DeckServiceImpl implements DeckService {
      */
     @Override
     public List<Deck> findDecksByTags(@NotNull List<String> tags) {
-        return repo.findAllByIsPrivateFalseAndTagsIn(tags);
+        return repo.findAllByIsPrivateFalseAndTagsIn(
+                tags.stream()
+                        .map(tagRepo::findByName)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList())
+        );
     }
 
 }

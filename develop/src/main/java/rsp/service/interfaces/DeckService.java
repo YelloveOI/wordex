@@ -36,7 +36,7 @@ public interface DeckService {
     void createPrivateCopy(Integer id) throws Exception;
 
     List<Deck> getUserDecks();
-    List<Deck> getUserPrivateDecks();
+    List<Deck> getUserPrivateDecks(Integer id);
 
     void delete(Deck deck);
 

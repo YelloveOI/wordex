@@ -13,9 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Deck;
-import rsp.rest.dto.CreateDeck;
-import rsp.rest.dto.UserDeckPreview;
+import rsp.model.Tag;
+import rsp.rest.dto.*;
+import rsp.rest.dto.response.DeckSearchResult;
 import rsp.rest.util.RestUtils;
+import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
 import rsp.service.interfaces.StatisticsService;
 
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
@@ -120,18 +123,18 @@ public class DeckController {
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/private")
-    public List<Deck> getUserPrivateDecks() {
+    public DeckSearchResult[] getUserPrivateDecks() {
         List<Deck> decks;
 
         try {
-            decks = ds.getUserPrivateDecks();
+            decks = ds.getUserPrivateDecks(SecurityUtils.getCurrentUser().getId());
         } catch (Exception e) {
             LOG.warn("Public decks could not be found! {}", e.getMessage());
             return null;
         }
 
         LOG.debug("Public decks were found.");
-        return decks;
+        return modelMapper.map(decks, DeckSearchResult[].class);
     }
 
     /**
@@ -237,21 +240,18 @@ public class DeckController {
 
     /**
      * Get public decks having any of given tags
-     *
-     * @param tags
-     * @return
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/tags")
-    public List<Deck> getDecksByTags(@RequestBody List<String> tags) {
+    public DeckSearchResult[] getDecksByTags(@RequestBody TagSearchDto body) {
         List<Deck> decks;
         try {
-            decks = ds.findDecksByTags(tags);
+            decks = ds.findDecksByTags(List.of(body.tags));
         } catch (Exception e) {
             LOG.warn("Decks could not be found! {}", e.getMessage());
             return null;
         }
         LOG.debug("Decks were found.");
-        return decks;
+        return modelMapper.map(decks, DeckSearchResult[].class);
     }
 }
