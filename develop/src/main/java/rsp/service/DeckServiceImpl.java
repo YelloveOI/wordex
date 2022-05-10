@@ -42,6 +42,7 @@ public class DeckServiceImpl implements DeckService {
         return repo.findAllByIsPrivateFalse();
     }
 
+
     //TODO Tags logic
 
     /**
@@ -70,16 +71,8 @@ public class DeckServiceImpl implements DeckService {
     public Deck mapDto(CreateDeck createDeck) {
         Deck deck = new Deck();
         deck.setDescription(createDeck.getDescription());
-        if(createDeck.getIsConfigurable().equals("true")){
-            deck.setConfigurable(true);
-        }else {
-            deck.setConfigurable(false);
-        }
-        if(createDeck.getIsPrivate().equals("true")){
-            deck.setPrivate(true);
-        }else {
-            deck.setPrivate(false);
-        }
+        deck.setConfigurable(createDeck.getIsConfigurable());
+        deck.setPrivate(createDeck.getIsPrivate());
         deck.setName(createDeck.getName());
         deck.setLanguageFrom(createDeck.getLanguageFrom());
         deck.setLanguageTo(createDeck.getLanguageTo());
@@ -194,6 +187,11 @@ public class DeckServiceImpl implements DeckService {
     @Override
     public List<Deck> getUserDecks() {
         return repo.findAllByOwnerId(SecurityUtils.getCurrentUser().getId());
+    }
+
+    @Override
+    public List<Deck> getUserPrivateDecks() {
+        return repo.findAllByIsPrivateTrue();
     }
 
     @Override

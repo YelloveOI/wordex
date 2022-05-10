@@ -14,6 +14,7 @@ import java.util.Optional;
 public interface DeckRepo extends CrudRepository<Deck, Integer> {
 
     List<Deck> findAllByIsPrivateFalse();
+    List<Deck> findAllByIsPrivateTrue();
 
     List<Deck> findAllByOwnerId(Integer id);
     /*

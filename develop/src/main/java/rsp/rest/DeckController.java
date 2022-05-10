@@ -114,6 +114,27 @@ public class DeckController {
     }
 
     /**
+     * Get public decks.
+     *
+     * @return Public decks
+     */
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @GetMapping("/private")
+    public List<Deck> getUserPrivateDecks() {
+        List<Deck> decks;
+
+        try {
+            decks = ds.getUserPrivateDecks();
+        } catch (Exception e) {
+            LOG.warn("Public decks could not be found! {}", e.getMessage());
+            return null;
+        }
+
+        LOG.debug("Public decks were found.");
+        return decks;
+    }
+
+    /**
      * @param createDeck to store (doesn't have to have owner)
      * @return Created/Bad request
      */
