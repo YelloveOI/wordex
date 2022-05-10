@@ -16,4 +16,6 @@ public interface StatisticsService {
     void updateDeck(Deck deck);
 
     void storeAnswer(StatisticDeck deck);
+
+    StatisticDeck getStatisticDeckByDeckId(Integer deckId);
 }

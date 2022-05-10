@@ -62,7 +62,7 @@ public class DeckController {
      * @return
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     public Deck getDeckByName(@PathVariable String name) {
         Deck deck;
         try {
@@ -141,7 +141,7 @@ public class DeckController {
      * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping("/edit")
+    @PostMapping(value = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> updateDeck(@RequestBody Deck deck) {
         try {

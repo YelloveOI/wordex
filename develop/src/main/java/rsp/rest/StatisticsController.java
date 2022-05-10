@@ -3,6 +3,7 @@ package rsp.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.JsonObjectSerializer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,12 @@ public class StatisticsController {
         return service.getNumberOfUnknownByDeckId(deckId);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @GetMapping("/{deckId}")
+    public String getStatisticDeck(@PathVariable Integer deckId) {
+        return service.getStatisticDeckByDeckId(deckId).toJSON();
+    }
+
     /**
      * Used for storing answers as a whole (isKnown, isLearned).
      * @param deck
@@ -46,7 +53,8 @@ public class StatisticsController {
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/answersStoring")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> storeDeckAnswers(@RequestBody StatisticDeck deck) {
+    public ResponseEntity<Void> storeDeckAnswers(@RequestBody String jsonDeck) {
+        StatisticDeck deck = new StatisticDeck(jsonDeck);
         try {
             service.storeAnswer(deck);
         } catch (Exception e) {

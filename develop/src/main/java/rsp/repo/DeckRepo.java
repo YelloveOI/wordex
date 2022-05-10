@@ -32,4 +32,7 @@ public interface DeckRepo extends CrudRepository<Deck, Integer> {
     Optional<Deck> findFirstByName(String name);
 
     List<Deck> findAllByIsPrivateFalseAndTagsIn(List<String> tags);
+
+    @Override
+    Optional<Deck> findById(Integer integer);
 }

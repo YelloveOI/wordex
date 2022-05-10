@@ -70,16 +70,8 @@ public class DeckServiceImpl implements DeckService {
     public Deck mapDto(CreateDeck createDeck) {
         Deck deck = new Deck();
         deck.setDescription(createDeck.getDescription());
-        if(createDeck.getIsConfigurable().equals("true")){
-            deck.setConfigurable(true);
-        }else {
-            deck.setConfigurable(false);
-        }
-        if(createDeck.getIsPrivate().equals("true")){
-            deck.setPrivate(true);
-        }else {
-            deck.setPrivate(false);
-        }
+        deck.setConfigurable(createDeck.getIsConfigurable());
+        deck.setPrivate(createDeck.getIsPrivate());
         deck.setName(createDeck.getName());
         deck.setLanguageFrom(createDeck.getLanguageFrom());
         deck.setLanguageTo(createDeck.getLanguageTo());
@@ -212,9 +204,9 @@ public class DeckServiceImpl implements DeckService {
         if (!deck.getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
             throw new Exception("You can't edit someone else's deck.");
         }
-        if (!deck.isConfigurable()) {
+        /*if (!deck.isConfigurable()) {
             throw new Exception("This deck is not configurable.");
-        }
+        }*/
         repo.save(deck);
     }
 
