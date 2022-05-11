@@ -19,6 +19,7 @@ import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
 import rsp.service.interfaces.StatisticsService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -117,7 +118,7 @@ public class DeckController {
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/private")
-    public PrivateDeckWithCards[] getUserPrivateDecks() {
+    public List<PrivateDeckWithCards> getUserPrivateDecks() {
         List<Deck> decks;
 
         try {
@@ -128,7 +129,11 @@ public class DeckController {
         }
 
         LOG.debug("Public decks were found.");
-        return modelMapper.map(decks, PrivateDeckWithCards[].class);
+
+        return Arrays.stream(modelMapper.map(decks, PrivateDeckWithCards[].class)).peek(d -> {
+            d.setLearnedCount(ss.getNumberOfLearnedByDeckId((int)d.id));
+            d.setUnknownCount(ss.getNumberOfUnknownByDeckId((int)d.id));
+        }).collect(Collectors.toList());
     }
 
     /**
