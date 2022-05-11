@@ -3,13 +3,11 @@ package rsp.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jackson.JsonObjectSerializer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import rsp.model.Deck;
 import rsp.model.StatisticDeck;
 import rsp.rest.util.RestUtils;
 import rsp.service.interfaces.StatisticsService;
@@ -47,7 +45,7 @@ public class StatisticsController {
 
     /**
      * Used for storing answers as a whole (isKnown, isLearned).
-     * @param deck
+     * @param jsonDeck
      * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")

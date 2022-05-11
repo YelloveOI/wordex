@@ -42,7 +42,6 @@ public class StatisticDeck extends AbstractEntity {
     public StatisticDeck(String jsonDeck) {
         JSONObject jsonObject = new JSONObject(jsonDeck);
         this.deckId = jsonObject.getInt("deckId");
-        this.setId(jsonObject.getInt("id"));
         JSONArray jsonCards = jsonObject.getJSONArray("cards");
         if (cards == null ) {
             cards = new HashMap<>();

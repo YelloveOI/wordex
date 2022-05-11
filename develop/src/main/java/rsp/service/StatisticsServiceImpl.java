@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rsp.exception.NotFoundException;
 import rsp.model.*;
 import rsp.repo.DeckRepo;
 import rsp.repo.StatisticsDeckRepo;
@@ -16,7 +15,6 @@ import rsp.service.interfaces.StatisticsService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

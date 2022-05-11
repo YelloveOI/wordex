@@ -6,7 +6,6 @@ import rsp.exception.NotFoundException;
 
 import javax.persistence.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 public class Statistics extends AbstractEntity {
@@ -59,7 +58,7 @@ public class Statistics extends AbstractEntity {
     }
 
     public void storeDeck(StatisticDeck deck) {
-        Optional<StatisticDeck> optionalDeck = decks.stream().filter(x -> x.getId().equals(deck.getId())).findAny();
+        Optional<StatisticDeck> optionalDeck = decks.stream().filter(x -> x.getDeckId().equals(deck.getDeckId())).findAny();
         if (optionalDeck.isPresent()) {
             decks.remove(optionalDeck.get());
             decks.add(deck);
