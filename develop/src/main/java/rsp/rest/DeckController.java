@@ -97,7 +97,7 @@ public class DeckController {
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/public")
-    public List<Deck> getPublicDecks() {
+    public DeckSearchResult[] getPublicDecks() {
         List<Deck> decks;
         try {
             decks = ds.getPublicDecks();
@@ -106,7 +106,7 @@ public class DeckController {
             return null;
         }
         LOG.debug("Public decks were found.");
-        return decks;
+        return modelMapper.map(decks, DeckSearchResult[].class);
     }
 
     /**
