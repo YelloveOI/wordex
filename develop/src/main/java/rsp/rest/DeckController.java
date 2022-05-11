@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import rsp.model.Deck;
 import rsp.rest.dto.*;
 import rsp.rest.dto.response.DeckSearchResult;
+import rsp.rest.dto.response.PrivateDeckWithCards;
 import rsp.rest.util.RestUtils;
 import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
@@ -116,7 +117,7 @@ public class DeckController {
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/private")
-    public DeckSearchResult[] getUserPrivateDecks() {
+    public PrivateDeckWithCards[] getUserPrivateDecks() {
         List<Deck> decks;
 
         try {
@@ -127,7 +128,7 @@ public class DeckController {
         }
 
         LOG.debug("Public decks were found.");
-        return modelMapper.map(decks, DeckSearchResult[].class);
+        return modelMapper.map(decks, PrivateDeckWithCards[].class);
     }
 
     /**
