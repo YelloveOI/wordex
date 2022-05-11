@@ -218,7 +218,7 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public void createPrivateCopy(@NotNull Integer id) throws Exception {
+    public Deck createPrivateCopy(@NotNull Integer id) throws Exception {
         Deck reference = findById(id);
 
         Deck result = new Deck();
@@ -238,6 +238,8 @@ public class DeckServiceImpl implements DeckService {
         }
 
         repo.save(result);
+
+        return result;
     }
 
     private Card cardDeepCopy(Card card) {

@@ -33,7 +33,7 @@ public interface DeckService {
 
     Deck findByName(String name) throws Exception;
 
-    void createPrivateCopy(Integer id) throws Exception;
+    Deck createPrivateCopy(Integer id) throws Exception;
 
     List<Deck> getUserDecks();
     List<Deck> getUserPrivateDecks(Integer id);

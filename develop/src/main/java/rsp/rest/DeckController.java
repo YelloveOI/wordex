@@ -206,8 +206,7 @@ public class DeckController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> chooseDeck(@PathVariable Integer id) {
         try {
-            ds.createPrivateCopy(id);
-            // ss.createDeck(getDeck(id));
+             ss.createDeck(ds.createPrivateCopy(id));
         } catch (Exception e) {
             LOG.warn("Deck could not be selected! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
