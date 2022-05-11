@@ -56,7 +56,7 @@ public class StatisticDeck extends AbstractEntity {
         Integer learned = 0;
         final Integer NumberOfRepeating = 3;
         for (Integer key : cards.keySet()) {
-            if (cards.get(key).equals(NumberOfRepeating)) {
+            if (cards.get(key) >= NumberOfRepeating) {
                 ++learned;
             }
         }
