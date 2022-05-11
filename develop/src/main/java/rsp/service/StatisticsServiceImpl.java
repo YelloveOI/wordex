@@ -77,6 +77,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         Integer statisticsId = currentUser.getStatistics().getId();
         Statistics statistics = repo.findById(statisticsId).get();
         statistics.removeDeck(deckId);
+        repo.save(statistics);
         statisticsDeckRepo.deleteByDeckId(deckId);
     }
 
