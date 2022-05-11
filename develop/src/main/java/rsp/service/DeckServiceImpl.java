@@ -21,6 +21,7 @@ import rsp.service.interfaces.DeckService;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -41,6 +42,7 @@ public class DeckServiceImpl implements DeckService {
     public List<Deck> getPublicDecks() {
         return repo.findAllByIsPrivateFalse();
     }
+
 
     //TODO Tags logic
 
@@ -189,6 +191,11 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
+    public List<Deck> getUserPrivateDecks(Integer id) {
+        return repo.findAllByIsPrivateTrueAndOwnerId(id);
+    }
+
+    @Override
     public void save(@NotNull Deck deck) throws Exception {
         if (deck.getOwner() != null) {
             if (!deck.getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
@@ -204,9 +211,9 @@ public class DeckServiceImpl implements DeckService {
         if (!deck.getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
             throw new Exception("You can't edit someone else's deck.");
         }
-        /*if (!deck.isConfigurable()) {
+        if (!deck.isConfigurable()) {
             throw new Exception("This deck is not configurable.");
-        }*/
+        }
         repo.save(deck);
     }
 
@@ -263,7 +270,13 @@ public class DeckServiceImpl implements DeckService {
      */
     @Override
     public List<Deck> findDecksByTags(@NotNull List<String> tags) {
-        return repo.findAllByIsPrivateFalseAndTagsIn(tags);
+        return repo.findAllByIsPrivateFalseAndTagsIn(
+                tags.stream()
+                        .map(tagRepo::findByName)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList())
+        );
     }
 
 }

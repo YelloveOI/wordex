@@ -1,7 +1,5 @@
 package rsp.rest;
 
-
-
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,16 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Deck;
-import rsp.rest.dto.CreateDeck;
-import rsp.rest.dto.UserDeckPreview;
+import rsp.rest.dto.*;
+import rsp.rest.dto.response.DeckSearchResult;
 import rsp.rest.util.RestUtils;
+import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
 import rsp.service.interfaces.StatisticsService;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -114,6 +110,27 @@ public class DeckController {
     }
 
     /**
+     * Get public decks.
+     *
+     * @return Public decks
+     */
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @GetMapping("/private")
+    public DeckSearchResult[] getUserPrivateDecks() {
+        List<Deck> decks;
+
+        try {
+            decks = ds.getUserPrivateDecks(SecurityUtils.getCurrentUser().getId());
+        } catch (Exception e) {
+            LOG.warn("Public decks could not be found! {}", e.getMessage());
+            return null;
+        }
+
+        LOG.debug("Public decks were found.");
+        return modelMapper.map(decks, DeckSearchResult[].class);
+    }
+
+    /**
      * @param createDeck to store (doesn't have to have owner)
      * @return Created/Bad request
      */
@@ -146,7 +163,7 @@ public class DeckController {
     public ResponseEntity<Void> updateDeck(@RequestBody Deck deck) {
         try {
             ds.update(deck);
-            ss.updateDeck(deck);
+            //ss.updateDeck(deck); TODO
         } catch (Exception e) {
             LOG.warn("Deck could not be updated! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -216,21 +233,18 @@ public class DeckController {
 
     /**
      * Get public decks having any of given tags
-     *
-     * @param tags
-     * @return
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/tags")
-    public List<Deck> getDecksByTags(@RequestBody List<String> tags) {
+    public DeckSearchResult[] getDecksByTags(@RequestBody TagSearchDto body) {
         List<Deck> decks;
         try {
-            decks = ds.findDecksByTags(tags);
+            decks = ds.findDecksByTags(List.of(body.tags));
         } catch (Exception e) {
             LOG.warn("Decks could not be found! {}", e.getMessage());
             return null;
         }
         LOG.debug("Decks were found.");
-        return decks;
+        return modelMapper.map(decks, DeckSearchResult[].class);
     }
 }
