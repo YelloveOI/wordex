@@ -17,5 +17,7 @@ public interface StatisticsService {
 
     void storeAnswer(StatisticDeck deck);
 
+    StatisticDeck countAnswer(Integer deckId, Integer[] knownCards);
+
     StatisticDeck getStatisticDeckByDeckId(Integer deckId);
 }

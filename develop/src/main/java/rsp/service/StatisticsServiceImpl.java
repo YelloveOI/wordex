@@ -12,6 +12,7 @@ import rsp.repo.UserRepo;
 import rsp.security.SecurityUtils;
 import rsp.service.interfaces.StatisticsService;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +105,13 @@ public class StatisticsServiceImpl implements StatisticsService {
         Statistics statistics = repo.findById(statisticsId).get();
         statistics.storeDeck(deck);
         repo.save(statistics);
+    }
+
+    @Override
+    public StatisticDeck countAnswer(Integer deckId, Integer[] knownCards) {
+        StatisticDeck deck = statisticsDeckRepo.findByDeckId(deckId);
+        Arrays.stream(knownCards).forEach(i -> deck.incrementCardStatistic(i));
+        return statisticsDeckRepo.save(deck);
     }
 
     private StatisticDeck createStatisticDeck(Deck deck) {

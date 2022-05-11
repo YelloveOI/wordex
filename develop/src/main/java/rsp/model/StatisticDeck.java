@@ -63,6 +63,12 @@ public class StatisticDeck extends AbstractEntity {
         return learned;
     }
 
+    public void incrementCardStatistic(Integer id) {
+        Integer card = cards.get(id);
+        cards.remove(id);
+        cards.put(id, ++card);
+    }
+
     public Integer getNumberOfUnknown() {
         return cards.size() - getNumberOfLearned();
     }
