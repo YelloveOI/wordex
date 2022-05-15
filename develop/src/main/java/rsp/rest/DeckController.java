@@ -1,5 +1,6 @@
 package rsp.rest;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.Deck;
-import rsp.rest.dto.CreateDeck;
+import rsp.rest.dto.*;
+import rsp.rest.dto.response.DeckSearchResult;
+import rsp.rest.dto.response.PrivateDeckWithCards;
 import rsp.rest.util.RestUtils;
+import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
 import rsp.service.interfaces.StatisticsService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/deck")
@@ -25,6 +30,7 @@ public class DeckController {
 
     private final DeckService ds;
     private final StatisticsService ss;
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     public DeckController(DeckService ds, StatisticsService ss) {
@@ -48,11 +54,12 @@ public class DeckController {
 
     /**
      * RETURNS THE FIRST DECK IN DB WITH THIS NAME (name is not unique)
+     *
      * @param name
      * @return
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     public Deck getDeckByName(@PathVariable String name) {
         Deck deck;
         try {
@@ -67,29 +74,31 @@ public class DeckController {
 
     /**
      * Get current user's decks.
+     *
      * @return Current user's decks
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/my")
-    public List<Deck> getUserDecks() {
-        List<Deck> decks;
+    public List<UserDeckPreview> getUserDecks() {
         try {
-            decks = ds.getUserDecks();
+            return ds.getUserDecks()
+                    .stream()
+                    .map((d) -> modelMapper.map(d, UserDeckPreview.class))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             LOG.warn("Decks could not be found! {}", e.getMessage());
             return null;
         }
-        LOG.debug("Decks were found.");
-        return decks;
     }
 
     /**
      * Get public decks.
+     *
      * @return Public decks
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/public")
-    public List<Deck> getPublicDecks() {
+    public DeckSearchResult[] getPublicDecks() {
         List<Deck> decks;
         try {
             decks = ds.getPublicDecks();
@@ -98,16 +107,36 @@ public class DeckController {
             return null;
         }
         LOG.debug("Public decks were found.");
-        return decks;
+        return modelMapper.map(decks, DeckSearchResult[].class);
     }
 
     /**
+     * Get public decks.
      *
+     * @return Public decks
+     */
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @GetMapping("/private")
+    public PrivateDeckWithCards[] getUserPrivateDecks() {
+        List<Deck> decks;
+
+        try {
+            decks = ds.getUserPrivateDecks(SecurityUtils.getCurrentUser().getId());
+        } catch (Exception e) {
+            LOG.warn("Public decks could not be found! {}", e.getMessage());
+            return null;
+        }
+
+        LOG.debug("Public decks were found.");
+        return modelMapper.map(decks, PrivateDeckWithCards[].class);
+    }
+
+    /**
      * @param createDeck to store (doesn't have to have owner)
      * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createDeck(@RequestBody CreateDeck createDeck) {
         Deck deck;
         try {
@@ -125,16 +154,17 @@ public class DeckController {
 
     /**
      * Used for updating name, description and language of the deck if the deck is yours and configurable.
+     *
      * @param deck
      * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping("/edit")
+    @PostMapping(value = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> updateDeck(@RequestBody Deck deck) {
         try {
             ds.update(deck);
-            ss.updateDeck(deck);
+            //ss.updateDeck(deck); TODO
         } catch (Exception e) {
             LOG.warn("Deck could not be updated! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -167,6 +197,7 @@ public class DeckController {
     /**
      * Selects a deck (either public or private) and makes it private so that user can start
      * answering it without the deck being modified by other users.
+     *
      * @param id
      * @return Created/Bad request
      */
@@ -203,20 +234,18 @@ public class DeckController {
 
     /**
      * Get public decks having any of given tags
-     * @param tags
-     * @return
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/tags")
-    public List<Deck> getDecksByTags(@RequestBody List<String> tags) {
+    public DeckSearchResult[] getDecksByTags(@RequestBody TagSearchDto body) {
         List<Deck> decks;
         try {
-            decks = ds.findDecksByTags(tags);
+            decks = ds.findDecksByTags(List.of(body.tags));
         } catch (Exception e) {
             LOG.warn("Decks could not be found! {}", e.getMessage());
             return null;
         }
         LOG.debug("Decks were found.");
-        return decks;
+        return modelMapper.map(decks, DeckSearchResult[].class);
     }
 }

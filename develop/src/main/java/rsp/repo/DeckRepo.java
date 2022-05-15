@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import rsp.enums.Language;
 import rsp.model.Card;
 import rsp.model.Deck;
+import rsp.model.Tag;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public interface DeckRepo extends CrudRepository<Deck, Integer> {
 
     List<Deck> findAllByIsPrivateFalse();
+    List<Deck> findAllByIsPrivateTrueAndOwnerId(Integer id);
 
     List<Deck> findAllByOwnerId(Integer id);
     /*
@@ -31,5 +33,8 @@ public interface DeckRepo extends CrudRepository<Deck, Integer> {
 
     Optional<Deck> findFirstByName(String name);
 
-    List<Deck> findAllByIsPrivateFalseAndTagsIn(List<String> tags);
+    @Override
+    Optional<Deck> findById(Integer integer);
+
+    List<Deck> findAllByIsPrivateFalseAndTagsIn(List<Tag> tags);
 }

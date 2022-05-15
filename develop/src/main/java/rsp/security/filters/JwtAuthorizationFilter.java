@@ -51,7 +51,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            filterChain.doFilter(req, res);
         } catch (Exception e) {
             log.error(e.getMessage());
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Malformed or expirated token.");

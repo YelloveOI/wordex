@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import rsp.model.Deck;
 import rsp.model.StatisticDeck;
 import rsp.rest.util.RestUtils;
 import rsp.service.interfaces.StatisticsService;
@@ -38,15 +37,22 @@ public class StatisticsController {
         return service.getNumberOfUnknownByDeckId(deckId);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @GetMapping("/{deckId}")
+    public String getStatisticDeck(@PathVariable Integer deckId) {
+        return service.getStatisticDeckByDeckId(deckId).toJSON();
+    }
+
     /**
      * Used for storing answers as a whole (isKnown, isLearned).
-     * @param deck
+     * @param jsonDeck
      * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/answersStoring")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> storeDeckAnswers(@RequestBody StatisticDeck deck) {
+    public ResponseEntity<Void> storeDeckAnswers(@RequestBody String jsonDeck) {
+        StatisticDeck deck = new StatisticDeck(jsonDeck);
         try {
             service.storeAnswer(deck);
         } catch (Exception e) {

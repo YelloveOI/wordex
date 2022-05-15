@@ -21,6 +21,7 @@ import rsp.service.interfaces.DeckService;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -41,6 +42,7 @@ public class DeckServiceImpl implements DeckService {
     public List<Deck> getPublicDecks() {
         return repo.findAllByIsPrivateFalse();
     }
+
 
     //TODO Tags logic
 
@@ -70,16 +72,8 @@ public class DeckServiceImpl implements DeckService {
     public Deck mapDto(CreateDeck createDeck) {
         Deck deck = new Deck();
         deck.setDescription(createDeck.getDescription());
-        if(createDeck.getIsConfigurable().equals("true")){
-            deck.setConfigurable(true);
-        }else {
-            deck.setConfigurable(false);
-        }
-        if(createDeck.getIsPrivate().equals("true")){
-            deck.setPrivate(true);
-        }else {
-            deck.setPrivate(false);
-        }
+        deck.setConfigurable(createDeck.getIsConfigurable());
+        deck.setPrivate(createDeck.getIsPrivate());
         deck.setName(createDeck.getName());
         deck.setLanguageFrom(createDeck.getLanguageFrom());
         deck.setLanguageTo(createDeck.getLanguageTo());
@@ -197,6 +191,11 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
+    public List<Deck> getUserPrivateDecks(Integer id) {
+        return repo.findAllByIsPrivateTrueAndOwnerId(id);
+    }
+
+    @Override
     public void save(@NotNull Deck deck) throws Exception {
         if (deck.getOwner() != null) {
             if (!deck.getOwner().getId().equals(SecurityUtils.getCurrentUser().getId())) {
@@ -271,7 +270,13 @@ public class DeckServiceImpl implements DeckService {
      */
     @Override
     public List<Deck> findDecksByTags(@NotNull List<String> tags) {
-        return repo.findAllByIsPrivateFalseAndTagsIn(tags);
+        return repo.findAllByIsPrivateFalseAndTagsIn(
+                tags.stream()
+                        .map(tagRepo::findByName)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList())
+        );
     }
 
 }
