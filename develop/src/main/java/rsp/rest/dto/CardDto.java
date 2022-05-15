@@ -13,6 +13,8 @@ import java.util.List;
 @Data
 public class CardDto {
 
+    private Integer id;
+
     private String definition;
 
     private String term;

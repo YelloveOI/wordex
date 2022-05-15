@@ -41,7 +41,7 @@ public class Statistics extends AbstractEntity {
         if (decks == null) {
             return;
         }
-        Optional<StatisticDeck> forDelete = decks.stream().filter((d) -> d.getDeckId() != deckId).findFirst();
+        Optional<StatisticDeck> forDelete = decks.stream().filter((d) -> d.getDeckId().equals(deckId)).findFirst();
         decks.remove(forDelete.get());
     }
 
@@ -51,7 +51,7 @@ public class Statistics extends AbstractEntity {
     }
 
     public void reset(Integer deckId) {
-        Optional<StatisticDeck> optionalDeck = decks.stream().filter(x -> x.getDeckId() != deckId).findFirst();
+        Optional<StatisticDeck> optionalDeck = decks.stream().filter(x -> x.getDeckId().equals(deckId)).findFirst();
         if (optionalDeck.isPresent()) {
             optionalDeck.get().resetAll();
         }

@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface StatisticsDeckRepo extends CrudRepository<StatisticDeck, Integer> {
 
     void deleteByDeckId(Integer deckId);
+
+    StatisticDeck findByDeckId(Integer deckId);
 }

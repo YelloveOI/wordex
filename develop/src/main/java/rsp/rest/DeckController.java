@@ -19,6 +19,7 @@ import rsp.security.SecurityUtils;
 import rsp.service.interfaces.DeckService;
 import rsp.service.interfaces.StatisticsService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class DeckController {
 
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/{id}")
-    public Deck getDeck(@PathVariable int id) {
+    public PrivateDeckWithCards getDeck(@PathVariable int id) {
         Deck deck;
         try {
             deck = ds.findById(id);
@@ -49,7 +50,7 @@ public class DeckController {
             return null;
         }
         LOG.debug("Deck was found.");
-        return deck;
+        return modelMapper.map(deck, PrivateDeckWithCards.class);
     }
 
     /**
@@ -117,7 +118,7 @@ public class DeckController {
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/private")
-    public PrivateDeckWithCards[] getUserPrivateDecks() {
+    public List<PrivateDeckWithCards> getUserPrivateDecks() {
         List<Deck> decks;
 
         try {
@@ -128,7 +129,11 @@ public class DeckController {
         }
 
         LOG.debug("Public decks were found.");
-        return modelMapper.map(decks, PrivateDeckWithCards[].class);
+
+        return Arrays.stream(modelMapper.map(decks, PrivateDeckWithCards[].class)).peek(d -> {
+            d.setLearnedCount(ss.getNumberOfLearnedByDeckId((int)d.id));
+            d.setUnknownCount(ss.getNumberOfUnknownByDeckId((int)d.id));
+        }).collect(Collectors.toList());
     }
 
     /**
@@ -202,12 +207,11 @@ public class DeckController {
      * @return Created/Bad request
      */
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PostMapping("/selection")
+    @PostMapping("/selection/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> chooseDeck(@RequestBody Integer id) {
+    public ResponseEntity<Void> chooseDeck(@PathVariable Integer id) {
         try {
-            ds.createPrivateCopy(id);
-            ss.createDeck(getDeck(id));
+             ss.createDeck(ds.createPrivateCopy(id));
         } catch (Exception e) {
             LOG.warn("Deck could not be selected! {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

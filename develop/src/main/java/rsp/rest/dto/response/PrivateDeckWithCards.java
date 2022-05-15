@@ -17,6 +17,9 @@ public class PrivateDeckWithCards {
     public CardDto[] cards;
     public DeckSearchResultAuthor owner;
 
+    public Integer learnedCount;
+    public Integer unknownCount;
+    
     @Getter @Setter
     public static class DeckSearchResultTag {
         public String name;

@@ -1,5 +1,6 @@
 package rsp.rest;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rsp.model.StatisticDeck;
+import rsp.rest.dto.KnownWordsDto;
 import rsp.rest.util.RestUtils;
 import rsp.service.interfaces.StatisticsService;
 
@@ -61,6 +63,22 @@ public class StatisticsController {
         }
         LOG.debug("Deck answers have been stored.");
         final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", deck.getId());
+        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @PostMapping("/knownWordsStoring")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> storeKnownWords(@RequestBody KnownWordsDto knownWords) {
+        try {
+            StatisticDeck answer = service.countAnswer(knownWords.getDeckId(), knownWords.getKnownCards());
+            service.storeAnswer(answer);
+        } catch (Exception e) {
+            LOG.warn("Deck answers could not be stored! {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        LOG.debug("Deck answers have been stored.");
+        final HttpHeaders headers = RestUtils.createLocationHeaderFromCurrentUri("/{id}", knownWords.getDeckId());
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 }

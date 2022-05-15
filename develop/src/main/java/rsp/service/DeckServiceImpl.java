@@ -218,7 +218,7 @@ public class DeckServiceImpl implements DeckService {
     }
 
     @Override
-    public void createPrivateCopy(@NotNull Integer id) throws Exception {
+    public Deck createPrivateCopy(@NotNull Integer id) throws Exception {
         Deck reference = findById(id);
 
         Deck result = new Deck();
@@ -231,13 +231,15 @@ public class DeckServiceImpl implements DeckService {
         result.setLanguageTo(reference.getLanguageTo());
         result.setDescription(reference.getDescription());
         result.setName(reference.getName());
-        result.setTags(reference.getTags());
+//        result.setTags(reference.getTags());
 
         for(Card c : reference.getCards()) {
             result.addCard(cardDeepCopy(c));
         }
 
         repo.save(result);
+
+        return result;
     }
 
     private Card cardDeepCopy(Card card) {
@@ -245,7 +247,7 @@ public class DeckServiceImpl implements DeckService {
 
         result.setDefinition(card.getDefinition());
         result.setTerm(card.getTerm());
-        result.setContentList(card.getContentList());
+        // result.setContentList(card.getContentList());
 
         return result;
     }

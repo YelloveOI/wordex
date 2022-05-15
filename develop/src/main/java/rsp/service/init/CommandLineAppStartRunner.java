@@ -55,7 +55,7 @@ class CommandLineAppStartupRunner implements CommandLineRunner {
 
             admin.setUsername("admin");
             admin.setPassword("1234");
-            admin.addRole(Role.ADMIN);
+            admin.addRole(Role.USER);
             admin.setEmail("email@com.cz");
 
 
